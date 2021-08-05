@@ -1,0 +1,11 @@
+<isdecorate template="common/layout/page">
+    <isscript>
+        var assets = require('*/cartridge/scripts/assets');
+        assets.addJs('/js/search.js');
+        assets.addJs('/js/clearpay.js');
+        assets.addCss('/css/search.css');
+        assets.addCss('/css/clearpaystyle.css');
+    </isscript>
+
+    <isinclude template="search/searchResultsNoDecorator" />
+</isdecorate>

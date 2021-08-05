@@ -1,0 +1,13 @@
+<iscontent type="text/html" charset="UTF-8" compact="true"/>
+
+<iscomment>
+    Render the Clearpay message for PLP , PDP and Cart
+</iscomment>
+
+<ismodule template="util/clearpayMessage"
+    name="clearpaymessage"
+    attribute="classname" 
+    attribute="belowthreshold"
+    attribute="brand"
+    attribute="totalprice"
+/>

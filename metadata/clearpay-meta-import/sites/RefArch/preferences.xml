@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<preferences xmlns="http://www.demandware.com/xml/impex/preferences/2007-03-31">
+    <custom-preferences>
+        <all-instances/>
+        <development>
+            <preference preference-id="apBrandSettings">{
+               "GB": {
+                    "brand": "clearpay",
+                    "service": "clearpay.service.GB.v2",
+                    "versionApi": "2",
+                    "javaScriptUrl": "https://portal.sandbox.clearpay.co.uk/afterpay.js",
+                    "learnMoreUrl": "https://www.clearpay.co.uk/en-GB/terms-of-service"
+                }
+            }</preference>
+            <preference preference-id="apPaymentMode">DIRECT_CAPTURE</preference>
+            <preference preference-id="enableClearpay">true</preference>
+        </development>
+        <staging/>
+        <production/>
+    </custom-preferences>
+</preferences>
+
