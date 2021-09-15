@@ -5,8 +5,8 @@
  *  calls TokenModel object
  */
 function TokenModel() {
-    var apToken = null;
-    this.TokenModel = apToken;
+    var cpToken = null;
+    this.TokenModel = cpToken;
 }
 
 module.exports = TokenModel;

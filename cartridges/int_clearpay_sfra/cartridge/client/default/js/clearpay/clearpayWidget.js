@@ -2,7 +2,7 @@
 /* global $ */
 
 /**
- * Gets Widget HTML from ClearPay API
+ * Gets Widget HTML from AfterPay API
  * @param {string} updatedProductID - product ID
  * @param {number} updatedProductPrice - product price
  * @param {string} className - HTML class name

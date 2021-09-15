@@ -14,13 +14,13 @@ var ClearpayUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
 var BrandUtilities = ClearpayUtilities.brandUtilities;
 var SitePreferences = ClearpayUtilities.sitePreferencesUtilities;
 var ctrlCartridgeName = SitePreferences.getControllerCartridgeName();
-var thresholdUtilities = BrandUtilities.getApiVersionDependentClass('*/cartridge/scripts/util/thresholdUtilities');
+var thresholdUtilities = require('*/cartridge/scripts/util/thresholdUtilities');
 
 var app = require(ctrlCartridgeName + '/cartridge/scripts/app');
 var guard = require(ctrlCartridgeName + '/cartridge/scripts/guard');
 
 /**
- * Renders Afterpay/Clearpay messages
+ * Renders Clearpay/CLearpay messages
  */
 function renderMessage() {
     var params = request.httpParameterMap;

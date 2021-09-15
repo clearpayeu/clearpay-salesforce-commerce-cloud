@@ -222,3 +222,101 @@
 .learn-more {
     text-align: right;
 }
+.afterpay-checkout-button {
+    width: 246px;
+    height: 37px;
+    background-image: url('https://static.afterpay.com/button/checkout-with-afterpay/white-on-black.svg'); 
+    background-size: cover; 
+    background-color: #000000 !important;
+}
+
+.clearpay-checkout-button {
+    width: 246px;
+    height: 37px;
+    background-image: url('https://static.afterpay.com/button/checkout-with-clearpay/white-on-black.svg'); 
+    background-size: cover; 
+    background-color: #000000 !important;
+}
+
+.afterpay-placeorder-button {
+    width: 246px;
+    height: 37px;
+    background-image: url('https://static.afterpay.com/button/place-order-with-afterpay/white-on-black.svg');
+    background-size: cover; 
+    background-color: #000000 !important;
+}
+
+.clearpay-placeorder-button {
+    width: 246px;
+    height: 37px;
+    background-image: url('https://static.afterpay.com/button/place-order-with-clearpay/white-on-black.svg');
+    background-size: cover; 
+    background-color: #000000 !important;
+}
+
+.afterpay-paynow-button {
+    width: 246px !important;
+    height: 37px;
+    background-image: url('https://static.afterpay.com/button/buy-now-with-afterpay/white-on-black.svg'); 
+    background-size: cover; 
+    margin-left: 10px;
+    background-color: #000000 !important;
+    /*border-style: none;*/
+}
+
+.clearpay-paynow-button {
+    width: 246px !important;
+    height: 37px;
+    background-image: url('https://static.afterpay.com/button/buy-now-with-clearpay/white-on-black.svg'); 
+    background-size: cover; 
+    margin-left: 10px;
+    background-color: #000000 !important;
+    /*border-style: none;*/
+}
+
+.clearpay-summary-button-container {
+    width: 100%;
+    position: relative;
+    margin-top: 30px;
+}
+
+.clearpay-hidden {
+    display: none;
+}
+
+.clearpay-paynow-pdp {
+    float: left;
+    padding-left: .5em;
+}
+
+@media only screen and (max-width: 960px) {
+    .clearpay-paynow-pdp {
+        margin-top: 10px;
+    }
+}
+
+
+.clearpay-summary {
+    margin-top: 0px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+.clearpay-back-button {
+    height: 37px;
+}
+.clearpay-paymethod-widget-div {
+    width: 100%;
+    margin-bottom: 25px;
+}
+
+.payment-method .clearpay-placeorder-button {
+    text-align: center;
+    align-items: flex-start;
+}
+
+clearpay-widget-hideuntilready {
+    visibility: hidden;
+}

@@ -1,6 +1,6 @@
 {
   "name": "Clearpay",
-  "version": "22.0.0",
+  "version": "23.0.0",
   "description": "Clearpay cartridge",
   "main": "index.js",
   "engines": {
@@ -104,7 +104,8 @@
     "cleave.js": "^1.5.3",
     "flag-icon-css": "^2.9.0",
     "font-awesome": "^4.7.0",
-    "jquery": "^3.4.1"
+    "jquery": "^3.4.1",
+    "parse-price": "^1.1.8"
   },
   "browserslist": [
     "last 2 versions",

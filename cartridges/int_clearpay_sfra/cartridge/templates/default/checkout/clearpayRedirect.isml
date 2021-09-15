@@ -10,10 +10,10 @@
         $(".loader-image").fadeOut("slow");
         if (brand === 'clearpay' && countryCode !== 'GB') {
             Clearpay.initialize({countryCode: countryCode});
-            Clearpay.redirect({token: '${pdict.apToken}'});
+            Clearpay.redirect({token: '${pdict.cpToken}'});
         } else {
             AfterPay.initialize({countryCode: countryCode});
-            AfterPay.redirect({token: '${pdict.apToken}'});
+            AfterPay.redirect({token: '${pdict.cpToken}'});
         }
     }
 

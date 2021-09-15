@@ -1,6 +1,8 @@
 var PAYMENT_STATUS = require('*/cartridge/scripts/util/clearpayConstants').PAYMENT_STATUS;
-var { sitePreferencesUtilities, brandUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
-var clearpayUpdateOrder = brandUtilities.getApiVersionDependentClass('*/cartridge/scripts/checkout/clearpayUpdateOrder');
+var apUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
+var brandUtilities = apUtilities.brandUtilities;
+var sitePreferencesUtilities = apUtilities.sitePreferencesUtilities;
+var clearpayUpdateOrder = require('*/cartridge/scripts/checkout/clearpayUpdateOrder');
 var baseUpdateOrderService = require('*/cartridge/scripts/logic/services/clearpayUpdateOrderService');
 var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');
 var Logger = LogUtils.getLogger('clearpayHandlePaymentOrder');
@@ -20,12 +22,12 @@ var parsePaymentStatus = function (paymentStatus) {
  * @param {number} paymentStatus - payment status
  * @returns {number} - payment status
  */
-function getPaymentStatus(order, paymentStatus) {
+function getPaymentStatus(order, paymentStatus, expressCheckoutModel) {
     var parsedPaymentStatus = parsePaymentStatus(paymentStatus);
     Logger.debug('parsed payment status : ' + parsedPaymentStatus);
     var paymentResult;
     try {
-        paymentResult = baseUpdateOrderService.handleOrder(order, parsedPaymentStatus);
+        paymentResult = baseUpdateOrderService.handleOrder(order, parsedPaymentStatus, expressCheckoutModel);
         if (paymentResult && paymentResult.status === 'DECLINED') {
             parsedPaymentStatus = paymentResult.status;
         }

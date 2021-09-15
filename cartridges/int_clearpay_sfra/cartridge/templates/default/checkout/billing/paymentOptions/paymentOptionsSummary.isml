@@ -3,7 +3,7 @@
         <isif condition="${payment.paymentMethod === 'CREDIT_CARD'}">
             <isinclude template="checkout/billing/paymentOptions/creditCardSummary" />
         <iselse>
-        	<isprint value="${payment.paymentMethod}" encoding="on" />
+        	<isinclude template="checkout/billing/paymentOptions/clearpaySummary" />
         </isif>
     </isloop>
 </div>

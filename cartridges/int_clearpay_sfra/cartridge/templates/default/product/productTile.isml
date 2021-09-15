@@ -13,8 +13,11 @@
         <iselse>
             <isinclude template="product/components/pricing/main" />
         </isif>
-
-        <isif condition="${pdict.apApplicable == true}">
+        <isscript>
+            var sitePreferences = require("*/cartridge/scripts/util/clearpayUtilities.js").sitePreferencesUtilities;
+            var clearpayPLPEnable = sitePreferences.isDisplayPlpInfo();
+        </isscript>
+        <isif condition="${pdict.apApplicable == true && clearpayPLPEnable}">
             <isinclude template="util/modulesClearpay"/>
 
             <isclearpaymessage

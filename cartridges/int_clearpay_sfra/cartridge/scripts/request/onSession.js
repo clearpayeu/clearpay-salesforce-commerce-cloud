@@ -8,7 +8,7 @@ exports.onSession = function () {
     var { brandUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
 
     brandUtilities.initBrand(request.locale);
-    var thresholdUtilities = brandUtilities.getApiVersionDependentClass('*/cartridge/scripts/util/thresholdUtilities');
+    var thresholdUtilities = require('*/cartridge/scripts/util/thresholdUtilities');
     var brand = brandUtilities.getBrand();
     var threshold = thresholdUtilities.getThresholdAmounts(brand);
     thresholdUtilities.saveThresholds(brand, threshold);

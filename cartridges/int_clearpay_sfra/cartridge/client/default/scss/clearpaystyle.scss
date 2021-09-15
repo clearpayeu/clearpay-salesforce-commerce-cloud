@@ -218,3 +218,81 @@
     padding-bottom: 0.75em;
     background-color: #fbfcfc;
 }
+
+.afterpay-checkout-button {
+    background-color: #000;
+    color: #fff !important;
+    background-image: url('https://static.afterpay.com/button/checkout-with-afterpay/white-on-black.svg'); 
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+  }
+
+  .clearpay-checkout-button {
+    background-color: #000;
+    color: #fff !important;
+    background-image: url('https://static.afterpay.com/button/checkout-with-clearpay/white-on-black.svg'); 
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+  }
+  
+  .afterpay-buynow-button {
+    background-color: #000;
+    color: #fff !important;
+    background-image: url('https://static.afterpay.com/button/buy-now-with-afterpay/white-on-black.svg'); 
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    min-width: 250px;
+  }
+
+  .clearpay-buynow-button {
+    background-color: #000;
+    color: #fff !important;
+    background-image: url('https://static.afterpay.com/button/buy-now-with-clearpay/white-on-black.svg'); 
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    min-width: 250px;
+  }
+  
+  .afterpay-placeorder-button {
+    background-color: #000;
+    color: #fff !important;
+    background-image: url('https://static.afterpay.com/button/place-order-with-afterpay/white-on-black.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    min-width: 250px;
+  }
+
+  .clearpay-placeorder-button {
+    background-color: #000;
+    color: #fff !important;
+    background-image: url('https://static.afterpay.com/button/place-order-with-clearpay/white-on-black.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    min-width: 250px;
+  }
+
+  .clearpay-hide {
+      display: none !important;
+  }
+
+  .clearpay-widget-hideuntilready {
+    visibility: hidden;
+  }
+  
+  .cart-and-ipay .add-to-cart{
+      width:100%;
+      display: block;
+  }
+  

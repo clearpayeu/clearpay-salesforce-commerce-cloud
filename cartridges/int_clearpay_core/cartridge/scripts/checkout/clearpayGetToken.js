@@ -18,7 +18,7 @@ function getToken(basket) {
 
         if (!empty(response.token)) {
             Logger.debug('Clearpay Token generated from service: ' + response.token);
-            res.apToken = response.token;
+            res.cpToken = response.token;
             ClearpayToken = res;
             return ClearpayToken;
         }

@@ -5,7 +5,7 @@
  */
 function PreapprovalModel() {
     var approvalModelObject = {
-        apToken: null,
+        cpToken: null,
         status: null
     };
     this.PreapprovalModel = approvalModelObject;

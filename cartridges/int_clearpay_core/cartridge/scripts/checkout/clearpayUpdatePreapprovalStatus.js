@@ -1,8 +1,9 @@
 'use strict';
 var Transaction = require('dw/system/Transaction');
-var Logger = require('dw/system/Logger');
 var PreapprovalModel = require('*/cartridge/scripts/models/preapprovalModel');
 var clearpayUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
+var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');
+var Logger = LogUtils.getLogger('afterpaUpdatePreapprovalStatus');
 
 /**
  * retrieves payment status and order token from httpparameter
@@ -12,8 +13,9 @@ var clearpayUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
 function parsePreapprovalResult(parameter) {
     var preapprovalModel = new PreapprovalModel();
     preapprovalModel.status = parameter.status;
-    preapprovalModel.apToken = parameter.orderToken;
-
+    preapprovalModel.cpToken = parameter.orderToken;
+    preapprovalModel.cpExpressCheckout = parameter.cpExpressCheckout || false;
+    preapprovalModel.cpExpressCheckoutChecksum = parameter.cpExpressCheckoutChecksum || '';
     return preapprovalModel;
 }
 
@@ -24,13 +26,15 @@ function parsePreapprovalResult(parameter) {
  */
 function updatePreapprovalStatus(preapprovalModel, lineItemCtnr) {
     var paymentTransaction = clearpayUtilities.checkoutUtilities.getPaymentTransaction(lineItemCtnr);
-
-    if (paymentTransaction) {
+    if (paymentTransaction) {     
         Logger.debug('Payment status after token generation : ' + preapprovalModel.status);
         Transaction.begin();
-        paymentTransaction.custom.apInitialStatus = preapprovalModel.status;
-        paymentTransaction.custom.apToken = preapprovalModel.apToken;
+        paymentTransaction.custom.cpInitialStatus = preapprovalModel.status;
+        paymentTransaction.custom.cpToken = preapprovalModel.cpToken;
+        paymentTransaction.custom.cpExpressCheckout = preapprovalModel.cpExpressCheckout;
+        paymentTransaction.custom.cpExpressCheckoutChecksum = preapprovalModel.cpExpressCheckoutChecksum;
         Transaction.commit();
+        Logger.debug('After transaction commit' + JSON.stringify(paymentTransaction));
     } else {
         Logger.error('Can not find payment transaction');
     }
@@ -44,8 +48,7 @@ function updatePreapprovalStatus(preapprovalModel, lineItemCtnr) {
  */
 function getPreApprovalResult(lineItemCtnr, parameterMap) {
     var preapprovalModel = parsePreapprovalResult(parameterMap);
-
-    if (!(preapprovalModel.status) || !(preapprovalModel.apToken)) {
+    if (!(preapprovalModel.status) || !(preapprovalModel.cpToken)) {
         Logger.error('can not find order token and status in http parameter returned');
         return { error: true };
     }

@@ -30,7 +30,7 @@ function sleep(milliseconds) {
 * @param {number} initialStatus - initial status
 * @returns {number} - payment status
 */
-function delayPayment(Order, initialStatus) {
+function delayPayment(Order, initialStatus, expressCheckoutModel) {
     var paymentStatus;
     if (empty(Order) || empty(initialStatus)) {
         Logger.error('Either of the Parameters provided -Order or Paymentstatus or finalPaymentStatus is empty');
@@ -39,9 +39,9 @@ function delayPayment(Order, initialStatus) {
     for (var i = 0; i < 4; i++) {
         Logger.debug('Payment retry Execution count ' + i + ' -and intial payment status :' + initialStatus);
         Logger.debug('Before time delay : ' + new Date());
-        sleep(Site.getCurrent().getCustomPreferenceValue('apDelayRetry'));
+        sleep(Site.getCurrent().getCustomPreferenceValue('cpDelayRetry'));
         Logger.debug('After 5 secs time delay : ' + new Date());
-        paymentStatus = require('*/cartridge/scripts/checkout/clearpayHandlePaymentOrder').getPaymentStatus(Order, initialStatus);
+        paymentStatus = require('*/cartridge/scripts/checkout/clearpayHandlePaymentOrder').getPaymentStatus(Order, initialStatus, expressCheckoutModel);
         if (paymentStatus === 'APPROVED') {
             break;
         }

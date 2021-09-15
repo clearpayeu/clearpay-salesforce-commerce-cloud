@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <services xmlns="http://www.demandware.com/xml/impex/services/2014-09-26">
-    <service-credential service-credential-id="clearpay.credentials.EU">
-        <url>https://api.sandbox.clearpay.com/v1/</url>
-        <user-id/>
-        <password masked="true">********</password>
-    </service-credential>
 
-    <service-credential service-credential-id="clearpay.credentials.GB">
-        <url>https://api.eu-sandbox.afterpay.com/v1/</url>
+    <service-credential service-credential-id="clearpay.credentials.EU.v2">
+        <url>https://api.sandbox.clearpay.com/v2/</url>
         <user-id/>
         <password masked="true">********</password>
     </service-credential>
@@ -28,7 +23,7 @@
         <cb-millis>15000</cb-millis>
     </service-profile>
 
-    <service service-id="clearpay.service.EU">
+    <service service-id="clearpay.service.EU.v2">
         <service-type>HTTP</service-type>
         <enabled>true</enabled>
         <log-prefix>Clearpay</log-prefix>
@@ -36,18 +31,7 @@
         <force-prd-enabled>false</force-prd-enabled>
         <mock-mode-enabled>false</mock-mode-enabled>
         <profile-id>clearpay.profile</profile-id>
-        <credential-id>clearpay.credentials.EU</credential-id>
-    </service>
-
-    <service service-id="clearpay.service.GB">
-        <service-type>HTTP</service-type>
-        <enabled>true</enabled>
-        <log-prefix>Clearpay</log-prefix>
-        <comm-log-enabled>true</comm-log-enabled>
-        <force-prd-enabled>false</force-prd-enabled>
-        <mock-mode-enabled>false</mock-mode-enabled>
-        <profile-id>clearpay.profile</profile-id>
-        <credential-id>clearpay.credentials.GB</credential-id>
+        <credential-id>clearpay.credentials.EU.v2</credential-id>
     </service>
 
     <service service-id="clearpay.service.GB.v2">

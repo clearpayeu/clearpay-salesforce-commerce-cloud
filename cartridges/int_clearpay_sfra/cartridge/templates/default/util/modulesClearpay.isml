@@ -11,3 +11,13 @@
     attribute="brand"
     attribute="totalprice"
 />
+
+<ismodule template="product/components/addToCartButtonExtension"
+    name="clearpayexpresscheckout"
+    attribute="pagetype"
+/>
+
+<ismodule template="product/components/checkoutButtons"
+    name="clearpayexpresscheckoutButtons"
+    attribute="pagetype"
+/>

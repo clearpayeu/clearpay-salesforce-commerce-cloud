@@ -1,0 +1,63 @@
+<iscontent type="text/html" charset="UTF-8" compact="true"/>
+
+<iscomment>
+clearpayToken - token obtained from Clearpay during the initial checkout
+clearpayExpressPickupEnabled - true when cart only has in-store pickup items and all are picked up from the same store
+clearpayExpressCheckoutEnabled - true when Clearpay Express Checkout is enabled in site custom preferences
+isExpressCheckoutFinalize - true if currently in Clearpay Express checkout flow where Clearpay Portal checkout has already
+  been completed, and consumer has been returned to the merchant store to finalize order.
+clearpayAmount - total amount for the Clearpay payment instrument in the cart. If no Clearpay payment instrument has
+  been created in the cart, will return dw.value.Money() with 0 amount.
+
+</iscomment>
+<isscript>
+var sitePreferences = require("*/cartridge/scripts/util/clearpayUtilities.js").sitePreferencesUtilities;
+var clearpayEnable = sitePreferences.isClearpayEnabled();
+// session state specifically used for Clearpay Express
+var ClearpaySession = require('*/cartridge/scripts/util/clearpaySession');
+var ClearpayCOHelpers = require('~/cartridge/scripts/checkout/clearpayCheckoutHelpers');
+// This does a recalculation using the current basket
+ClearpayCOHelpers.calculateAndSetPaymentAmount(dw.order.BasketMgr.getCurrentBasket());
+var clearpayAmount = ClearpayCOHelpers.getCurrentClearpayPaymentAmount(dw.order.BasketMgr.getCurrentBasket());
+if (clearpayAmount.value == 0) {
+  // If we've reached the checkout page and there's no existing Clearpay payment transaction in the basket, clear the
+  // session since we're obviously not the normal express checkout flow
+  ClearpaySession.clearSession(); // clear session. widget will not be displayed since checked flags will return false.
+}
+var clearpayToken = ClearpaySession.getToken();
+var isExpressCheckoutFinalize = ClearpaySession.isExpressCheckoutFinalizeFlow();
+var clearpayExpressCheckoutEnabled = sitePreferences.isExpressCheckoutEnabled();
+var BrandUtilities = require("*/cartridge/scripts/util/clearpayUtilities.js").brandUtilities;
+var expressCheckoutJS = BrandUtilities.getBrandSettings().javaScriptUrl + "?merchant_key=demo";
+var countrycode = BrandUtilities.getCountryCode();
+var buttonPlaceOrderClass = 'afterpay-placeorder-button';
+if(countrycode === 'GB'){
+    buttonPlaceOrderClass = 'clearpay-placeorder-button';
+}
+</isscript>
+
+<isif condition="${clearpayExpressCheckoutEnabled && isExpressCheckoutFinalize}">
+    <input id="clearpay-express-checkout-finalize" type="hidden" value="true" />
+    <input id="clearpay-widget-amount" type="hidden" value="${clearpayAmount.value}" />
+    <input id="clearpay-widget-locale" type="hidden" value="${request.getLocale()}" />
+    <input id="clearpay-widget-currency" type="hidden" value="${clearpayAmount.currencyCode}" />
+    <input id="clearpay-token" type="hidden" value="${clearpayToken}" />
+    <input id="clearpay-express-url-cancelorder" type="hidden" value="${URLUtils.url('ClearpayExpress-CancelOrder')}" />
+    <input id="clearpay-express-url-finalize" type="hidden" value="${URLUtils.url('ClearpayExpress-FinalizeOrder')}" />
+    <input id="clearpay-express-url-cartstatus" type="hidden" value="${URLUtils.url('ClearpayExpress-CartStatus')}" />
+    <input id="clearpay-express-url-widgeterror" type="hidden" value="${URLUtils.url('ClearpayExpress-WidgetError')}" />
+<iselse/>
+    <iscomment>For non-express-checkout Clearpay tab, show new widget. Note that in this case,
+    CLEARPAY has not been added to the basket yet, so amount should be 0. However, the amounts
+    will be updated via client-side Javascript for this case
+    </iscomment>
+    <input id="clearpay-express-checkout-finalize" type="hidden" value="false" />
+    <input id="clearpay-widget-amount" type="hidden" value="${clearpayAmount.value}" />
+    <input id="clearpay-widget-locale" type="hidden" value="${request.getLocale()}" />
+    <input id="clearpay-widget-currency" type="hidden" value="${clearpayAmount.currencyCode}" />
+    <input id="clearpay-token" type="hidden" value="" />
+</isif>
+<script src="${URLUtils.staticURL('/js/clearpayWidget.js')}" type="text/javascript"></script>
+<isif condition="${expressCheckoutJS}">
+        <script src="${expressCheckoutJS}"></script>
+</isif>

@@ -3,38 +3,41 @@
     <custom-preferences>
         <all-instances/>
         <development>
-            <preference preference-id="apBrandSettings">{
+            <preference preference-id="cpBrandSettings">{
                 "GB": {
                     "brand": "clearpay",
                     "service": "clearpay.service.GB.v2",
-                    "versionApi": "2",
                     "javaScriptUrl": "https://portal.sandbox.clearpay.co.uk/afterpay.js",
                     "learnMoreUrl": "https://www.clearpay.co.uk/en-GB/terms-of-service"
                 },
                 "ES": {
                     "brand": "clearpay",
-                    "service": "clearpay.service.EU",
-                    "versionApi": "1",
+                    "service": "clearpay.service.EU.v2",
                     "javaScriptUrl": "https://merchant-tools.sandbox.clearpay.com/clearpay.js",
                     "learnMoreUrl": "https://www.clearpay.com/es/terms/"
                 },
                 "FR": {
                     "brand": "clearpay",
-                    "service": "clearpay.service.EU",
-                    "versionApi": "1",
+                    "service": "clearpay.service.EU.v2",
                     "javaScriptUrl": "https://merchant-tools.sandbox.clearpay.com/clearpay.js",
                     "learnMoreUrl": "https://www.clearpay.com/fr/terms/"
                 },
                 "IT": {
                     "brand": "clearpay",
-                    "service": "clearpay.service.EU",
-                    "versionApi": "1",
+                    "service": "clearpay.service.EU.v2",
                     "javaScriptUrl": "https://merchant-tools.sandbox.clearpay.com/clearpay.js",
                     "learnMoreUrl": "https://www.clearpay.com/it/terms/"
                 }
             }</preference>
-            <preference preference-id="apPaymentMode">DIRECT_CAPTURE</preference>
-            <preference preference-id="enableClearpay">true</preference>
+            <preference preference-id="cpDisplayPdpInfo">true</preference>
+            <preference preference-id="cpDisplayPlpInfo">false</preference>
+            <preference preference-id="cpPaymentMode">DIRECT_CAPTURE</preference>
+            <preference preference-id="enableClearpay">false</preference>
+            <preference preference-id="cpEnableExpressCheckout">true</preference>
+            <preference preference-id="cpExpressCheckoutShippingStrategy">integrated</preference>
+            <preference preference-id="cpEnableExpressCheckoutBuyNow">true</preference>
+            <preference preference-id="cpStorePickupDescription">Available for next-day pickup</preference>
+            <preference preference-id="cpEnableExpressCheckoutPdp">false</preference>
         </development>
         <staging/>
         <production/>

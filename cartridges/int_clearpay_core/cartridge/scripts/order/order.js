@@ -15,6 +15,7 @@ function Order() {
     this.taxAmount = new Amount();
     this.shippingAmount = new Amount();
     this.merchant = new Merchant();
+    this.amount = new Amount();
 }
 
 module.exports = Order;

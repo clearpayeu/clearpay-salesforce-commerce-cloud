@@ -3,17 +3,17 @@
     <script src="${pdict.apJavascriptURL}" async></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script>
-        var brand = '${pdict.apBrand}';
+        var brand = '${pdict.cpBrand}';
         var countryCode = '${pdict.countryCode}';
 
         window.onload = function () {
             $(".loader-image").fadeOut("slow");
             if (brand === 'clearpay' && countryCode !== 'GB') {
                 Clearpay.initialize({countryCode: countryCode});
-                Clearpay.redirect({token: '${pdict.apToken.apToken}'});
+                Clearpay.redirect({token: '${pdict.cpToken.cpToken}'});
             } else {
                 AfterPay.initialize({countryCode: countryCode});
-                AfterPay.redirect({token: '${pdict.apToken.apToken}'});
+                AfterPay.redirect({token: '${pdict.cpToken.cpToken}'});
             }
         }
     </script>

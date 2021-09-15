@@ -7,6 +7,7 @@ var ClearpayUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
 var URLUtils = require('dw/web/URLUtils');
 var Site = require('dw/system/Site');
 var Resource = require('dw/web/Resource');
+
 /**
  * generic method  to process  all service type requests and responses
  */
@@ -40,21 +41,20 @@ function getClearpayHttpService() {
             service.setURL(service.configuration.credential.URL + endPointUrl);
             service.setRequestMethod(requestBody.requestMethod);
             service.addHeader('Content-Type', 'application/json');
-            
-            const clearpayCartridge = "ClearpayCartridge/22.0.0";
-            const merchantID = "Merchant/" + service.configuration.credential.user;
+
+            const clearpayCartridge = 'ClearpayCartridge/23.0.0';
+            const merchantID = 'Merchant/' + service.configuration.credential.user;
             const siteURL = URLUtils.httpsHome().toString();
             const storeFront = Site.getCurrent().getID();
             const hostURL = siteURL.substring(0, siteURL.indexOf('/', 14));
-            var storefrontVersion  = "";
-            if(storeFront.includes("SiteGenesis")) {
+            var storefrontVersion = '';
+            if (storeFront.includes('SiteGenesis')) {
                 storefrontVersion = Resource.msg('revisioninfo.revisionnumber', 'revisioninfo', null);
-            }
-            else if(storeFront.includes("RefArch")) {
+            } else if (storeFront.includes('RefArch')) {
                 storefrontVersion = Resource.msg('global.version.number', 'version', null);
             }
-            
-            var userAgent = clearpayCartridge + " (SalesforceCommmerceCloud; " + storeFront + "|" + storefrontVersion + "; " + merchantID + ") " + hostURL;
+
+            var userAgent = clearpayCartridge + ' (SalesforceCommmerceCloud; ' + storeFront + '/' + storefrontVersion + '; ' + merchantID + ') ' + hostURL;
 
             service.addHeader('User-Agent', userAgent);
 

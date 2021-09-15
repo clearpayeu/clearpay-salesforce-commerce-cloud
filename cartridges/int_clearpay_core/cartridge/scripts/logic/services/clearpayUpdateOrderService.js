@@ -2,7 +2,8 @@
 var paymentService = require('*/cartridge/scripts/payment/paymentService');
 var clearpayDirectCaptureService = require('*/cartridge/scripts/logic/services/clearpayDirectCapturePaymentService');
 var clearpayAuthoriseService = require('*/cartridge/scripts/logic/services/clearpayAuthorisePaymentService');
-var clearpaySitePreferencesUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
+var clearpayUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
+var sitePreferences = clearpayUtilities.sitePreferencesUtilities;
 var PAYMENT_MODE = require('*/cartridge/scripts/util/clearpayConstants').PAYMENT_MODE;
 var PAYMENT_STATUS = require('*/cartridge/scripts/util/clearpayConstants').PAYMENT_STATUS;
 var apUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
@@ -18,24 +19,29 @@ var OrderMgr = require('dw/order/OrderMgr');
  *  processes all the transaction details related to the payment and order
  */
 var UpdateOrderService = {
-    handleOrder: function (order, paymentStatus) {
+    handleOrder: function (order, paymentStatus, expressCheckoutModel) {
         var authoriseDirectCaptureResult = null;
         if (paymentStatus === PAYMENT_STATUS.DECLINED) {
             authoriseDirectCaptureResult = this.updateDeclinedOrder(order);
         } else if (paymentStatus === PAYMENT_STATUS.FAILED) {
             authoriseDirectCaptureResult = this.updateFailedOrder(order);
         } else if (paymentStatus === PAYMENT_STATUS.APPROVED) {
-            authoriseDirectCaptureResult = this.handleApprovalOrder(order);
+            authoriseDirectCaptureResult = this.handleApprovalOrder(order, expressCheckoutModel);
         } else if (paymentStatus === PAYMENT_STATUS.PENDING) {
             authoriseDirectCaptureResult = this.handlePendingOrder(order);
         }
         return authoriseDirectCaptureResult;
     },
 
-    handleApprovalOrder: function (order) {
+    handleApprovalOrder: function (order, expressCheckoutModel) {
+        var paymentAmount = this.getPaymentAmount(order);
+		// express checkout needs payment amount, even for direct capture.
+		// express checkout with deferred flows needs checksum and amount
+		// these are all in expressCheckoutModel
         var authoriseDirectCaptureResult = null;
         var authoriseDirectCaptureService = this.getAuthoriseDirectCaptureService(order);
-        var requestValues = authoriseDirectCaptureService.generateRequest(this.getToken(order), order.orderNo);
+        var requestValues = authoriseDirectCaptureService.generateRequest(order, this.getToken(order), order.orderNo, paymentAmount, expressCheckoutModel);
+
         try {
             authoriseDirectCaptureResult = authoriseDirectCaptureService.getResponse(requestValues.requestUrl, requestValues.requestBody);
         } catch (e) {
@@ -50,7 +56,7 @@ var UpdateOrderService = {
     },
 
     getAuthoriseDirectCaptureService: function (order) {
-        var paymentMode = clearpaySitePreferencesUtilities.checkoutUtilities.getPaymentMode(order);
+        var paymentMode = apCheckoutUtilities.getPaymentMode(order);
         if (paymentMode === PAYMENT_MODE.AUTHORISE) {
             return clearpayAuthoriseService;
         }
@@ -68,7 +74,7 @@ var UpdateOrderService = {
     },
 
     getPaymentID: function (order) {
-        var apPaymentID;
+        var cpPaymentID;
         var paymentMethodName = apCheckoutUtilities.getPaymentMethodName();
 
         if (!paymentMethodName) {
@@ -80,15 +86,15 @@ var UpdateOrderService = {
 
             if (paymentInstrument.paymentMethod.equals(paymentMethodName)) {
                 var paymentTransaction = paymentInstrument.paymentTransaction;
-                apPaymentID = paymentTransaction.custom.apPaymentID;
+                cpPaymentID = paymentTransaction.custom.cpPaymentID;
                 break;
             }
         }
-        return apPaymentID;
+        return cpPaymentID;
     },
 
     getToken: function (order) {
-        var apToken;
+        var cpToken;
         var paymentMethodName = apCheckoutUtilities.getPaymentMethodName();
 
         if (!paymentMethodName) {
@@ -100,13 +106,17 @@ var UpdateOrderService = {
 
             if (paymentInstrument.paymentMethod.equals(paymentMethodName)) {
                 var paymentTransaction = paymentInstrument.paymentTransaction;
-                apToken = paymentTransaction.custom.apToken;
+                cpToken = paymentTransaction.custom.cpToken;
                 break;
             }
         }
-        return apToken;
+        return cpToken;
     },
-
+    // Need amount for express checkouts
+    getPaymentAmount: function (order) {
+        var paymentMethodName = apCheckoutUtilities.getPaymentMethodName();
+        return order.getPaymentInstruments(paymentMethodName)[0].getPaymentTransaction().amount;
+    },
     updateOrder: function (order, status) {
         Transaction.begin();
         if (status === Order.ORDER_STATUS_FAILED) {

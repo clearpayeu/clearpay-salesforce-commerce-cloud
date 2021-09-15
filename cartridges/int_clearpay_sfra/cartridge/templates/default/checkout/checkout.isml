@@ -49,6 +49,7 @@
                 </div>
 
                 <!-- Step 1: Shipping -->
+                <iscomment>Start of Clearpay</iscomment>
                 <iscomment>Clearpay error message</iscomment>
                 <isset name="clearpayError" value="${pdict.clearpayApiError}" scope="page"/>
 				<isif condition="${!empty(clearpayError)}">
@@ -56,6 +57,7 @@
 						<isprint value="${clearpayError}" encoding="on" />
 					</div>	
 				</isif>
+                <iscomment>End of Clearpay</iscomment>
                 <isinclude template="checkout/shipping/shipping" />
                 <div class="card shipping-summary">
                     <div class="card-header clearfix">
@@ -80,12 +82,20 @@
                     </div>
                 </div>
 
+                <!-- Display Clearpay Widget during Express Checkout finalization -->
+                <div class="ap-checkout-pay-tab-ecf ap-checkout-pay-tab-noecf ap-checkout-po-ecf">
+                    <isinclude template="product/components/clearpaywidget" />
+                    <div id="clearpay-widget-container"></div>
+                </div>
                 <!----------------------------------------------------------------------------------->
                 <!-- Checkout Workflow Buttons -->
                 <!----------------------------------------------------------------------------------->
                 <div class="row">
                     <div class="col-12 next-step-button">
-                        <div>
+                        <div class="mb-sm-3">
+                            <iscomment>Start of Clearpay</iscomment>
+                            <div class="ap-checkout-ship ap-checkout-pay-tab-noecf ap-checkout-pay-notab-ecf ap-checkout-pay-notab-noecf ap-checkout-po-noecf">
+                            <iscomment>End of Clearpay</iscomment>
                             <button class="btn btn-primary btn-block submit-shipping" type="submit" name="submit" value="submit-shipping" <isif condition="${pdict.order.usingMultiShipping && !pdict.order.shippable}">disabled</isif>>
                                 ${Resource.msg('button.next.payment', 'checkout', null)}
                             </button>
@@ -97,6 +107,12 @@
                             <button class="btn btn-primary btn-block place-order" data-action="${URLUtils.url('CheckoutServices-PlaceOrder')}"
                                     type="submit" name="submit" value="place-order">${Resource.msg('button.place.order', 'checkout', null)}
                             </button>
+                            <iscomment>Start of Clearpay</iscomment>
+                            </div>
+                            <input id="clearpay-placeorder-button" class="clearpay-widget-hideuntilready ${buttonPlaceOrderClass} btn btn-block ap-checkout-pay-tab-ecf ap-checkout-po-ecf"
+                                    type="button">&nbsp;
+                            </input>
+                            <iscomment>End of Clearpay</iscomment>
                         </div>
                     </div>
                 </div>

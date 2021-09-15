@@ -50,9 +50,9 @@ var getUpdateOrderService = function () {
 
         Transaction.wrap(function () {
             if (paymentMode === PAYMENT_MODE.AUTHORISE) {
-                paymentTransaction.custom.apAuthoriseStatus = status;
+                paymentTransaction.custom.cpAuthoriseStatus = status;
             } else {
-                paymentTransaction.custom.apDirectPaymentStatus = status;
+                paymentTransaction.custom.cpDirectPaymentStatus = status;
             }
 
             Logger.debug('Payment Transaction status:' + status);
@@ -64,7 +64,7 @@ var getUpdateOrderService = function () {
 
 var _getOrdersNotPaid = function () {
     var sortString = 'creationDate DESC';
-    var queryString = 'paymentStatus = {0} AND custom.apIsClearpayOrder = true';
+    var queryString = 'paymentStatus = {0} AND custom.cpIsClearpayOrder = true';
 
     return OrderMgr.searchOrders(queryString, sortString, Order.PAYMENT_STATUS_NOTPAID);
 };

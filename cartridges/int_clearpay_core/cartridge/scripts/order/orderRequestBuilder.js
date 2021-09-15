@@ -6,7 +6,7 @@ var TaxMgr = require('dw/order/TaxMgr');
 var Builder = require('../util/builder');
 var clearpayWebServiceUtilities = require('*/cartridge/scripts/util/clearpayUtilities').sitePreferencesUtilities;
 var { brandUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
-var Order = brandUtilities.getApiVersionDependentClass('*/cartridge/scripts/order/order');
+var Order = require('*/cartridge/scripts/order/order');
 var LineItem = require('*/cartridge/scripts/order/lineItem');
 var Discount = require('*/cartridge/scripts/order/discount');
 
@@ -58,6 +58,8 @@ OrderRequestBuilder.prototype._buildAddress = function (type, address) {
     this.context[type].postcode = address.postalCode || '';
     this.context[type].countryCode = (address.countryCode.value && address.countryCode.value.toUpperCase()) || '';
     this.context[type].phoneNumber = address.phone || '';
+    this.context[type].area1 = address.city || '';
+    this.context[type].region = address.stateCode || '';
 };
 
 /**
@@ -296,7 +298,15 @@ OrderRequestBuilder.prototype.applyDiscounts = function (basket) {
  */
 // eslint-disable-next-line no-unused-vars
 OrderRequestBuilder.prototype.buildTotalAmount = function (basket) {
-    throw new Error('Should be implemented in child class');
+    var paymentTransaction = this._getPaymentTransaction(basket);
+
+    if (!paymentTransaction) {
+        return null;
+    }
+
+    this.context.amount.amount = paymentTransaction.amount.value;
+    this.context.amount.currency = basket.getCurrencyCode();
+    return this;
 };
 
 /**

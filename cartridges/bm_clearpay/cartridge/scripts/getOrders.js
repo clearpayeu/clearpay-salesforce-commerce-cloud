@@ -40,7 +40,7 @@ function getOrders(input) {
             totalOrderCount = startRow = endRow = 1;
         }
     } else { // all orders on pagination
-        orders = OrderMgr.searchOrders('custom.apIsClearpayOrder = {0}', 'creationDate desc', true);
+        orders = OrderMgr.searchOrders('custom.cpIsClearpayOrder = {0}', 'creationDate desc', true);
 
         orders.forward((pageNumber - 1) * pageSize, pageSize);
 

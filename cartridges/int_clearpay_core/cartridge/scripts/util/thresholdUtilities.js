@@ -13,7 +13,25 @@ var Logger = LogUtils.getLogger('thresholdUtilities');
 var thresholdUtilities = {
     // eslint-disable-next-line no-unused-vars
     parseConfigurationResponse: function (thresholdResponse) {
-        throw new Error('parseConfigurationResponse should be implemented in child v1/v2 module');
+        var configuration = {
+            minAmount: 0,
+            maxAmount: 0
+        };
+
+        if (thresholdResponse) {
+            var minThresholdObj = thresholdResponse.minimumAmount;
+            var maxThresholdObj = thresholdResponse.maximumAmount;
+
+            if (minThresholdObj) {
+                configuration.minAmount = parseFloat(minThresholdObj.amount, 10);
+            }
+
+            if (maxThresholdObj) {
+                configuration.maxAmount = parseFloat(maxThresholdObj.amount, 10);
+            }
+        }
+
+        return configuration;
     },
     getThresholdAmounts: function (clearpayBrand) {
         var prefix = request.getLocale() + clearpayBrand.toUpperCase();
@@ -75,7 +93,8 @@ var thresholdUtilities = {
             if (paymentMethodName) {
                 paymentMethod = PaymentMgr.getPaymentMethod(paymentMethodName);
                 isApplicable = paymentMethod.isApplicable(session.customer, countryCode, price.value);
-                result.status = isApplicable && price.value >= threshold.minAmount && price.value <= threshold.maxAmount;
+
+                result.status = isApplicable;
 
                 if (isApplicable) {
                     result.belowThreshold = price.value <= threshold.minAmount;

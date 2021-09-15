@@ -1,5 +1,4 @@
-var { brandUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
-var Context = brandUtilities.getApiVersionDependentClass('*/cartridge/scripts/context/context');
+var Context = require('*/cartridge/scripts/context/context');
 var clearpayHttpService = require('*/cartridge/scripts/logic/services/clearpayHttpService');
 var StringUtils = require('dw/util/StringUtils');
 

@@ -22,7 +22,7 @@ getTemplateSpecificWidget.getWidgetData = function (productObject, className, cu
     var totalPrice = null;
 
     apBrandUtilities.initBrand(locale);
-    var thresholdUtilities = apBrandUtilities.getApiVersionDependentClass('*/cartridge/scripts/util/thresholdUtilities');
+    var thresholdUtilities = require('*/cartridge/scripts/util/thresholdUtilities');
 
     if (productObject.productType === 'set' && productObject.individualProducts) {
         getTemplateSpecificWidget.getWidgetDataForSet(productObject, className, currencyCode);
@@ -63,7 +63,7 @@ getTemplateSpecificWidget.getWidgetData = function (productObject, className, cu
 };
 
 getTemplateSpecificWidget.getWidgetDataForSet = function (productObject, className, currencyCode) {
-    var thresholdUtilities = apBrandUtilities.getApiVersionDependentClass('*/cartridge/scripts/util/thresholdUtilities');
+    var thresholdUtilities = require('*/cartridge/scripts/util/thresholdUtilities');
     var totalPrice = null;
 
     if (productObject.productType === 'set') {
@@ -132,7 +132,7 @@ getTemplateSpecificWidget.getCheckoutWidgetData = function (currentBasket, class
     totalPrice = currentBasket.totalGrossPrice;
 
     apBrandUtilities.initBrand(locale);
-    var thresholdUtilities = apBrandUtilities.getApiVersionDependentClass('*/cartridge/scripts/util/thresholdUtilities');
+    var thresholdUtilities = require('*/cartridge/scripts/util/thresholdUtilities');
 
     priceContext.classname = className;
     priceContext.totalPrice = totalPrice.value;
@@ -151,7 +151,6 @@ getTemplateSpecificWidget.getCheckoutWidgetData = function (currentBasket, class
         isApplicable = isApplicable && !isWithinThreshold.belowThreshold;
     }
 
-    priceContext.isWithinThreshold = isWithinThreshold.status;
     priceContext.apApplicable = isApplicable;
     priceContext.apBrand = apBrand;
 

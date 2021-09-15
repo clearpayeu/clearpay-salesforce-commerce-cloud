@@ -34,7 +34,7 @@ server.get('PrepareRedirect', server.middleware.https, function (req, res, next)
         res.render('checkout/clearpayRedirect', {
             apBrand: apBrand,
             apJavascriptURL: scriptURL,
-            apToken: clearPayToken,
+            cpToken: clearPayToken,
             countryCode: countryCodeValue
         });
     } else {

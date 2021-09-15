@@ -105,7 +105,7 @@ function refund(orderNo, amountString) {
     }
 
     paymentTransaction = paymentInstrument.getPaymentTransaction();
-    paymentID = paymentTransaction.custom.apPaymentID;
+    paymentID = paymentTransaction.custom.cpPaymentID;
     amount = parseFloat(amount, 10);
     brandUtilities.initBrand(order.getCustomerLocaleID());
 
@@ -114,7 +114,7 @@ function refund(orderNo, amountString) {
     Logger.debug('Refund request: ' + JSON.stringify(request));
 
     Transaction.wrap(function () {
-        paymentTransaction.custom.apRefundRequestId = request.requestId;
+        paymentTransaction.custom.cpRefundRequestId = request.requestId;
     });
 
     response = callAction(request);
@@ -131,7 +131,7 @@ function refund(orderNo, amountString) {
         status = true;
 
         Transaction.begin();
-        paymentTransaction.custom.apRefundID = jsonResponse.refundId;
+        paymentTransaction.custom.cpRefundID = jsonResponse.refundId;
         Transaction.commit();
 
         updateOrderStatus(orderNo);

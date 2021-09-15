@@ -8,7 +8,10 @@ var Context = function () {
         getPayment: 'payments/{0}',
         directCapturePayment: 'payments/capture',
         getConfiguration: 'configuration',
-        createRefund: 'payments/{0}/refund'
+        createRefund: 'payments/{0}/refund',
+        authorise: 'payments/auth',
+        createOrders: 'checkouts',
+        getOrders: 'checkouts/{0}'
     };
 };
 
@@ -28,7 +31,7 @@ Context.prototype.get = function (action) {
  * @returns {string} - default API endpoint
  */
 Context.prototype.getDefaultEndpoint = function () {
-    throw new Error('Should be implemented in child class');
+    return 'checkouts/{0}';
 };
 
 module.exports = Context;

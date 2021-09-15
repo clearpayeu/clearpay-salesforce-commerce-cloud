@@ -52,8 +52,12 @@ function HandleResponse() {
     paymentStatus = request.httpParameterMap.status.getStringValue();
 
     if (paymentStatus === 'SUCCESS') {
-        productExists = require('*/cartridge/scripts/checkout/clearpayTokenConflict').checkTokenConflict(cart.object, request.httpParameterMap.orderToken.getStringValue());
-        PreapprovalResult = require('*/cartridge/scripts/checkout/clearpayUpdatePreapprovalStatus').getPreApprovalResult(cart.object, request.httpParameterMap);
+        var orderTokenString = request.httpParameterMap.orderToken.getStringValue();
+        productExists = require('*/cartridge/scripts/checkout/clearpayTokenConflict').checkTokenConflict(cart.object, orderTokenString);
+        PreapprovalResult = require('*/cartridge/scripts/checkout/clearpayUpdatePreapprovalStatus').getPreApprovalResult(cart.object, {
+            status: paymentStatus,
+            orderToken: orderTokenString
+        });
 
         if (!productExists) {
             if (productExists.error) {
@@ -81,7 +85,7 @@ function HandleResponse() {
         }
     } else if (paymentStatus === 'CANCELLED') {
         redirectURL = URLUtils.https('COBilling-Start', 'clearpay', Resource.msg('clearpay.api.cancelled', session.privacy.clearpayBrand, null));
-    } else if (paymentInstrument.getPaymentTransaction().custom.apToken !== request.httpParameterMap.orderToken.stringValue) {
+    } else if (paymentInstrument.getPaymentTransaction().custom.cpToken !== request.httpParameterMap.orderToken.stringValue) {
         redirectURL = URLUtils.https('COBilling-Start', 'clearpay', Resource.msg('apierror.flow.default', session.privacy.clearpayBrand, null));
     } else {
         redirectURL = URLUtils.https('COBilling-Start', 'clearpay', Resource.msg('apierror.flow.default', session.privacy.clearpayBrand, null));

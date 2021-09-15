@@ -43,9 +43,9 @@ var clearpay = {
                             } else {
                                 var urlParams;
                                 var redirectUrl = redirectData.redirectUrl;
-                                if (redirectData.redirectTokenResponse.apToken) {
+                                if (redirectData.redirectTokenResponse.cpToken) {
                                     urlParams = {
-                                        clearpayToken: encodeURIComponent(redirectData.redirectTokenResponse.apToken),
+                                        clearpayToken: encodeURIComponent(redirectData.redirectTokenResponse.cpToken),
                                         countryCode: redirectData.countryCode
                                     };
                                 } else {
@@ -215,8 +215,10 @@ var clearpay = {
     },
     selectPaymentMethod: function () {
         if ($('ul.payment-options li.nav-item').length === 1) {
-            $('ul.payment-options li.nav-item a.nav-link.clearpay_pbi-tab').addClass('active');
-            $('.tab-pane.clearpay_pbi-content').addClass('active');
+            $('ul.payment-options li.nav-item a.nav-link.afterpay-tab').addClass('active');
+            $('ul.payment-options li.nav-item a.nav-link.clearpay-tab').addClass('active');
+            $('.tab-pane.afterpay-content').addClass('active');
+            $('.tab-pane.clearpay-content').addClass('active');
         }
     }
 };

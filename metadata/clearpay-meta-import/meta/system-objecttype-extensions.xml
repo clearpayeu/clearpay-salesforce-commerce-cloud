@@ -2,7 +2,7 @@
 <metadata xmlns="http://www.demandware.com/xml/impex/metadata/2006-10-31">
     <type-extension type-id="Order">
         <custom-attribute-definitions>
-            <attribute-definition attribute-id="apIsClearpayOrder">
+            <attribute-definition attribute-id="cpIsClearpayOrder">
                 <display-name xml:lang="x-default">Clearpay Payment Method</display-name>
                 <description xml:lang="x-default">Determines if this is an Clearpay order</description>
                 <type>boolean</type>
@@ -13,7 +13,7 @@
         <group-definitions>
             <attribute-group group-id="Clearpay">
                 <display-name xml:lang="x-default">Clearpay</display-name>
-                <attribute attribute-id="apIsClearpayOrder"/>
+                <attribute attribute-id="cpIsClearpayOrder"/>
             </attribute-group>
         </group-definitions>
     </type-extension>
@@ -37,7 +37,7 @@
 
     <type-extension type-id="PaymentTransaction">
         <custom-attribute-definitions>
-            <attribute-definition attribute-id="apAuthoriseStatus">
+            <attribute-definition attribute-id="cpAuthoriseStatus">
                 <display-name xml:lang="x-default">Clearpay Authorise Status</display-name>
                 <description xml:lang="x-default">Clearpay Authorise Status</description>
                 <type>string</type>
@@ -45,7 +45,7 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
-            <attribute-definition attribute-id="apDirectPaymentStatus">
+            <attribute-definition attribute-id="cpDirectPaymentStatus">
                 <display-name xml:lang="x-default">Clearpay Direct Payment Status</display-name>
                 <description xml:lang="x-default">Clearpay Direct Payment Status</description>
                 <type>string</type>
@@ -53,7 +53,7 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
-            <attribute-definition attribute-id="apInitialStatus">
+            <attribute-definition attribute-id="cpInitialStatus">
                 <display-name xml:lang="x-default">Clearpay Initial Status</display-name>
                 <description xml:lang="x-default">Clearpay Initial Status</description>
                 <type>string</type>
@@ -61,7 +61,7 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
-            <attribute-definition attribute-id="apPaymentID">
+            <attribute-definition attribute-id="cpPaymentID">
                 <display-name xml:lang="x-default">Clearpay Order ID</display-name>
                 <description xml:lang="x-default">Clearpay Order ID</description>
                 <type>string</type>
@@ -69,7 +69,7 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
-            <attribute-definition attribute-id="apPaymentMode">
+            <attribute-definition attribute-id="cpPaymentMode">
                 <display-name xml:lang="x-default">Clearpay Payment Mode</display-name>
                 <description xml:lang="x-default">Clearpay Payment Mode</description>
                 <type>string</type>
@@ -77,14 +77,14 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
-            <attribute-definition attribute-id="apRefundID">
+            <attribute-definition attribute-id="cpRefundID">
                 <display-name xml:lang="x-default">Clearpay Refund ID</display-name>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
-            <attribute-definition attribute-id="apRefundRequestId">
+            <attribute-definition attribute-id="cpRefundRequestId">
                 <display-name xml:lang="x-default">Clearpay Refund Request ID</display-name>
                 <description xml:lang="x-default">RequestId used for latest refund call (basically a timestamp of the call)</description>
                 <type>string</type>
@@ -92,7 +92,7 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
-            <attribute-definition attribute-id="apToken">
+            <attribute-definition attribute-id="cpToken">
                 <display-name xml:lang="x-default">Clearpay Token</display-name>
                 <description xml:lang="x-default">Clearpay Token</description>
                 <type>string</type>
@@ -100,9 +100,24 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
-            <attribute-definition attribute-id="apCountryCode">
+            <attribute-definition attribute-id="cpCountryCode">
                 <display-name xml:lang="x-default">Country used for Clearpay payment</display-name>
                 <description xml:lang="x-default">Country used for Clearpay payment</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="cpExpressCheckout">
+                <display-name xml:lang="x-default">Clearpay Express Checkout</display-name>
+                <description xml:lang="x-default">Clearpay Express Checkout</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="cpExpressCheckoutChecksum">
+                <display-name xml:lang="x-default">Clearpay Express Checkout Capture Checksum</display-name>
+                <description xml:lang="x-default">Clearpay Express Checkout Capture Checksum</description>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -112,35 +127,37 @@
         <group-definitions>
             <attribute-group group-id="Clearpay">
                 <display-name xml:lang="x-default">Clearpay</display-name>
-                <attribute attribute-id="apPaymentID"/>
-                <attribute attribute-id="apToken"/>
-                <attribute attribute-id="apAuthoriseStatus"/>
-                <attribute attribute-id="apPaymentMode"/>
-                <attribute attribute-id="apDirectPaymentStatus"/>
-                <attribute attribute-id="apInitialStatus"/>
-                <attribute attribute-id="apRefundID"/>
-                <attribute attribute-id="apRefundRequestId"/>
+                <attribute attribute-id="cpPaymentID"/>
+                <attribute attribute-id="cpToken"/>
+                <attribute attribute-id="cpAuthoriseStatus"/>
+                <attribute attribute-id="cpPaymentMode"/>
+                <attribute attribute-id="cpDirectPaymentStatus"/>
+                <attribute attribute-id="cpInitialStatus"/>
+                <attribute attribute-id="cpRefundID"/>
+                <attribute attribute-id="cpRefundRequestId"/>
+                <attribute attribute-id="cpExpressCheckout"/>
+                <attribute attribute-id="cpExpressCheckoutChecksum"/>
             </attribute-group>
         </group-definitions>
     </type-extension>
 
     <type-extension type-id="SitePreferences">
         <custom-attribute-definitions>
-            <attribute-definition attribute-id="apBrandSettings">
+            <attribute-definition attribute-id="cpBrandSettings">
                 <display-name xml:lang="x-default">Brand settings</display-name>
                 <description xml:lang="x-default">Clearpay Brand related settings</description>
                 <type>text</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
             </attribute-definition>
-            <attribute-definition attribute-id="apCaptureTimeout">
+            <attribute-definition attribute-id="cpCaptureTimeout">
                 <display-name xml:lang="x-default">CapturePaymentTimeout</display-name>
                 <description xml:lang="x-default">Set timeout for Clearpay capture payments</description>
                 <type>double</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
             </attribute-definition>
-            <attribute-definition attribute-id="apControllerCartridgeName">
+            <attribute-definition attribute-id="cpControllerCartridgeName">
                 <display-name xml:lang="x-default">Default Controller Cartridge Name</display-name>
                 <description xml:lang="x-default">Name of default storefront controller cartridge</description>
                 <type>string</type>
@@ -149,21 +166,37 @@
                 <min-length>0</min-length>
                 <default-value>app_storefront_controllers</default-value>
             </attribute-definition>
-            <attribute-definition attribute-id="apCoreCartridge">
+            <attribute-definition attribute-id="cpCoreCartridge">
                 <display-name xml:lang="x-default">Default Core Cartridge</display-name>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
-            <attribute-definition attribute-id="apDelayRetry">
-                <display-name xml:lang="x-default">apDelayRetry</display-name>
+            <attribute-definition attribute-id="cpDelayRetry">
+                <display-name xml:lang="x-default">cpDelayRetry</display-name>
                 <description xml:lang="x-default">Time given to delay the Payment retry</description>
                 <type>double</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
             </attribute-definition>
-            <attribute-definition attribute-id="apPaymentMode">
+            <attribute-definition attribute-id="cpDisplayPdpInfo">
+                <display-name xml:lang="x-default">Clearpay Display Product Details Page Information</display-name>
+                <description xml:lang="x-default">Determines if the Clearpay product information is display on the product details page</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="cpDisplayPlpInfo">
+                <display-name xml:lang="x-default">Clearpay Display Product List Page Information</display-name>
+                <description xml:lang="x-default">Determines if the Clearpay product information is display on the product tile</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="cpPaymentMode">
                 <display-name xml:lang="x-default">Clearpay Payment Mode</display-name>
                 <type>enum-of-string</type>
                 <mandatory-flag>false</mandatory-flag>
@@ -185,17 +218,69 @@
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
             </attribute-definition>
+            <attribute-definition attribute-id="cpEnableExpressCheckout">
+                <display-name xml:lang="x-default">Enable Express Checkout</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+			<attribute-definition attribute-id="cpExpressCheckoutShippingStrategy">
+                <display-name xml:lang="x-default">Express Checkout Shipping Strategy</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <display xml:lang="x-default">integrated</display>
+                        <value>integrated</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">deferred</display>
+                        <value>deferred</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+			<attribute-definition attribute-id="cpEnableExpressCheckoutBuyNow">
+                <display-name xml:lang="x-default">Enable BuyNow (Express Checkout with Integrated Shipping Only)</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="cpStorePickupDescription">
+                <display-name xml:lang="x-default">Description that Express Checkout will use for the In-Store Pickup</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+                <default-value>Available for next-day pickup</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="cpEnableExpressCheckoutPdp">
+                <display-name xml:lang="x-default">Enable Express Checkout option on product details page.</display-name>
+                <description xml:lang="x-default">Enable Express Checkout option on product details page.</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
         </custom-attribute-definitions>
         <group-definitions>
             <attribute-group group-id="Integration_Clearpay">
                 <display-name xml:lang="x-default">Integration Clearpay</display-name>
                 <attribute attribute-id="enableClearpay"/>
-                <attribute attribute-id="apBrandSettings"/>
-                <attribute attribute-id="apPaymentMode"/>
-                <attribute attribute-id="apControllerCartridgeName"/>
-                <attribute attribute-id="apCoreCartridge"/>
-                <attribute attribute-id="apCaptureTimeout"/>
-                <attribute attribute-id="apDelayRetry"/>
+                <attribute attribute-id="cpBrandSettings"/>
+                <attribute attribute-id="cpDisplayPdpInfo"/>
+                <attribute attribute-id="cpDisplayPlpInfo"/>
+                <attribute attribute-id="cpPaymentMode"/>
+                <attribute attribute-id="cpControllerCartridgeName"/>
+                <attribute attribute-id="cpCoreCartridge"/>
+                <attribute attribute-id="cpCaptureTimeout"/>
+                <attribute attribute-id="cpDelayRetry"/>
+                <attribute attribute-id="cpEnableExpressCheckout"/>
+                <attribute attribute-id="cpExpressCheckoutShippingStrategy"/>
+                <attribute attribute-id="cpEnableExpressCheckoutBuyNow"/>
+                <attribute attribute-id="cpStorePickupDescription"/>
+                <attribute attribute-id="cpEnableExpressCheckoutPdp"/>
             </attribute-group>
         </group-definitions>
     </type-extension>

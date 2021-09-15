@@ -37,7 +37,30 @@ var clearpayUpdateOrder = {
      */
     // eslint-disable-next-line no-unused-vars
     savePaymentTransaction: function (paymentTransaction, paymentResult, paymentMode) {
-        throw new Error('Should be implemented in child module for specific API version (e.g. "./v2/clearpayUpdateOrder")');
+        var Money = require('dw/value/Money');
+        var BrandUtilities = apUtilities.brandUtilities;
+        var payTrans = paymentTransaction;
+        var amount = null;
+
+        Transaction.wrap(function () {
+            payTrans.setTransactionID((paymentResult.id) ? paymentResult.id : null);
+            payTrans.setPaymentProcessor(clearpayUpdateOrder.getPaymentProcessor());
+            payTrans.custom.cpPaymentID = (paymentResult.id) ? paymentResult.id : null;
+            payTrans.custom.cpPaymentMode = paymentMode;
+            payTrans.custom.cpCountryCode = BrandUtilities.getCountryCode();
+
+            if (paymentMode === clearpayConstants.PAYMENT_MODE.DIRECT_CAPTURE) {
+                payTrans.custom.cpDirectPaymentStatus = paymentResult.status;
+                amount = empty(paymentResult.originalAmount) ? null : new Money(parseFloat(paymentResult.originalAmount.amount), paymentResult.originalAmount.currency);
+            } else {
+                payTrans.custom.cpAuthoriseStatus = paymentResult.status;
+                amount = empty(paymentResult.openToCaptureAmount) ? null : new Money(parseFloat(paymentResult.openToCaptureAmount.amount), paymentResult.openToCaptureAmount.currency);
+            }
+
+            payTrans.setAmount(amount);
+        });
+
+        return payTrans;
     },
     /**
      * retrieves payment transaction status
@@ -86,7 +109,7 @@ var clearpayUpdateOrder = {
         var Order = require('dw/order/Order');
         var outOrder = order;
         Transaction.begin();
-        outOrder.custom.apIsClearpayOrder = true;
+        outOrder.custom.cpIsClearpayOrder = true;
         if (paymentResult.status === clearpayConstants.PAYMENT_STATUS.APPROVED) {
             outOrder.setPaymentStatus(Order.PAYMENT_STATUS_PAID);
         } else {
@@ -106,13 +129,13 @@ var clearpayUpdateOrder = {
         var payTrans = paymentTransaction;
         Transaction.begin();
         payTrans.setPaymentProcessor(this.getPaymentProcessor());
-        payTrans.custom.apPaymentMode = paymentMode;
-        payTrans.custom.apInitialStatus = clearpayConstants.PAYMENT_STATUS.DECLINED;
-        payTrans.custom.apToken = null;
+        payTrans.custom.cpPaymentMode = paymentMode;
+        payTrans.custom.cpInitialStatus = clearpayConstants.PAYMENT_STATUS.DECLINED;
+        payTrans.custom.cpToken = null;
         if (paymentMode === clearpayConstants.PAYMENT_MODE.DIRECT_CAPTURE) {
-            payTrans.custom.apDirectPaymentStatus = clearpayConstants.PAYMENT_STATUS.UNKNOWN;
+            payTrans.custom.cpDirectPaymentStatus = clearpayConstants.PAYMENT_STATUS.UNKNOWN;
         } else {
-            payTrans.custom.apAuthoriseStatus = clearpayConstants.PAYMENT_STATUS.UNKNOWN;
+            payTrans.custom.cpAuthoriseStatus = clearpayConstants.PAYMENT_STATUS.UNKNOWN;
         }
         Transaction.commit();
 

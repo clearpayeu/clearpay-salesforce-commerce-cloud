@@ -8,7 +8,7 @@ var BasketMgr = require('dw/order/BasketMgr');
 var server = require('server');
 var apUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
 var apBrandUtilities = apUtilities.brandUtilities;
-var thresholdUtilities = apBrandUtilities.getApiVersionDependentClass('*/cartridge/scripts/util/thresholdUtilities');
+var thresholdUtilities = require('*/cartridge/scripts/util/thresholdUtilities');
 
 server.get('IncludeClearpayLibrary',
     server.middleware.https,

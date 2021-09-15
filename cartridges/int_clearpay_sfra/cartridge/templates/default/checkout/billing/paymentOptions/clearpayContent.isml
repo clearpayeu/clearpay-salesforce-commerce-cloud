@@ -4,8 +4,9 @@
         <input type="hidden" class="form-control" name="${pdict.customForms.clearpayForm.isClearpayUrl.htmlName}" value="${URLUtils.url('ClearpayRedirect-IsClearpay')}">
         <input type="hidden" class="form-control" name="${pdict.customForms.clearpayForm.redirectClearpayUrl.htmlName}" value="${URLUtils.url('ClearpayRedirect-Redirect')}">
     </fieldset>
+    <div id="clearpay-tab-shown"></div>
     <input type="hidden" class="updated-widget" value="${URLUtils.https('ClearpayWidget-GetUpdatedWidget')}">
-    <div class="clearpay-widget">
+    <div class="clearpay-widget clearpay-hide">
         <isinclude template="util/modulesClearpay"/>
 
         <isclearpaymessage

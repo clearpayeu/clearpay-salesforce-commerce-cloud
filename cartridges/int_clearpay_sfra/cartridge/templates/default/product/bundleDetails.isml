@@ -80,9 +80,15 @@
                 
                 <iscomment>Clearpay</iscomment>
                 <input type="hidden" class="updated-widget" value="${URLUtils.https('ClearpayWidget-GetUpdatedWidget')}">
-                <div class="clearpay-widget">
-                    <isinclude url="${URLUtils.url('Product-IncludeClearpayMessage', 'pid', product.id)}" />
-                </div>
+                <isscript>
+                    var sitePreferences = require("*/cartridge/scripts/util/clearpayUtilities.js").sitePreferencesUtilities;
+                    var clearpayPDPEnable = sitePreferences.isDisplayPdpInfo();
+                </isscript>
+                <isif condition="${clearpayPDPEnable == true}">
+                    <div class="clearpay-widget bundle">
+                        <isinclude url="${URLUtils.url('Product-IncludeClearpayMessage', 'pid', product.id)}" />
+                    </div>
+                </isif>
                 <!-- Cart and [Optionally] Apple Pay -->
                 <isinclude template="product/components/addToCartGlobal" />
             </div>

@@ -21,8 +21,14 @@ server.prepend(
         var currentBasket = BasketMgr.getCurrentOrNewBasket();
         var paymentForm = server.forms.getForm('billing');
         var paymentMethodID = paymentForm.paymentMethod.value;
+        var ClearpayCOHelpers = require('~/cartridge/scripts/checkout/clearpayCheckoutHelpers');
+        var ClearpaySession = require('*/cartridge/scripts/util/clearpaySession');
 
         if (paymentMethodID !== 'AFTERPAY' && paymentMethodID !== 'CLEARPAY') {
+            // For express checkout, it's possible there was a Clearpay payment method in the basket,
+            // so remove it if a non-Clearpay payment method was selected
+            ClearpayCOHelpers.removeClearpayPayments(currentBasket);
+            ClearpaySession.clearSession();
             next();
             return;
         }

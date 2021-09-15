@@ -63,9 +63,9 @@
                     <isset name="currentStatus" value="${Resource.msg('option.refunded','clearpay',null)}" scope="page" />
                     <isif condition="${paymentInstrument && paymentInstrument.custom && paymentInstrument.paymentTransaction}">
                         <isset name="paymentTransaction" value="${paymentInstrument.paymentTransaction}" scope="page" />
-                        <isset name="isDirectPayment" value="${paymentTransaction.custom.apPaymentMode === 'DIRECT_CAPTURE'}" scope="page" />
-                        <isset name="apPaymentStatus" value="${isDirectPayment ? paymentTransaction.custom.apDirectPaymentStatus : paymentTransaction.custom.apAuthoriseStatus}" scope="page" />
-                        <isset name="canRefund" value="${isDirectPayment && apPaymentStatus.toLowerCase() == 'approved' && empty(paymentTransaction.custom.apRefundID)}" scope="page" />
+                        <isset name="isDirectPayment" value="${paymentTransaction.custom.cpPaymentMode === 'DIRECT_CAPTURE'}" scope="page" />
+                        <isset name="apPaymentStatus" value="${isDirectPayment ? paymentTransaction.custom.cpDirectPaymentStatus : paymentTransaction.custom.cpAuthoriseStatus}" scope="page" />
+                        <isset name="canRefund" value="${isDirectPayment && apPaymentStatus.toLowerCase() == 'approved' && empty(paymentTransaction.custom.cpRefundID)}" scope="page" />
                         <isif condition="${!(isDirectPayment && !canRefund)}">
                             <isset name="currentStatus" value="${apPaymentStatus}" scope="page" />
                         </isif>
