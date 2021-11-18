@@ -16,8 +16,7 @@ var UUIDUtils = require('dw/util/UUIDUtils');
 /* Script Modules */
 var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');
 var Logger = LogUtils.getLogger('TransActions');
-var clearpayUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
-var brandUtilities = clearpayUtilities.brandUtilities;
+var { brandUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
 
 /**
  * updates the order status

@@ -27,11 +27,15 @@ clearpayExpressPickupEnabled - does the current cart and selected ship method in
     if(countrycode === 'GB'){
         checkoutButtonClass = 'clearpay-checkout-button';
     }
+
+    if(disableClearpayPaymentMethod){
+        checkoutButtonClass += " clearpay-hide";
+    }
 </isscript>
 <iscomment>Start of Clearpay</iscomment>
 <isset name="clearpayExpressCheckoutPage" value="cart" scope="page" />
 <isinclude template="product/components/clearpayexpresscheckout" />
-<isif condition="${clearpayExpressCheckoutEnabled && !disableClearpayPaymentMethod}">
+<isif condition="${clearpayExpressCheckoutEnabled}">
     <div class="mb-sm-3">
         <isif condition="${isExpressCheckoutFinalize}">
             <a href="${URLUtils.url('ClearpayExpress-ContinueFinalize')}" class="${checkoutButtonClass} btn btn-block checkout-btn ${pdict.valid.error ? 'disabled' : ''}">

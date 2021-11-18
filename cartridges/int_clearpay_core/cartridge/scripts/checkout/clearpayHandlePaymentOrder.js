@@ -1,7 +1,5 @@
 var PAYMENT_STATUS = require('*/cartridge/scripts/util/clearpayConstants').PAYMENT_STATUS;
-var apUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
-var brandUtilities = apUtilities.brandUtilities;
-var sitePreferencesUtilities = apUtilities.sitePreferencesUtilities;
+var { sitePreferencesUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
 var clearpayUpdateOrder = require('*/cartridge/scripts/checkout/clearpayUpdateOrder');
 var baseUpdateOrderService = require('*/cartridge/scripts/logic/services/clearpayUpdateOrderService');
 var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');

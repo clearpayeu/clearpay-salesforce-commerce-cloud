@@ -5,9 +5,8 @@ var Status = require('dw/system/Status');
  * @returns {dw.system.Status} status
  */
 exports.onSession = function () {
-    var ClearpayUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
-    var BrandUtilities = ClearpayUtilities.brandUtilities;
+    var { brandUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
 
-    BrandUtilities.initBrand(request.locale);
+    brandUtilities.initBrand(request.locale);
     return new Status(Status.OK);
 };

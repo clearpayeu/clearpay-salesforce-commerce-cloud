@@ -3,8 +3,7 @@
 /* Script Modules */
 var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');
 var Logger = LogUtils.getLogger('CLEARPAY_CREDIT');
-var ClearpayUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
-var BrandUtilities = ClearpayUtilities.brandUtilities;
+var { brandUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
 var BrandMapping = require('*/cartridge/scripts/brandMapping');
 
 /**
@@ -13,7 +12,7 @@ var BrandMapping = require('*/cartridge/scripts/brandMapping');
  * @returns {Object} response - response
  */
 function Handle(args) {
-    var brand = BrandUtilities.getBrand();
+    var brand = brandUtilities.getBrand();
     var mapping = BrandMapping[brand];
     var processorPath = null;
 
@@ -47,7 +46,7 @@ function Handle(args) {
  * @returns {Object} response - response
  */
 function Authorize(args) {
-    var brand = BrandUtilities.getBrand();
+    var brand = brandUtilities.getBrand();
     var mapping = BrandMapping[brand];
     var processorPath = null;
 

@@ -22,8 +22,7 @@ var updatePaymentStatus = {};
 * @returns {Object} - authorization or error
 */
 updatePaymentStatus.handlePaymentStatus = function (order) {
-    var apUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
-    var apCheckoutUtilities = apUtilities.checkoutUtilities;
+    var { checkoutUtilities: apCheckoutUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
     var paymentMethodName = apCheckoutUtilities.getPaymentMethodName();
     var response;
     var finalPaymentStatus;
@@ -100,10 +99,10 @@ updatePaymentStatus.handlePaymentStatus = function (order) {
         Transaction.begin();
         impactOrder.getPaymentInstruments(paymentMethodName)[0].getPaymentTransaction().custom.cpInitialStatus = cpInitialStatus;
         Transaction.commit();
+        Logger.error('Payment has been declined : ' + responseCode);
         if (ClearpaySession.isValid()) {
             ClearpaySession.clearSession();
         }
-        Logger.error('Payment has been declined : ' + responseCode);
         return {
             ClearpayOrderErrorMessage: errorMessage,
             error: true

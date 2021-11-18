@@ -10,9 +10,7 @@
 var Money = require('dw/value/Money');
 
 /* Script Modules */
-var ClearpayUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
-var BrandUtilities = ClearpayUtilities.brandUtilities;
-var SitePreferences = ClearpayUtilities.sitePreferencesUtilities;
+var { brandUtilities: BrandUtilities, sitePreferencesUtilities: SitePreferences } = require('*/cartridge/scripts/util/clearpayUtilities');
 var ctrlCartridgeName = SitePreferences.getControllerCartridgeName();
 var thresholdUtilities = require('*/cartridge/scripts/util/thresholdUtilities');
 

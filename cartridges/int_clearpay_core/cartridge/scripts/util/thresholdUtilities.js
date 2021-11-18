@@ -1,10 +1,15 @@
 /* global session */
 var PaymentMgr = require('dw/order/PaymentMgr');
 
-var ClearpayUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
 var configurationService = require('*/cartridge/scripts/logic/services/clearpayConfigurationService');
 var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');
 var Logger = LogUtils.getLogger('thresholdUtilities');
+var { brandUtilities, checkoutUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
+var clearpayBrand = BrandUtilities.getBrand();
+var countryCode = BrandUtilities.getCountryCode();
+var result = {
+    status: false
+};
 
 /**
  * @abstract
@@ -74,25 +79,28 @@ var thresholdUtilities = {
         }
     },
     checkThreshold: function (price) {
-        var BrandUtilities = ClearpayUtilities.brandUtilities;
-        var CheckoutUtilities = ClearpayUtilities.checkoutUtilities;
-
-        var clearpayBrand = BrandUtilities.getBrand();
-        var countryCode = BrandUtilities.getCountryCode();
-        var result = {
-            status: false
-        };
-
         if (clearpayBrand && (price && price.value)) {
+            result =  this.getThresholdResult(price.value);
+        }
+        return result;
+    },
+    checkPriceThreshold: function (price) {
+        if (clearpayBrand && price) {
+            result =  this.getThresholdResult(price);
+        }
+        return result;
+    },
+    getThresholdResult: function(price) {
+        if (price) {
             var threshold = this.getThresholdAmounts(clearpayBrand);
             this.saveThresholds(clearpayBrand, threshold);
-            var paymentMethodName = CheckoutUtilities.getPaymentMethodName();
+            var paymentMethodName = checkoutUtilities.getPaymentMethodName();
             var paymentMethod;
             var isApplicable;
 
             if (paymentMethodName) {
                 paymentMethod = PaymentMgr.getPaymentMethod(paymentMethodName);
-                isApplicable = paymentMethod.isApplicable(session.customer, countryCode, price.value);
+                isApplicable = paymentMethod.isApplicable(session.customer, countryCode, price);
 
                 result.status = isApplicable;
 

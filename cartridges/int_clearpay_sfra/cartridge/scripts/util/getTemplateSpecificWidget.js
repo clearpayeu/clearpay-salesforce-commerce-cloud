@@ -4,8 +4,7 @@
 var Money = require('dw/value/Money');
 
 /* Script Modules */
-var apUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
-var apBrandUtilities = apUtilities.brandUtilities;
+var { brandUtilities: apBrandUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
 
 var getTemplateSpecificWidget = {};
 

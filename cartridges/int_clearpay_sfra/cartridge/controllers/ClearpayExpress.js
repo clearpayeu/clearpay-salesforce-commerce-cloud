@@ -342,6 +342,7 @@ server.get('CartStatus',
             let cartTotals = ClearpayShippingHelpers.calculateBasketTaxShipTotals(req, currentBasket);
             res.json({ cartTotalAmount: cartTotals.totalCost.value,
                 cartTotalCurrency: cartTotals.totalCost.currencyCode,
+                withinThreshold: ClearpayCOHelpers.isBasketAmountWithinThreshold(),
                 instorepickup: ClearpayCOHelpers.shouldEnableExpressPickupMode(currentBasket),
                 expressCheckoutFinalize: ClearpaySession.isExpressCheckoutFinalizeFlow() });
             return next();

@@ -5,9 +5,10 @@ var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
 var csrfProtection = require('*/cartridge/scripts/middleware/csrf');
 var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');
 var Logger = LogUtils.getLogger('ClearpayRedirect');
-var apUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
-var apBrandUtilities = apUtilities.brandUtilities;
-var apCheckoutUtilities = apUtilities.checkoutUtilities;
+var {
+         brandUtilities: apBrandUtilities,
+         checkoutUtilities: apCheckoutUtilities
+     } = require('*/cartridge/scripts/util/clearpayUtilities');
 
 /* API Includes */
 var OrderMgr = require('dw/order/OrderMgr');
@@ -32,8 +33,8 @@ server.get('PrepareRedirect', server.middleware.https, function (req, res, next)
 
     if ((clearPayToken !== 'undefined') && countryCodeValue) {
         res.render('checkout/clearpayRedirect', {
-            apBrand: apBrand,
-            apJavascriptURL: scriptURL,
+            cpBrand: apBrand,
+            cpJavascriptURL: scriptURL,
             cpToken: clearPayToken,
             countryCode: countryCodeValue
         });

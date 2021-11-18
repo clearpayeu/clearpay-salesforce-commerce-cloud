@@ -9,18 +9,13 @@ var Logger = LogUtils.getLogger('clearpayExpressGetToken');
  * calls token service to retrieve the token
  */
 function getExpressToken(basket, checkoutPrice, sourceUrl, merchantReference, store) {
-    var ClearpayToken;
     try {
         orderCreateService.generateRequest(basket, checkoutPrice, sourceUrl, merchantReference, store);
-
         var response = orderCreateService.getResponse();
-        var res = new TokenModel();
-
         if (!empty(response.token)) {
+            var ClearpayToken = new TokenModel();
             Logger.debug('Clearpay Token generated from service: ' + response.token);
-            res.cpToken = response.token;
-
-            ClearpayToken = res;
+            ClearpayToken.cpToken = response.token;
             return ClearpayToken;
         }
         Logger.error('Can not get token. The response: ' + response);

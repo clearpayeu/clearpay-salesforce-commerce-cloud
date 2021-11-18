@@ -2,7 +2,6 @@
 
 var clearpayHttpService = require('*/cartridge/scripts/logic/services/clearpayHttpService');
 var clearpayUtils = require('*/cartridge/scripts/util/clearpayUtils');
-var { brandUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
 var OrderRequestBuilder = require('*/cartridge/scripts/order/orderRequestBuilder');
 
 /**

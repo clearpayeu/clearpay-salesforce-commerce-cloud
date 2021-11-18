@@ -5,7 +5,6 @@ var Transaction = require('dw/system/Transaction');
 
 /* Script Modules */
 var collections = require('*/cartridge/scripts/util/collections');
-var apUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
 
 /**
 * removes other payment instruments from basket and saves clearpay
@@ -14,8 +13,8 @@ var apUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
 */
 function Handle(basket) {
     var currentBasket = basket;
-    var apCheckoutUtilities = apUtilities.checkoutUtilities;
-    var paymentMethodName = apCheckoutUtilities.getPaymentMethodName();
+    var { checkoutUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
+    var paymentMethodName = checkoutUtilities.getPaymentMethodName();
 
     if (!paymentMethodName) {
         return {

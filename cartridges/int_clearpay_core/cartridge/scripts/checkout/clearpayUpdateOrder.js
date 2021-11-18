@@ -43,9 +43,9 @@ var clearpayUpdateOrder = {
         var amount = null;
 
         Transaction.wrap(function () {
-            payTrans.setTransactionID((paymentResult.id) ? paymentResult.id : null);
+            payTrans.setTransactionID(paymentResult.id || null);
             payTrans.setPaymentProcessor(clearpayUpdateOrder.getPaymentProcessor());
-            payTrans.custom.cpPaymentID = (paymentResult.id) ? paymentResult.id : null;
+            payTrans.custom.cpPaymentID = paymentResult.id || null;
             payTrans.custom.cpPaymentMode = paymentMode;
             payTrans.custom.cpCountryCode = BrandUtilities.getCountryCode();
 

@@ -29,7 +29,7 @@ clearpayExpressPickupEnabled - does the current cart and selected ship method in
         // for pdp, we don't use the basket amount, we just check if the current product > max thresshold
         if (clearpayExpressCheckoutPage === 'product_detail' && clearpayExpressCheckoutPdpEnabled) {
             if (product && product.price) {
-                disableClearpayPaymentMethod = ! ClearpayCOHelpers.isPriceBelowThreshold(
+                disableClearpayPaymentMethod = ! ClearpayCOHelpers.isPriceWithinThreshold(
                     ClearpayCOHelpers.getProductPriceForMessaging(product.price));
             }
         }

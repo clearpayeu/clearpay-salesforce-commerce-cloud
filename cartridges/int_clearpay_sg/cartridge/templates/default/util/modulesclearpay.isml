@@ -6,7 +6,7 @@
 
 <ismodule template="product/components/clearpaymessage"
     name="clearpaymessage"
-    attribute="belowthreshold"
+    attribute="message"
     attribute="classname"
     attribute="totalprice"
     attribute="brand"

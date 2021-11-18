@@ -24,11 +24,9 @@ function getWidget(updatedProductID, updatedProductPrice, className, $productCon
                     $('.clearpay-widget').show();
                 }
             } else if (typeof $productContainer !== 'undefined') {
-                $productContainer.find('.clearpay-widget').html('');
-                $productContainer.find('.clearpay-widget').show();
+                $productContainer.find('.clearpay-widget').empty().show();
             } else if (typeof $productContainer === 'undefined') {
-                $('.clearpay-widget').html('');
-                $('.clearpay-widget').show();
+                $('.clearpay-widget').empty().show();
             }
         }
     });
@@ -56,10 +54,10 @@ function updateStorePickupState() {
             method: 'GET',
             success: function (data) {
                 if (data.instorepickup) {
-                    console.log('In store pickup: ', data.instorepickup);
                     $('#clearpay-express-storepickup').val(data.instorepickup.toString());
                     initAfterpay({ pickupflag: data.instorepickup });
                 }
+                $('#clearpay-express-button').toggleClass('clearpay-hide', !data.withinThreshold);
             }
         });
     }
@@ -135,11 +133,7 @@ $(document).ready(function () {
         }
 
         // On pdp page, if a store is selected, disable buy now express checkout button.
-        if ($('.store-name').length > 0) {
-            $('#clearpay-express-pdp-button').addClass('clearpay-hide');
-        } else {
-            $('#clearpay-express-pdp-button').removeClass('clearpay-hide');
-        }
+        $('#clearpay-express-pdp-button').toggleClass('clearpay-hide', $('.store-name').length);
 
 
         if ($('.cart-page').length > 0) {

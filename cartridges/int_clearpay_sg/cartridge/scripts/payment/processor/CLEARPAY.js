@@ -18,7 +18,7 @@ var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');
 var Logger = LogUtils.getLogger('CLEARPAY');
 var ClearpaySession = require('*/cartridge/scripts/util/clearpaySession');
 var ECPaymentHelpers = require('*/cartridge/scripts/payment/expressCheckoutPaymentHelpers');
-var brandUtilities = ClearpayUtilities.brandUtilities;
+var { brandUtilities } = ClearpayUtilities;
 
 
 /**
@@ -30,7 +30,7 @@ function Handle(args) {
     var cart = Cart.get(args.Basket);
 
     Transaction.wrap(function () {
-        cart.removeAllPaymentInstruments();
+        cart.removeExistingPaymentInstruments('CLEARPAY');
         cart.createPaymentInstrument('CLEARPAY', cart.getNonGiftCertificateAmount());
     });
 
@@ -65,7 +65,7 @@ function Handle(args) {
 
     app.getView({
         cpBrand: brandUtilities.getBrand(),
-        apJavascriptURL: scriptURL,
+        cpJavascriptURL: scriptURL,
         cpToken: clearPayToken,
         countryCode: countryCode
     }).render('checkout/clearpayredirect');

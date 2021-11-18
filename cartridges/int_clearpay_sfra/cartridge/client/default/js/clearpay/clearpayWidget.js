@@ -2,7 +2,7 @@
 /* global $ */
 
 /**
- * Gets Widget HTML from AfterPay API
+ * Gets Widget HTML from ClearPay API
  * @param {string} updatedProductID - product ID
  * @param {number} updatedProductPrice - product price
  * @param {string} className - HTML class name
@@ -25,11 +25,9 @@ function getWidget(updatedProductID, updatedProductPrice, className, $productCon
                 }
             } else {
                 if (typeof $productContainer !== 'undefined') {
-                    $productContainer.find('.clearpay-widget').html('');
-                    $productContainer.find('.clearpay-widget').show();
+                    $productContainer.find('.clearpay-widget').empty().show();
                 } else if (typeof $productContainer === 'undefined') {
-                    $('.clearpay-widget').html('');
-                    $('.clearpay-widget').show();
+                    $('.clearpay-widget').empty().show();
                 }
             }
         }

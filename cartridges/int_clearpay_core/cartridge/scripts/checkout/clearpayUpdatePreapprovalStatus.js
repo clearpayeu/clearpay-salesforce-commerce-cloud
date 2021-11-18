@@ -1,7 +1,6 @@
 'use strict';
 var Transaction = require('dw/system/Transaction');
 var PreapprovalModel = require('*/cartridge/scripts/models/preapprovalModel');
-var clearpayUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
 var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');
 var Logger = LogUtils.getLogger('afterpaUpdatePreapprovalStatus');
 
@@ -25,8 +24,9 @@ function parsePreapprovalResult(parameter) {
  * @param {Object} lineItemCtnr - line Item Container
  */
 function updatePreapprovalStatus(preapprovalModel, lineItemCtnr) {
-    var paymentTransaction = clearpayUtilities.checkoutUtilities.getPaymentTransaction(lineItemCtnr);
-    if (paymentTransaction) {     
+    const { checkoutUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
+    var paymentTransaction = checkoutUtilities.getPaymentTransaction(lineItemCtnr);
+    if (paymentTransaction) {
         Logger.debug('Payment status after token generation : ' + preapprovalModel.status);
         Transaction.begin();
         paymentTransaction.custom.cpInitialStatus = preapprovalModel.status;
@@ -34,7 +34,6 @@ function updatePreapprovalStatus(preapprovalModel, lineItemCtnr) {
         paymentTransaction.custom.cpExpressCheckout = preapprovalModel.cpExpressCheckout;
         paymentTransaction.custom.cpExpressCheckoutChecksum = preapprovalModel.cpExpressCheckoutChecksum;
         Transaction.commit();
-        Logger.debug('After transaction commit' + JSON.stringify(paymentTransaction));
     } else {
         Logger.error('Can not find payment transaction');
     }

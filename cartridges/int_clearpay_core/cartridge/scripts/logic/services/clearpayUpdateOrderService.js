@@ -2,12 +2,9 @@
 var paymentService = require('*/cartridge/scripts/payment/paymentService');
 var clearpayDirectCaptureService = require('*/cartridge/scripts/logic/services/clearpayDirectCapturePaymentService');
 var clearpayAuthoriseService = require('*/cartridge/scripts/logic/services/clearpayAuthorisePaymentService');
-var clearpayUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
-var sitePreferences = clearpayUtilities.sitePreferencesUtilities;
 var PAYMENT_MODE = require('*/cartridge/scripts/util/clearpayConstants').PAYMENT_MODE;
 var PAYMENT_STATUS = require('*/cartridge/scripts/util/clearpayConstants').PAYMENT_STATUS;
-var apUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
-var apCheckoutUtilities = apUtilities.checkoutUtilities;
+var { checkoutUtilities: apCheckoutUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
 
 var Site = require('dw/system/Site');
 var Resource = require('dw/web/Resource');

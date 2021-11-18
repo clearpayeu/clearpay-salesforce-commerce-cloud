@@ -2,8 +2,10 @@
 var Transaction = require('dw/system/Transaction');
 var OrderMgr = require('dw/order/OrderMgr');
 var Order = require('dw/order/Order');
-
-var ClearpayCheckoutUtilities = require('*/cartridge/scripts/util/clearpayUtilities').checkoutUtilities;
+var { 
+    checkoutUtilities: ClearpayCheckoutUtilities,
+    brandUtilities
+} = require('*/cartridge/scripts/util/clearpayUtilities');
 var PAYMENT_MODE = require('*/cartridge/scripts/util/clearpayConstants').PAYMENT_MODE;
 var PAYMENT_STATUS = require('*/cartridge/scripts/util/clearpayConstants').PAYMENT_STATUS;
 var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');
@@ -70,7 +72,6 @@ var _getOrdersNotPaid = function () {
 };
 
 var checkPaymentStatus = function () {
-    var { brandUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
     var orders = _getOrdersNotPaid();
 
     if (orders.count === 0) {

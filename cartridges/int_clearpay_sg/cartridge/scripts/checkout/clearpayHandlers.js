@@ -1,8 +1,6 @@
 'use strict';
-var clearpayUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
-var sitePreferences = clearpayUtilities.sitePreferencesUtilities;
+var { checkoutUtilities: apCheckoutUtilities, sitePreferencesUtilities: sitePreferences } = require('*/cartridge/scripts/util/clearpayUtilities');
 var ctrlCartridgeName = sitePreferences.getControllerCartridgeName();
-var apCheckoutUtilities = clearpayUtilities.checkoutUtilities;
 
 /* Script Modules */
 var app = require(ctrlCartridgeName + '/cartridge/scripts/app');

@@ -33,7 +33,7 @@
                 <div class="clearpay-widget">
                     <isinclude template="util/modulesClearpay"/>
 
-                    <isif condition="${pdict.apApplicable == true}">
+                    <isif condition="${pdict.apApplicable == true && cpDisplayPlpInfo == true}">
                         <isclearpaymessage
                             classname="${pdict.classname}"
                             belowthreshold="${pdict.belowthreshold}"

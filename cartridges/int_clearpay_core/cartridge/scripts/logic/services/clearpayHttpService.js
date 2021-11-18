@@ -47,6 +47,7 @@ function getClearpayHttpService() {
             const siteURL = URLUtils.httpsHome().toString();
             const storeFront = Site.getCurrent().getID();
             const hostURL = siteURL.substring(0, siteURL.indexOf('/', 14));
+            const compatibilityMode = dw.system.System.getCompatibilityMode();
             var storefrontVersion = '';
             if (storeFront.includes('SiteGenesis')) {
                 storefrontVersion = Resource.msg('revisioninfo.revisionnumber', 'revisioninfo', null);
@@ -54,7 +55,7 @@ function getClearpayHttpService() {
                 storefrontVersion = Resource.msg('global.version.number', 'version', null);
             }
 
-            var userAgent = clearpayCartridge + ' (SalesforceCommmerceCloud; ' + storeFront + '/' + storefrontVersion + '; ' + merchantID + ') ' + hostURL;
+            var userAgent = clearpayCartridge + ' (SalesforceCommmerceCloud; ' + storeFront + '/' + storefrontVersion + '; CompatibilityMode/' + compatibilityMode + '; Merchant/' + merchantID + ') ' + hostURL;
 
             service.addHeader('User-Agent', userAgent);
 

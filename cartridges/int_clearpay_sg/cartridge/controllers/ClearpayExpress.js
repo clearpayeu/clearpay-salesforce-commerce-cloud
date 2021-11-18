@@ -119,11 +119,12 @@ function CreateToken() {
     let store = null;
     let storePickup = false;
     let expressCheckoutShippingStrategy = sitePreferences.getExpressCheckoutShippingStrategy();
+    
     // Make sure everything is only going to a single store and there are no home deliveries.
     // If so, we use in-store pickup mode for express checkout
     if ((numHomeDeliveries == 0) && (Object.keys(storeMap).length == 1)) {
         storePickup = true;
-        for (key in storeMap) {
+        for (var key in storeMap) {
             store = storeMap[key];
         }
     } else if ((numHomeDeliveries > 0) && (Object.keys(storeMap).length > 0) && expressCheckoutShippingStrategy == 'integrated') {
@@ -196,7 +197,7 @@ function GetShippingMethods() {
     }
     var ShippingMgr = require('dw/order/ShippingMgr');
     var HashMap = require('dw/util/HashMap');
-    var ShippingHelpers = require('*/cartridge/scripts/checkout/clearpayShippingHelpers');
+    var ShippingHelpers = require('~/cartridge/scripts/checkout/clearpayShippingHelpers');
 
     var i,
         address,
@@ -217,7 +218,7 @@ function GetShippingMethods() {
         // if this is a store pickup, just get the store name
         let storeMap = COHelpers.getInStorePickupsMap(cart.object);
         let store = null;
-        for (key in storeMap) {
+        for (var key in storeMap) {
             store = storeMap[key];
         }
         if (store) {
@@ -389,7 +390,7 @@ function PostClearpayCheckoutFlow() {
 
 function DeferredShippingFlow(clearPayOrderResponse) {
     var Transaction = require('dw/system/Transaction');
-    var ShippingHelpers = require('*/cartridge/scripts/checkout/clearpayShippingHelpers');
+    var ShippingHelpers = require('~/cartridge/scripts/checkout/clearpayShippingHelpers');
 
     var cart = app.getModel('Cart').get();
     if (!cart) {
@@ -489,7 +490,7 @@ function IntegratedShippingFlow(clearPayOrderResponse) {
         (adjustCartResponse.totalCost.currencyCode != currency)) {
         // this can occur if session was modified while express checkout was in flight
         Logger.error('Amount returned by Clearpay did not match expected amount. Clearpay returned=' + amount + currency + ' Merchant computed=' + adjustCartResponse.totalCost.value + adjustCartResponse.totalCost.currencyCode);
-        redirectToErrorDisplay(Resource.msg('expresscheckout.error.checkout', brand, null));
+        redirectToErrorDisplay(Resource.msg('apierror.token.conflict', brand, null));
         return;
     }
 
