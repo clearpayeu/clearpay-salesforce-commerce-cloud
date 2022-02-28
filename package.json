@@ -1,6 +1,6 @@
 {
   "name": "Clearpay",
-  "version": "23.0.1",
+  "version": "23.1.0",
   "description": "Clearpay cartridge",
   "main": "index.js",
   "engines": {

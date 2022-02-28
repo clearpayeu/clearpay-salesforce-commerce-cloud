@@ -5,8 +5,6 @@ var Site = require('dw/system/Site');
 var PaymentMgr = require('dw/order/PaymentMgr');
 var URLUtils = require('dw/web/URLUtils');
 var Locale = require('dw/util/Locale');
-var ctrlCartridgeName = dw.system.Site.getCurrent().getCustomPreferenceValue('cpControllerCartridgeName');
-var app = require(ctrlCartridgeName + '/cartridge/scripts/app');
 
 /**
  *  Site Preferences Utilities
@@ -67,7 +65,7 @@ var sitePreferencesUtilities = {
     },
 
     getStorePickupShippingMethodIDs: function () {
-        return Site.getCurrent().getCustomPreferenceValue('apStorePickupShippingMethodIDs');
+        return Site.getCurrent().getCustomPreferenceValue('cpStorePickupShippingMethodIDs');
     },
     getStorePickupDescription: function () {
         return Site.getCurrent().getCustomPreferenceValue('cpStorePickupDescription');
@@ -227,27 +225,6 @@ module.exports = {
     checkoutUtilities: checkoutUtilities,
     brandUtilities: brandUtilities
 };
-
-var disableSummaryForClearpay = function (cart, viewContext) {
-    var clearpayEnable = sitePreferencesUtilities.isClearpayEnabled();
-    var expressCheckoutEnable = sitePreferencesUtilities.isExpressCheckoutEnabled();
-    let isExpressCheckout = require('*/cartridge/scripts/util/clearpaySession').isExpressCheckout();
-
-    var apPaymentInstrument;
-    var iter = cart.object.getPaymentInstruments().iterator();
-
-    while (iter.hasNext()) {
-        apPaymentInstrument = iter.next();
-
-		// don't disable summary for express checkout when the current order is an express checkout order.
-		// Non-express-checkout still skips summary screen
-        if ((expressCheckoutEnable && isExpressCheckout) || clearpayEnable == false || apPaymentInstrument.paymentMethod !== 'AFTERPAY' || apPaymentInstrument.paymentMethod !== 'CLEARPAY') {
-            app.getView(viewContext).render('checkout/summary/summary');
-	    }
-    }
-};
-
-module.exports.disableSummaryForClearpay = disableSummaryForClearpay;
 
 var crc32 = function (str) {
     function utf8_encode(s) {

@@ -22,8 +22,7 @@
   var BrandUtilities = require("*/cartridge/scripts/util/clearpayUtilities.js").brandUtilities;
   var countrycode = BrandUtilities.getCountryCode();
   var expressCheckoutJS = BrandUtilities.getBrandSettings().javaScriptUrl + "?merchant_key=demo";
-  var ClearpayCOHelpers = require('~/cartridge/scripts/checkout/clearpayCheckoutHelpers');
-  var clearpayAmount = ClearpayCOHelpers.getCurrentClearpayPaymentAmount(dw.order.BasketMgr.getCurrentBasket());
+  var clearpayAmount = require('*/cartridge/scripts/checkout/clearpayCheckoutHelpers').getCurrentClearpayPaymentAmount(dw.order.BasketMgr.getCurrentBasket());
   if (clearpayAmount.value == 0) {
     // If we've reached the billing page and there's no existing Clearpay payment transaction in the basket, clear the
     // session since we're obviously not the normal express checkout flow

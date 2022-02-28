@@ -22,8 +22,8 @@ var updatePaymentStatus = {};
 * @returns {Object} - authorization or error
 */
 updatePaymentStatus.handlePaymentStatus = function (order) {
-    var { checkoutUtilities: apCheckoutUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
-    var paymentMethodName = apCheckoutUtilities.getPaymentMethodName();
+    var { checkoutUtilities: cpCheckoutUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
+    var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
     var response;
     var finalPaymentStatus;
     var errorMessage;
@@ -78,7 +78,7 @@ updatePaymentStatus.handlePaymentStatus = function (order) {
 
     finalPaymentStatus = require('*/cartridge/scripts/checkout/clearpayHandlePaymentOrder').getPaymentStatus(order, cpInitialStatus, expressCheckoutModel);
     response = (finalPaymentStatus.errorMessage) ? finalPaymentStatus.errorMessage : finalPaymentStatus;
-    responseCode = apCheckoutUtilities.getPaymentResponseCode(finalPaymentStatus);
+    responseCode = cpCheckoutUtilities.getPaymentResponseCode(finalPaymentStatus);
 
     if (response === 'SERVICE_UNAVAILABLE' || response.httpStatusCode === 500 || response === 'INTERNAL_SERVICE_ERROR') {
         finalPaymentStatus = require('*/cartridge/scripts/checkout/clearpayIdempotency').delayPayment(order, cpInitialStatus, expressCheckoutModel);
@@ -99,10 +99,10 @@ updatePaymentStatus.handlePaymentStatus = function (order) {
         Transaction.begin();
         impactOrder.getPaymentInstruments(paymentMethodName)[0].getPaymentTransaction().custom.cpInitialStatus = cpInitialStatus;
         Transaction.commit();
-        Logger.error('Payment has been declined : ' + responseCode);
         if (ClearpaySession.isValid()) {
             ClearpaySession.clearSession();
         }
+        Logger.error('Payment has been declined : ' + responseCode);
         return {
             ClearpayOrderErrorMessage: errorMessage,
             error: true

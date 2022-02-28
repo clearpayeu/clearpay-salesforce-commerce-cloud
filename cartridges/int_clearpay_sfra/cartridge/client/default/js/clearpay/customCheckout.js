@@ -36,7 +36,7 @@ function handleStateChange() {
         hideAllStates();
         $('.ap-checkout-ship').removeClass('clearpay-hide');
     } else if (stage === 'payment') {
-        var isClearpayTab = $('.afterpay-tab').hasClass('active') || $('.clearpay-tab').hasClass('active');
+        var isClearpayTab = $('.clearpay-tab').hasClass('active');
         hideAllStates();
         if (isClearpayTab) {
             if (ecFinalize) {
@@ -74,7 +74,7 @@ var exports = {
             // do clearpay redirect method if the original submit button is clicked
             // with clearpay as payment type
             $('button.submit-payment').on('click', function (e) {
-                var isClearpayTab = $('.afterpay-tab').hasClass('active') || $('.clearpay-tab').hasClass('active');
+                var isClearpayTab = $('.clearpay-tab').hasClass('active');
 
                 if (isClearpayTab) {
                     e.stopPropagation();
@@ -107,7 +107,7 @@ var exports = {
             }
 
          // Call handleStage with new stage whenever clearpay payment tab is pressed
-            let tabelem = document.querySelector('.afterpay-tab') ? document.querySelector('.afterpay-tab') : document.querySelector('.clearpay-tab');
+            let tabelem = document.querySelector('.clearpay-tab');
             if (window.MutationObserver) {
                 var observer = new MutationObserver(function (mutations) {
                     handleStateChange();
@@ -133,8 +133,6 @@ var exports = {
          // tab by default
             if (($('#clearpay-express-checkout-finalize').val() === 'true') &&
              (parseFloat($('#clearpay-widget-amount').val()) > 0.0)) {
-                $('.afterpay-content').addClass('active');
-                $('.afterpay-tab').addClass('active');
                 $('.clearpay-content').addClass('active');
                 $('.clearpay-tab').addClass('active');
                 $('.credit-card-content').removeClass('active');

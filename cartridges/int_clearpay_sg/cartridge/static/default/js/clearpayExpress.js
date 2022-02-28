@@ -96,7 +96,7 @@ function sleep(ms) {
 // Reinitialize the Clearpay popup by first doing an ajax
 // call to the server to determine eligibility for Clearpay Express
 // and calling initAfterpay with the setting
-function reinitializeAfterpayPopup() {
+function reinitializeClearpayPopup() {
     let getCartStatusUrl = $('#clearpay-express-url-cartstatus').val();
     $.ajax({
         type: 'GET',
@@ -106,7 +106,7 @@ function reinitializeAfterpayPopup() {
             initAfterpay({ pickupflag: instorepickup });
         },
         error: function () {
-            console.log('Afterpay Express cart status request failure.');
+            console.log('Clearpay Express cart status request failure.');
         }
     });
 }
@@ -114,7 +114,7 @@ function reinitializeAfterpayPopup() {
 /**
  * Listens for changes in the home delivery vs in-store pickup radio button toggle.
  * Once any toggle happens, we want to wait for the "loading" widget to disappear
- * and then call reinitializeAfterpayPopup().
+ * and then call reinitializeClearpayPopup().
  *
  * The "loading" is controlled by the existence of the "loading" class on
  * .item-delivery-options, so wait for that to disappear.
@@ -127,7 +127,7 @@ function initializeDeliveryOptionChangeListener() {
                 let loadingElement = document.querySelector('.item-delivery-options');
                 let observer = new MutationObserver(function (entries) {
                     if (!document.querySelector('.item-delivery-options.loading')) {
-                        reinitializeAfterpayPopup();
+                        reinitializeClearpayPopup();
                         observer.disconnect();
                     }
                 });
@@ -136,7 +136,7 @@ function initializeDeliveryOptionChangeListener() {
                 // If no MutationObserver support, just use timer to poll state
                 var checkLoading = setInterval(function () {
                     if (!document.querySelector('.item-delivery-options.loading')) {
-                        reinitializeAfterpayPopup();
+                        reinitializeClearpayPopup();
                         clearInterval(checkLoading);
                     }
                 }, 500);

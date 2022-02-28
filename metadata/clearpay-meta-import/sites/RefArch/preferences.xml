@@ -7,7 +7,6 @@
                 "GB": {
                     "brand": "clearpay",
                     "service": "clearpay.service.GB.v2",
-                    "versionApi": "2",
                     "javaScriptUrl": "https://portal.sandbox.clearpay.co.uk/afterpay.js",
                     "learnMoreUrl": "https://www.clearpay.co.uk/en-GB/terms-of-service"
                 }

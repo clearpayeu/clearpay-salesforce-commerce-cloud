@@ -3,8 +3,8 @@
 var ClearpaySession = require('*/cartridge/scripts/util/clearpaySession');
 var ClearpayCOHelpers = require('*/cartridge/scripts/checkout/clearpayCheckoutHelpers');
 var ExpressCaptureRequestBuilder = require('~/cartridge/scripts/payment/expressCaptureRequestBuilder');
-var apUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
-var apCheckoutUtilities = apUtilities.checkoutUtilities;
+var cpUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
+var cpCheckoutUtilities = cpUtilities.checkoutUtilities;
 
 var ExpressCheckoutPaymentHelpers = {
 
@@ -12,7 +12,7 @@ var ExpressCheckoutPaymentHelpers = {
         // setting saved in PaymentTransaction for Express Checkout.
         var ExpressCheckoutModel = require('*/cartridge/scripts/models/expressCheckoutModel');
         var expressCheckoutModel = new ExpressCheckoutModel();
-        var paymentMethod = apCheckoutUtilities.getPaymentMethodName();
+        var paymentMethod = cpCheckoutUtilities.getPaymentMethodName();
         expressCheckoutModel.cpExpressCheckout = order.getPaymentInstruments(paymentMethod)[0].getPaymentTransaction().custom.cpExpressCheckout;
         expressCheckoutModel.cpExpressCheckoutChecksum = order.getPaymentInstruments(paymentMethod)[0].getPaymentTransaction().custom.cpExpressCheckoutChecksum;
         if (expressCheckoutModel.cpExpressCheckout) {
@@ -21,13 +21,13 @@ var ExpressCheckoutPaymentHelpers = {
             if (ClearpaySession.getToken(orderToken) == orderToken) {
                 let lineItemsChanged = this.checkIfLineItemsChanged(order);
                 let shippingChanged = this.checkIfShippingChanged(order);
-                expressCheckoutModel.apTempShippingAddressChanged = shippingChanged;
-                expressCheckoutModel.apTempBasketItemsChanged = lineItemsChanged;
+                expressCheckoutModel.cpTempShippingAddressChanged = shippingChanged;
+                expressCheckoutModel.cpTempBasketItemsChanged = lineItemsChanged;
                 let initialCheckoutAmount = new dw.value.Money(ClearpaySession.getExpressCheckoutAmount(), ClearpaySession.getExpressCheckoutCurrency());
                 let pt = order.getPaymentInstruments(paymentMethod)[0].getPaymentTransaction();
                 let amount = pt.amount;
                 if (!initialCheckoutAmount.equals(amount)) {
-                    expressCheckoutModel.apTempCheckoutAmountChanged = true;
+                    expressCheckoutModel.cpTempCheckoutAmountChanged = true;
                 }
             }
         }

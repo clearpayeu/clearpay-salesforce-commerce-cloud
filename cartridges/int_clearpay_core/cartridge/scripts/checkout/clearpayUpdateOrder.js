@@ -1,6 +1,6 @@
 var clearpayConstants = require('*/cartridge/scripts/util/clearpayConstants');
-var apUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
-var apCheckoutUtilities = apUtilities.checkoutUtilities;
+var cpUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
+var cpCheckoutUtilities = cpUtilities.checkoutUtilities;
 var Transaction = require('dw/system/Transaction');
 var Logger = require('dw/system/Logger');
 
@@ -38,7 +38,7 @@ var clearpayUpdateOrder = {
     // eslint-disable-next-line no-unused-vars
     savePaymentTransaction: function (paymentTransaction, paymentResult, paymentMode) {
         var Money = require('dw/value/Money');
-        var BrandUtilities = apUtilities.brandUtilities;
+        var BrandUtilities = cpUtilities.brandUtilities;
         var payTrans = paymentTransaction;
         var amount = null;
 
@@ -69,7 +69,7 @@ var clearpayUpdateOrder = {
      */
     getPaymentTransaction: function (order) {
         var paymentTransaction;
-        var paymentMethodName = apCheckoutUtilities.getPaymentMethodName();
+        var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
 
         if (!paymentMethodName) {
             return null;
@@ -90,7 +90,7 @@ var clearpayUpdateOrder = {
      */
     getPaymentProcessor: function () {
         var PaymentMgr = require('dw/order/PaymentMgr');
-        var paymentMethodName = apCheckoutUtilities.getPaymentMethodName();
+        var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
 
         if (!paymentMethodName) {
             return null;

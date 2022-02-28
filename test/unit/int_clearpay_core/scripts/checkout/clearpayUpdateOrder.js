@@ -36,7 +36,7 @@ var paymentMethod = {
         ID: '23decmnzfds'
     }
 }
-var apUtilities = {
+var cpUtilities = {
     brandUtilities: {
         getCountryCode: function () {
             return 'US';
@@ -58,7 +58,7 @@ global.empty = function (value) {
 
 var abstractClearpayUpdateOrder = proxyquire('../../../../../cartridges/int_clearpay_core/cartridge/scripts/checkout/clearpayUpdateOrder.js', {
     '*/cartridge/scripts/util/clearpayConstants': clearpayConstants,
-    '*/cartridge/scripts/util/clearpayUtilities': apUtilities,
+    '*/cartridge/scripts/util/clearpayUtilities': cpUtilities,
     'dw/system/Transaction': transaction,
     'dw/system/Logger': loggerMock,
     'dw/order/Order': OrderMock,
@@ -70,7 +70,7 @@ describe('clearpayUpdateOrder', function () {
 
     var clearpayUpdateOrder = proxyquire('../../../../../cartridges/int_clearpay_core/cartridge/scripts/checkout/v2/clearpayUpdateOrder.js', {
         '*/cartridge/scripts/util/clearpayConstants': clearpayConstants,
-        '*/cartridge/scripts/util/clearpayUtilities': apUtilities,
+        '*/cartridge/scripts/util/clearpayUtilities': cpUtilities,
         '*/cartridge/scripts/checkout/clearpayUpdateOrder': abstractClearpayUpdateOrder,
         'dw/system/Transaction': transaction,
         'dw/system/Logger': loggerMock,

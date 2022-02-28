@@ -5,7 +5,8 @@ var parsePrice = require('~/cartridge/scripts/util/parsePriceClearpay.js');
 var Response = require('server/response');
 var URLUtils = require('dw/web/URLUtils');
 var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
-var ClearpayCOHelpers = require('~/cartridge/scripts/checkout/clearpayCheckoutHelpers');
+var ClearpayCOHelpers = require('*/cartridge/scripts/checkout/clearpayCheckoutHelpers');
+var ClearpayRefArchCOHelpers = require('~/cartridge/scripts/checkout/clearpayRefArchCheckoutHelpers');
 var Resource = require('dw/web/Resource');
 let ClearpaySession = require('*/cartridge/scripts/util/clearpaySession');
 let ValidationHelpers = require('*/cartridge/scripts/helpers/basketValidationHelpers');
@@ -17,10 +18,10 @@ var OrderMgr = require('dw/order/OrderMgr');
 var Order = require('dw/order/Order');
 var Money = require('dw/value/Money');
 var Transaction = require('dw/system/Transaction');
-var apUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
-var apBrandUtilities = apUtilities.brandUtilities;
+var cpUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
+var cpBrandUtilities = cpUtilities.brandUtilities;
 var thresholdUtilities = require('*/cartridge/scripts/util/thresholdUtilities');
-var sitePreferences = apUtilities.sitePreferencesUtilities;
+var sitePreferences = cpUtilities.sitePreferencesUtilities;
 var clearpayEnabled = sitePreferences.isClearpayEnabled();
 var expressCheckoutEnabled = sitePreferences.isExpressCheckoutEnabled();
 
@@ -40,7 +41,7 @@ function redirectToErrorDisplay(res, error) {
 function deferredShippingFlow(req, res, next, clearPayOrderResponse) {
     var currentBasket = BasketMgr.getCurrentBasket();
 
-    ClearpayCOHelpers.addShippingAddressToBasket(currentBasket, clearPayOrderResponse.shipping);
+    ClearpayRefArchCOHelpers.addShippingAddressToBasket(currentBasket, clearPayOrderResponse.shipping);
     ClearpaySession.setShippingChecksum(ClearpayCOHelpers.computeBasketShippingChecksum(currentBasket));
     ClearpayCOHelpers.addConsumerToBasket(currentBasket, clearPayOrderResponse.consumer);
     if (clearPayOrderResponse.billing) {
@@ -52,13 +53,13 @@ function deferredShippingFlow(req, res, next, clearPayOrderResponse) {
 
     // Recreate the payment instrument in case session changed
     Transaction.wrap(function () {
-        ClearpayCOHelpers.removeAllNonGiftCertificatePayments(currentBasket);
-        var apCheckoutUtilities = apUtilities.checkoutUtilities;
-        var paymentMethodName = apCheckoutUtilities.getPaymentMethodName();
+        ClearpayRefArchCOHelpers.removeAllNonGiftCertificatePayments(currentBasket);
+        var cpCheckoutUtilities = cpUtilities.checkoutUtilities;
+        var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
         currentBasket.createPaymentInstrument(paymentMethodName, new Money(0.0, currentBasket.currencyCode));
     });
 
-    ClearpayCOHelpers.calculateAndSetPaymentAmount(currentBasket);
+    ClearpayRefArchCOHelpers.calculateAndSetPaymentAmount(currentBasket);
     ClearpaySession.setExpressCheckoutFinalizeFlow(true);
     res.redirect(URLUtils.url('Checkout-Begin', 'stage', 'shipping'));
     return next();
@@ -67,17 +68,17 @@ function deferredShippingFlow(req, res, next, clearPayOrderResponse) {
 function integratedShippingFlow(req, res, next, clearPayOrderResponse) {
     var currentBasket = BasketMgr.getCurrentBasket();
 
-    var apOrderToken = ClearpaySession.getToken();
+    var cpOrderToken = ClearpaySession.getToken();
     // Shipping option chosen by the consumer
     var selectedShipOption = clearPayOrderResponse.shippingOptionIdentifier;
 
     let isStorePickup = false;
-    if (ClearpayCOHelpers.shouldEnableExpressPickupMode(currentBasket)) {
+    if (ClearpayRefArchCOHelpers.shouldEnableExpressPickupMode(currentBasket)) {
         isStorePickup = true;
     }
 
     // For in-store pickup, the address will be the address of the store
-    ClearpayCOHelpers.addShippingAddressToBasket(currentBasket, clearPayOrderResponse.shipping);
+    ClearpayRefArchCOHelpers.addShippingAddressToBasket(currentBasket, clearPayOrderResponse.shipping);
     ClearpaySession.setShippingChecksum(ClearpayCOHelpers.computeBasketShippingChecksum(currentBasket));
 
     if (!isStorePickup) {
@@ -111,7 +112,7 @@ function integratedShippingFlow(req, res, next, clearPayOrderResponse) {
         (adjustCartResponse.totalCost.currencyCode != currency)) {
         // this can occur if session was modified while express checkout was in flight
         Logger.error('Amount returned by Clearpay did not match expected amount. Clearpay returned=' + amount + currency + ' Merchant computed=' + adjustCartResponse.totalCost.value + adjustCartResponse.totalCost.currencyCode);
-        redirectToErrorDisplay(res, Resource.msg('expresscheckout.error.checkout', 'clearpay', null));
+        redirectToErrorDisplay(res, Resource.msg('expresscheckout.error.amountMismatch', 'clearpay', null));
         return next();
     }
 
@@ -119,14 +120,14 @@ function integratedShippingFlow(req, res, next, clearPayOrderResponse) {
     if (buyNow) {
         // create the payment transaction with Clearpay for the desired amount
         Transaction.wrap(function () {
-            ClearpayCOHelpers.removeAllNonGiftCertificatePayments(currentBasket);
-            var apCheckoutUtilities = apUtilities.checkoutUtilities;
-            var paymentMethodName = apCheckoutUtilities.getPaymentMethodName();
+            ClearpayRefArchCOHelpers.removeAllNonGiftCertificatePayments(currentBasket);
+            var cpCheckoutUtilities = cpUtilities.checkoutUtilities;
+            var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
             currentBasket.createPaymentInstrument(paymentMethodName, new Money(amount, currency));
-            ClearpayCOHelpers.addShippingAddressToBasket(currentBasket, clearPayOrderResponse.shipping);
+            ClearpayRefArchCOHelpers.addShippingAddressToBasket(currentBasket, clearPayOrderResponse.shipping);
         });
         // puts initial state into paymentTransaction
-        require('*/cartridge/scripts/checkout/clearpayUpdatePreapprovalStatus').getPreApprovalResult(currentBasket, { status: 'SUCCESS', orderToken: apOrderToken, cpExpressCheckout: true });
+        require('*/cartridge/scripts/checkout/clearpayUpdatePreapprovalStatus').getPreApprovalResult(currentBasket, { status: 'SUCCESS', orderToken: cpOrderToken, cpExpressCheckout: true });
 
         // Place the order
         // This logic is similar to ClearpayRedirect-HandleResponse, which is what gets called after Clearpay redirect flow returns to site
@@ -158,15 +159,15 @@ function integratedShippingFlow(req, res, next, clearPayOrderResponse) {
         return next();
     }
     Transaction.wrap(function () {
-        ClearpayCOHelpers.removeAllNonGiftCertificatePayments(currentBasket);
-        var apCheckoutUtilities = apUtilities.checkoutUtilities;
-        var paymentMethodName = apCheckoutUtilities.getPaymentMethodName();
+        ClearpayRefArchCOHelpers.removeAllNonGiftCertificatePayments(currentBasket);
+        var cpCheckoutUtilities = cpUtilities.checkoutUtilities;
+        var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
         currentBasket.createPaymentInstrument(paymentMethodName, new Money(amount, currency));
-        ClearpayCOHelpers.addShippingAddressToBasket(currentBasket, clearPayOrderResponse.shipping);
+        ClearpayRefArchCOHelpers.addShippingAddressToBasket(currentBasket, clearPayOrderResponse.shipping);
     });
     ClearpaySession.setExpressCheckoutFinalizeFlow(true);
         // puts initial state into paymentTransaction
-    require('*/cartridge/scripts/checkout/clearpayUpdatePreapprovalStatus').getPreApprovalResult(currentBasket, { status: 'SUCCESS', orderToken: apOrderToken, cpExpressCheckout: true });
+    require('*/cartridge/scripts/checkout/clearpayUpdatePreapprovalStatus').getPreApprovalResult(currentBasket, { status: 'SUCCESS', orderToken: cpOrderToken, cpExpressCheckout: true });
     res.redirect(URLUtils.url('Checkout-Begin', 'stage', 'placeOrder'));
     return next();
 }
@@ -184,16 +185,16 @@ server.get('ContinueFinalize',
                 return next();
             }
             Transaction.wrap(function () {
-                ClearpayCOHelpers.removeAllNonGiftCertificatePayments(currentBasket);
-                var apCheckoutUtilities = apUtilities.checkoutUtilities;
-                var paymentMethodName = apCheckoutUtilities.getPaymentMethodName();
+                ClearpayRefArchCOHelpers.removeAllNonGiftCertificatePayments(currentBasket);
+                var cpCheckoutUtilities = cpUtilities.checkoutUtilities;
+                var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
                 currentBasket.createPaymentInstrument(paymentMethodName, new Money(0.0, currentBasket.currencyCode));
             });
             // This does a recalculation using the current basket
-            ClearpayCOHelpers.calculateAndSetPaymentAmount(currentBasket);
+            ClearpayRefArchCOHelpers.calculateAndSetPaymentAmount(currentBasket);
             let payAmt = ClearpayCOHelpers.getCurrentClearpayPaymentAmount(currentBasket);
             if (!ClearpayCOHelpers.isPriceWithinThreshold(payAmt)) {
-                var brand = apBrandUtilities.getBrand();
+                var brand = cpBrandUtilities.getBrand();
                 var threshold = thresholdUtilities.getThresholdAmounts(brand);
                 redirectToErrorDisplay(res, Resource.msgf('minimum.threshold.message', 'clearpay', null, new Money(threshold.minAmount, currentBasket.currencyCode)
                 , new Money(sitePreferences.maxAmount, currentBasket.currencyCode)));
@@ -225,7 +226,7 @@ server.get('FinalizeOrder',
                 redirectToErrorDisplay(res, Resource.msg('expresscheckout.error.notfinalizeflow', 'clearpay', null));
                 return next();
             }
-            let apOrderToken = ClearpaySession.getToken();
+            let cpOrderToken = ClearpaySession.getToken();
 
             if (!widgetChecksum) {
                 redirectToErrorDisplay(res, Resource.msg('expresscheckout.error.missingchecksum', 'clearpay', null));
@@ -235,12 +236,12 @@ server.get('FinalizeOrder',
 
             // Recreate the payment instrument in case session changed
             Transaction.wrap(function () {
-                ClearpayCOHelpers.removeAllNonGiftCertificatePayments(currentBasket);
-                var apCheckoutUtilities = apUtilities.checkoutUtilities;
-                var paymentMethodName = apCheckoutUtilities.getPaymentMethodName();
+                ClearpayRefArchCOHelpers.removeAllNonGiftCertificatePayments(currentBasket);
+                var cpCheckoutUtilities = cpUtilities.checkoutUtilities;
+                var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
                 currentBasket.createPaymentInstrument(paymentMethodName, new Money(0.0, currentBasket.currencyCode));
             });
-            ClearpayCOHelpers.calculateAndSetPaymentAmount(currentBasket);
+            ClearpayRefArchCOHelpers.calculateAndSetPaymentAmount(currentBasket);
 
             // Re-calculate the payments.
             var calculatedPaymentTransaction = COHelpers.calculatePaymentTransaction(
@@ -251,7 +252,7 @@ server.get('FinalizeOrder',
                 return next();
             }
 
-            require('*/cartridge/scripts/checkout/clearpayUpdatePreapprovalStatus').getPreApprovalResult(currentBasket, { status: 'SUCCESS', orderToken: apOrderToken, cpExpressCheckout: true, cpExpressCheckoutChecksum: widgetChecksum });
+            require('*/cartridge/scripts/checkout/clearpayUpdatePreapprovalStatus').getPreApprovalResult(currentBasket, { status: 'SUCCESS', orderToken: cpOrderToken, cpExpressCheckout: true, cpExpressCheckoutChecksum: widgetChecksum });
 
             // Place order and show confirmation. What's the best way? Can we return to checkout.isml? Or probably just directly
 
@@ -304,7 +305,7 @@ server.get('WidgetError',
 server.get('CancelOrder',
         server.middleware.https,
         function (req, res, next) {
-            var apOrderToken = ClearpaySession.getToken();
+            var cpOrderToken = ClearpaySession.getToken();
             ClearpaySession.clearSession();
             if (req.querystring.clearpayerror) {
                 res.redirect(URLUtils.url('Cart-Show', 'clearpayerror', req.querystring.clearpayerror));
@@ -319,7 +320,7 @@ server.get('Debug',
         server.middleware.https,
         function (req, res, next) {
             var currentBasket = BasketMgr.getCurrentBasket();
-            ClearpayCOHelpers.removeAllNonGiftCertificatePayments(currentBasket);
+            ClearpayRefArchCOHelpers.removeAllNonGiftCertificatePayments(currentBasket);
 
             let cartTotals = ClearpayShippingHelpers.calculateBasketTaxShipTotals(req, currentBasket);
             return next();
@@ -343,8 +344,31 @@ server.get('CartStatus',
             res.json({ cartTotalAmount: cartTotals.totalCost.value,
                 cartTotalCurrency: cartTotals.totalCost.currencyCode,
                 withinThreshold: ClearpayCOHelpers.isBasketAmountWithinThreshold(),
-                instorepickup: ClearpayCOHelpers.shouldEnableExpressPickupMode(currentBasket),
-                expressCheckoutFinalize: ClearpaySession.isExpressCheckoutFinalizeFlow() });
+                instorepickup: ClearpayRefArchCOHelpers.shouldEnableExpressPickupMode(currentBasket),
+                expressCheckoutFinalize: ClearpaySession.isExpressCheckoutFinalizeFlow()
+            });
+            return next();
+        }
+);
+
+server.get('GetShippingRequired',
+        server.middleware.https,
+        function (req, res, next) {
+            if (!clearpayEnabled || !expressCheckoutEnabled) {
+                res.json({});
+                return next();
+            }
+
+            var clearpayShipmentType = '';
+            var currentBasket = BasketMgr.getCurrentBasket();
+            if (currentBasket) {
+                clearpayShipmentType = ClearpayRefArchCOHelpers.getCartShipmentType(currentBasket)
+            }
+           
+            res.json({
+                shipmentType: clearpayShipmentType 
+            });
+            
             return next();
         }
 );
@@ -387,23 +411,20 @@ server.get('CreateToken',
             }
 
         // Get a map of storeId -> store .
-            let storeMap = ClearpayCOHelpers.getInStorePickupsMap(currentBasket);
-            let numHomeDeliveries = ClearpayCOHelpers.getNumHomeDeliveries(currentBasket);
-            let store = null;
-            let storePickup = false;
+        let storeMap = ClearpayCOHelpers.getInStorePickupsMap(currentBasket);
+        let store = null;
+        var shipmentType =  ClearpayRefArchCOHelpers.getCartShipmentType(currentBasket);
+        var expressCheckoutSplitShipment = false;
         // Make sure everything is only going to a single store and there are no home deliveries.
         // If so, we use in-store pickup mode for express checkout
-            if ((numHomeDeliveries == 0) && (Object.keys(storeMap).length == 1)) {
-                storePickup = true;
-                for (key in storeMap) {
-                    store = storeMap[key];
-                }
-            } else if ((numHomeDeliveries > 0) && (Object.keys(storeMap).length > 0)) {
-            // If there are items going to multiple places, we can't use express checkout
-                return returnJsonError(res, next, Resource.msg('expresscheckout.error.multidestination', 'clearpay', null));
-            } else if (Object.keys(storeMap).length > 1) {
-                return returnJsonError(res, next, Resource.msg('expresscheckout.error.multidestination', 'clearpay', null));
+        if(!empty(shipmentType)){
+            if(shipmentType !='SingleStorePickup'){
+                expressCheckoutSplitShipment = true
             }
+            for (var key in storeMap) {
+                store = storeMap[key];
+            }
+        }
 
         // merchantnum is currently unused. Just pass in a "x"
         // var merchantOrderNum = Math.random().toString(36).substring(2, 15);
@@ -419,9 +440,9 @@ server.get('CreateToken',
 
         // Create the payment instrument
             Transaction.wrap(function () {
-                ClearpayCOHelpers.removeAllNonGiftCertificatePayments(currentBasket);
-                var apCheckoutUtilities = apUtilities.checkoutUtilities;
-                var paymentMethodName = apCheckoutUtilities.getPaymentMethodName();
+                ClearpayRefArchCOHelpers.removeAllNonGiftCertificatePayments(currentBasket);
+                var cpCheckoutUtilities = cpUtilities.checkoutUtilities;
+                var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
                 currentBasket.createPaymentInstrument(paymentMethodName, checkoutPrice);
             });
 
@@ -431,6 +452,7 @@ server.get('CreateToken',
             ClearpaySession.setExpressCheckoutAmount(checkoutPrice.value);
             ClearpaySession.setExpressCheckoutCurrency(checkoutPrice.currencyCode);
             ClearpaySession.setItemsChecksum(ClearpayCOHelpers.computeBasketProductLineItemChecksum(currentBasket));
+            ClearpaySession.setIsSplitShipment(expressCheckoutSplitShipment);
 
             res.json({ status: 'SUCCESS', token: clearPayTokenResponse, merchantRef: merchantOrderNum });
             return next();
@@ -461,7 +483,7 @@ server.post('GetShippingMethods',
             }
 
 
-            if (ClearpayCOHelpers.shouldEnableExpressPickupMode(currentBasket)) {
+            if (ClearpayRefArchCOHelpers.shouldEnableExpressPickupMode(currentBasket)) {
             // if this is a store pickup, just get the store name
                 let storeMap = ClearpayCOHelpers.getInStorePickupsMap(currentBasket);
                 let store = null;
@@ -596,8 +618,8 @@ server.get('PostClearpayCheckoutFlow',
                 return next();
             }
 
-            var apOrderToken = ClearpaySession.getToken();
-            if (!apOrderToken) {
+            var cpOrderToken = ClearpaySession.getToken();
+            if (!cpOrderToken) {
                 ClearpaySession.clearSession();
                 Logger.error('Missing token from session.');
                 redirectToErrorDisplay(res, Resource.msg('expresscheckout.error.invalidsession', 'clearpay', null));
@@ -605,7 +627,7 @@ server.get('PostClearpayCheckoutFlow',
             }
 
             // retrieve the order from Clearpay using api
-            var clearPayOrderResponse = require('*/cartridge/scripts/util/getOrderToken').validateOrderToken(apOrderToken);
+            var clearPayOrderResponse = require('*/cartridge/scripts/util/getOrderToken').validateOrderToken(cpOrderToken);
             if (clearPayOrderResponse.error) {
                 Logger.error(clearPayOrderResponse.errorMessage || 'Unable to verify order token');
                 redirectToErrorDisplay(res, clearPayOrderResponse.errorMessage || Resource.msg('expresscheckout.error.gettoken', 'clearpay', null));
@@ -617,7 +639,12 @@ server.get('PostClearpayCheckoutFlow',
                 return next();
             }
 
-            let expressCheckoutShippingStrategy = sitePreferences.getExpressCheckoutShippingStrategy();
+            var expressCheckoutShippingStrategy = sitePreferences.getExpressCheckoutShippingStrategy();
+
+            if((!empty(ClearpaySession.getIsSplitShipment()) && ClearpaySession.getIsSplitShipment())){
+                expressCheckoutShippingStrategy = "deferred";
+            }
+
            // If this is deferred shipping, just call DeferredFlow()
             if (expressCheckoutShippingStrategy == 'deferred') {
                 return deferredShippingFlow(req, res, next, clearPayOrderResponse);

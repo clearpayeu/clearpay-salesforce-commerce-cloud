@@ -6,9 +6,9 @@ function ExpressCheckoutModel() {
     var expressCheckoutModelObject = {
         cpExpressCheckout: false,
         cpExpressCheckoutChecksum: '',
-        apTempShippingAddressChanged: false,
-        apTempBasketItemsChanged: false,
-        apTempCheckoutAmountChanged: null
+        cpTempShippingAddressChanged: false,
+        cpTempBasketItemsChanged: false,
+        cpTempCheckoutAmountChanged: null
     };
     this.ExpressCheckoutModel = expressCheckoutModelObject;
 }

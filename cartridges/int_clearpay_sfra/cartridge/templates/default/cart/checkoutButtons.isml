@@ -20,13 +20,11 @@ clearpayExpressPickupEnabled - does the current cart and selected ship method in
     var clearpayExpressCheckoutEnabled = clearpayEnabled ? sitePreferences.isExpressCheckoutEnabled() : false;
     var isExpressCheckoutFinalize = require('*/cartridge/scripts/util/clearpaySession').isExpressCheckoutFinalizeFlow();
     var clearpayExpressCheckoutPdpEnabled = sitePreferences.isExpressCheckoutPdpEnabled();
-    var ClearpayCOHelpers = require('~/cartridge/scripts/checkout/clearpayCheckoutHelpers');
-    var clearpayExpressPickupEnabled = ClearpayCOHelpers.shouldEnableExpressPickupMode();
+    var ClearpayCOHelpers = require('*/cartridge/scripts/checkout/clearpayCheckoutHelpers');
+    var clearpayExpressPickupEnabled = require('~/cartridge/scripts/checkout/clearpayRefArchCheckoutHelpers').shouldEnableExpressPickupMode();
     var disableClearpayPaymentMethod = ! ClearpayCOHelpers.isBasketAmountWithinThreshold();
-    var checkoutButtonClass = 'afterpay-checkout-button';
-    if(countrycode === 'GB'){
-        checkoutButtonClass = 'clearpay-checkout-button';
-    }
+
+    var checkoutButtonClass = 'clearpay-checkout-button';
 
     if(disableClearpayPaymentMethod){
         checkoutButtonClass += " clearpay-hide";

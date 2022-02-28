@@ -16,8 +16,8 @@ clearpayExpressPickupEnabled - does the current cart and selected ship method in
     var isExpressCheckoutFinalize = require('*/cartridge/scripts/util/clearpaySession').isExpressCheckoutFinalizeFlow();
     var clearpayExpressCheckoutPdpEnabled = sitePreferences.isExpressCheckoutPdpEnabled();
 
-    var ClearpayCOHelpers = require('~/cartridge/scripts/checkout/clearpayCheckoutHelpers');
-    var clearpayExpressPickupEnabled = clearpayExpressCheckoutEnabled ? ClearpayCOHelpers.shouldEnableExpressPickupMode() : false;
+    var ClearpayCOHelpers = require('*/cartridge/scripts/checkout/clearpayCheckoutHelpers');
+    var clearpayExpressPickupEnabled = clearpayExpressCheckoutEnabled ? require('~/cartridge/scripts/checkout/clearpaySGCheckoutHelpers').shouldEnableExpressPickupMode() : false;
     var disableClearpayPaymentMethod = ! ClearpayCOHelpers.isBasketAmountWithinThreshold();
     // for pdp, we don't use the basket amount, we just check if the current product > max thresshold
     if (pdict.pagetype === 'product_detail' && clearpayExpressCheckoutPdpEnabled) {

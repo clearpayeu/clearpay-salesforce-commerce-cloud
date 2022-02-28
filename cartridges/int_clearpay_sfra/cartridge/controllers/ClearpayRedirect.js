@@ -6,8 +6,8 @@ var csrfProtection = require('*/cartridge/scripts/middleware/csrf');
 var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');
 var Logger = LogUtils.getLogger('ClearpayRedirect');
 var {
-         brandUtilities: apBrandUtilities,
-         checkoutUtilities: apCheckoutUtilities
+         brandUtilities: cpBrandUtilities,
+         checkoutUtilities: cpCheckoutUtilities
      } = require('*/cartridge/scripts/util/clearpayUtilities');
 
 /* API Includes */
@@ -27,13 +27,13 @@ server.get('PrepareRedirect', server.middleware.https, function (req, res, next)
     var errorCode = req.querystring.errorCode;
     var invalidEmailError = Resource.msg('clearpay.email.invalid.response', 'clearpay', null);
 
-    var apBrand = apBrandUtilities.getBrand();
-    var scriptURL = apBrandUtilities.getBrandSettings().javaScriptUrl;
-    var countryCodeValue = apBrandUtilities.getCountryCode();
+    var cpBrand = cpBrandUtilities.getBrand();
+    var scriptURL = cpBrandUtilities.getBrandSettings().javaScriptUrl;
+    var countryCodeValue = cpBrandUtilities.getCountryCode();
 
     if ((clearPayToken !== 'undefined') && countryCodeValue) {
         res.render('checkout/clearpayRedirect', {
-            cpBrand: apBrand,
+            cpBrand: cpBrand,
             cpJavascriptURL: scriptURL,
             cpToken: clearPayToken,
             countryCode: countryCodeValue
@@ -60,8 +60,8 @@ server.post('IsClearpay',
     server.middleware.https,
     csrfProtection.validateAjaxRequest,
     function (req, res, next) {
-        var paymentMethodName = apCheckoutUtilities.getPaymentMethodName();
-        var apBrand = apBrandUtilities.getBrand();
+        var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
+        var cpBrand = cpBrandUtilities.getBrand();
         var currentBasket = BasketMgr.getCurrentBasket();
         var paymentInstexists = false;
         var clearpayInstruments = currentBasket.getPaymentInstruments(paymentMethodName);
@@ -81,8 +81,8 @@ server.post('IsClearpay',
         res.json({
             isClearpay: paymentInstexists,
             resource: {
-                pleaseWait: Resource.msg('redirect.message', apBrand, null),
-                redirectMessage: Resource.msg('redirect.notification', apBrand, null)
+                pleaseWait: Resource.msg('redirect.message', cpBrand, null),
+                redirectMessage: Resource.msg('redirect.notification', cpBrand, null)
             }
         });
         return next();

@@ -1,0 +1,12 @@
+{
+    "hooks": [
+        {
+            "name": "app.payment.processor.clearpay_credit",
+            "script": "./hooks/payment/processor/clearpay_credit"
+        },
+        {
+            "name": "dw.system.request.onSession",
+            "script": "./request/onSession"
+        }
+    ]
+}

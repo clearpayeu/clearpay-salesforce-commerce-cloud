@@ -123,11 +123,11 @@
                 <div class="clearpay-widget">
                     <isinclude template="util/modulesClearpay"/>
 
-                    <isif condition="${pdict.apApplicable == true}">
+                    <isif condition="${pdict.cpApplicable == true}">
                         <isclearpaymessage
                             classname="${pdict.classname}"
                             belowthreshold="${pdict.belowthreshold}"
-                            brand="${pdict.apBrand}"
+                            brand="${pdict.cpBrand}"
                             totalprice="${pdict.totalPrice}"
                         />
                     </isif>

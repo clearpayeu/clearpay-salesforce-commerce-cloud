@@ -4,7 +4,7 @@ var clearpayDirectCaptureService = require('*/cartridge/scripts/logic/services/c
 var clearpayAuthoriseService = require('*/cartridge/scripts/logic/services/clearpayAuthorisePaymentService');
 var PAYMENT_MODE = require('*/cartridge/scripts/util/clearpayConstants').PAYMENT_MODE;
 var PAYMENT_STATUS = require('*/cartridge/scripts/util/clearpayConstants').PAYMENT_STATUS;
-var { checkoutUtilities: apCheckoutUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
+var { checkoutUtilities: cpCheckoutUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
 
 var Site = require('dw/system/Site');
 var Resource = require('dw/web/Resource');
@@ -53,7 +53,7 @@ var UpdateOrderService = {
     },
 
     getAuthoriseDirectCaptureService: function (order) {
-        var paymentMode = apCheckoutUtilities.getPaymentMode(order);
+        var paymentMode = cpCheckoutUtilities.getPaymentMode(order);
         if (paymentMode === PAYMENT_MODE.AUTHORISE) {
             return clearpayAuthoriseService;
         }
@@ -72,7 +72,7 @@ var UpdateOrderService = {
 
     getPaymentID: function (order) {
         var cpPaymentID;
-        var paymentMethodName = apCheckoutUtilities.getPaymentMethodName();
+        var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
 
         if (!paymentMethodName) {
             return null;
@@ -92,7 +92,7 @@ var UpdateOrderService = {
 
     getToken: function (order) {
         var cpToken;
-        var paymentMethodName = apCheckoutUtilities.getPaymentMethodName();
+        var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
 
         if (!paymentMethodName) {
             return null;
@@ -111,7 +111,7 @@ var UpdateOrderService = {
     },
     // Need amount for express checkouts
     getPaymentAmount: function (order) {
-        var paymentMethodName = apCheckoutUtilities.getPaymentMethodName();
+        var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
         return order.getPaymentInstruments(paymentMethodName)[0].getPaymentTransaction().amount;
     },
     updateOrder: function (order, status) {

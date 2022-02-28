@@ -5,8 +5,8 @@ var configurationService = require('*/cartridge/scripts/logic/services/clearpayC
 var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');
 var Logger = LogUtils.getLogger('thresholdUtilities');
 var { brandUtilities, checkoutUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
-var clearpayBrand = BrandUtilities.getBrand();
-var countryCode = BrandUtilities.getCountryCode();
+var clearpayBrand = brandUtilities.getBrand();
+var countryCode = brandUtilities.getCountryCode();
 var result = {
     status: false
 };

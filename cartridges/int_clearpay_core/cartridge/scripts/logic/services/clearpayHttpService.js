@@ -36,13 +36,13 @@ function getClearpayHttpService() {
 
     var clearpayHttpService = LocalServiceRegistry.createService(serviceID, {
         createRequest: function (service, endPointUrl, requestBody) {
-            var apSitePreferencesUtilities = ClearpayUtilities.sitePreferencesUtilities;
+            var cpSitePreferencesUtilities = ClearpayUtilities.sitePreferencesUtilities;
 
             service.setURL(service.configuration.credential.URL + endPointUrl);
             service.setRequestMethod(requestBody.requestMethod);
             service.addHeader('Content-Type', 'application/json');
 
-            const clearpayCartridge = 'ClearpayCartridge/23.0.0';
+            const clearpayCartridge = 'ClearpayCartridge/23.1.0';
             const merchantID = 'Merchant/' + service.configuration.credential.user;
             const siteURL = URLUtils.httpsHome().toString();
             const storeFront = Site.getCurrent().getID();
@@ -60,7 +60,7 @@ function getClearpayHttpService() {
             service.addHeader('User-Agent', userAgent);
 
             if (endPointUrl === 'payments/capture') {
-                service.timeout = apSitePreferencesUtilities.getCaptureTimeout();
+                service.timeout = cpSitePreferencesUtilities.getCaptureTimeout();
             }
 
             return JSON.stringify(requestBody);

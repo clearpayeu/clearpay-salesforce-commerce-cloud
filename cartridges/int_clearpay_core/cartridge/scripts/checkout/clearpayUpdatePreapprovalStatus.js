@@ -1,6 +1,7 @@
 'use strict';
 var Transaction = require('dw/system/Transaction');
 var PreapprovalModel = require('*/cartridge/scripts/models/preapprovalModel');
+var clearpayUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
 var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');
 var Logger = LogUtils.getLogger('afterpaUpdatePreapprovalStatus');
 

@@ -208,7 +208,7 @@ OrderRequestBuilder.prototype.buildShipping = function (basket) {
                 storeMap[lineItem.custom.fromStoreId] = dw.catalog.StoreMgr.getStore(lineItem.custom.fromStoreId);
             }
         }
-        Logger.debug("storeMap : " + JSON.stringify(storeMap));
+
         if (Object.keys(storeMap).length == 1) {
             storePickup = true;
             for (var key in storeMap) {
@@ -231,10 +231,10 @@ OrderRequestBuilder.prototype.buildShipping = function (basket) {
  * @returns {Object} - this object
  */
 OrderRequestBuilder.prototype.buildItems = function (basket) {
-     var lineItems = basket.getAllProductLineItems().toArray();
+    var lineItems = basket.getAllProductLineItems().toArray();
 
     this.context.items = lineItems.map(function (li) {
-        var item = new LineItem();
+                var item = new LineItem();
         var product = li.product;
 
     // Some lineitems may not be products
@@ -246,12 +246,12 @@ OrderRequestBuilder.prototype.buildItems = function (basket) {
             item.price.amount = li.adjustedNetPrice.value;
             item.price.currency = li.adjustedNetPrice.currencyCode;
         } else {
-            item.name = product.name;
-            item.sku = product.ID;
+                item.name = product.name;
+                item.sku = product.ID;
             item.quantity = li.getQuantity().value;
             item.price.amount = product.getPriceModel().getPrice().value;
-            item.price.currency = product.getPriceModel().getPrice().currencyCode;
-        }
+                item.price.currency = product.getPriceModel().getPrice().currencyCode;
+            }
         return item;
     });
     return this;

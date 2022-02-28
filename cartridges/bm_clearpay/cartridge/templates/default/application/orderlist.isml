@@ -64,10 +64,10 @@
                     <isif condition="${paymentInstrument && paymentInstrument.custom && paymentInstrument.paymentTransaction}">
                         <isset name="paymentTransaction" value="${paymentInstrument.paymentTransaction}" scope="page" />
                         <isset name="isDirectPayment" value="${paymentTransaction.custom.cpPaymentMode === 'DIRECT_CAPTURE'}" scope="page" />
-                        <isset name="apPaymentStatus" value="${isDirectPayment ? paymentTransaction.custom.cpDirectPaymentStatus : paymentTransaction.custom.cpAuthoriseStatus}" scope="page" />
-                        <isset name="canRefund" value="${isDirectPayment && apPaymentStatus.toLowerCase() == 'approved' && empty(paymentTransaction.custom.cpRefundID)}" scope="page" />
+                        <isset name="cpPaymentStatus" value="${isDirectPayment ? paymentTransaction.custom.cpDirectPaymentStatus : paymentTransaction.custom.cpAuthoriseStatus}" scope="page" />
+                        <isset name="canRefund" value="${isDirectPayment && cpPaymentStatus.toLowerCase() == 'approved' && empty(paymentTransaction.custom.cpRefundID)}" scope="page" />
                         <isif condition="${!(isDirectPayment && !canRefund)}">
-                            <isset name="currentStatus" value="${apPaymentStatus}" scope="page" />
+                            <isset name="currentStatus" value="${cpPaymentStatus}" scope="page" />
                         </isif>
                     </isif>
                     <td class="table_detail left e s" nowrap="nowrap">${currentStatus}</td>

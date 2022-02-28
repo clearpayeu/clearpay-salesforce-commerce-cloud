@@ -1,0 +1,49 @@
+<div class="mb-sm-3">
+    <a href="${URLUtils.https('Checkout-Begin')}"
+        class="btn btn-primary btn-block checkout-btn ${pdict.valid.error ? 'disabled' : ''}" role="button">
+        ${Resource.msg('button.checkout', 'cart', null)}
+    </a>
+</div>
+
+<iscomment>
+isExpressCheckoutFinalize - has consumer already gone through Clearpay Express Checkout and now is back on merchant site to finalize
+clearpayExpressPickupEnabled - Checks that cart only has items being picked up. If so, set pickup flag.
+clearpayExpressCheckoutPdpEnabled - is Clearpay express checkout enabled on pdp in site preferences
+clearpayExpressPickupEnabled - does the current cart and selected ship method indicate Clearpay Express Checkout should use in-store pickup mode
+</iscomment>
+<isscript>
+    var BrandUtilities = require("*/cartridge/scripts/util/clearpayUtilities.js").brandUtilities;
+    var countrycode = BrandUtilities.getCountryCode();
+    var expressCheckoutJS = BrandUtilities.getBrandSettings().javaScriptUrl + "?merchant_key=demo";
+    var sitePreferences = require("*/cartridge/scripts/util/clearpayUtilities.js").sitePreferencesUtilities;
+    var clearpayEnabled = sitePreferences.isClearpayEnabled();
+    var clearpayExpressCheckoutEnabled = clearpayEnabled ? sitePreferences.isExpressCheckoutEnabled() : false;
+    var isExpressCheckoutFinalize = require('*/cartridge/scripts/util/clearpaySession').isExpressCheckoutFinalizeFlow();
+    var clearpayExpressCheckoutPdpEnabled = sitePreferences.isExpressCheckoutPdpEnabled();
+    var ClearpayCOHelpers = require('*/cartridge/scripts/checkout/clearpayCheckoutHelpers');
+    var clearpayExpressPickupEnabled = require('~/cartridge/scripts/checkout/clearpayRefArchCheckoutHelpers').shouldEnableExpressPickupMode();
+    var disableClearpayPaymentMethod = ! ClearpayCOHelpers.isBasketAmountWithinThreshold();
+
+    var checkoutButtonClass = 'clearpay-checkout-button';
+
+    if(disableClearpayPaymentMethod){
+        checkoutButtonClass += " clearpay-hide";
+    }
+</isscript>
+<iscomment>Start of Clearpay</iscomment>
+<isset name="clearpayExpressCheckoutPage" value="cart" scope="page" />
+<isinclude template="product/components/clearpayexpresscheckout" />
+<isif condition="${clearpayExpressCheckoutEnabled}">
+    <div class="mb-sm-3">
+        <isif condition="${isExpressCheckoutFinalize}">
+            <a href="${URLUtils.url('ClearpayExpress-ContinueFinalize')}" class="${checkoutButtonClass} btn btn-block checkout-btn ${pdict.valid.error ? 'disabled' : ''}">
+            &nbsp;
+            </a>
+        <iselse/>
+            <a id="clearpay-express-button" class="${checkoutButtonClass} btn btn-block checkout-btn ${pdict.valid.error ? 'disabled' : ''}" role="button">
+            &nbsp;
+            </a>
+        </isif>
+    </div>
+</isif>
+<iscomment>End of Clearpay</iscomment>

@@ -17,16 +17,16 @@ var AuthorisePaymentService = {
             var isCheckoutAdjusted = false;
             let CaptureHelpers = require('*/cartridge/scripts/payment/expressCaptureHelpers');
             let body = CaptureHelpers.generateItemsAndShippingBody(order);
-            if (expressCheckoutModel.apTempShippingAddressChanged) {
+            if (expressCheckoutModel.cpTempShippingAddressChanged) {
                 shippingObj = body.shipping;
                 isCheckoutAdjusted = true;
             }
-            if (expressCheckoutModel.apTempBasketItemsChanged) {
+            if (expressCheckoutModel.cpTempBasketItemsChanged) {
                 itemsObj = body.items;
                 isCheckoutAdjusted = true;
             }
             // Possibly account for coupons, or possibly other factors
-            if (expressCheckoutModel.apTempCheckoutAmountChanged) {
+            if (expressCheckoutModel.cpTempCheckoutAmountChanged) {
                 isCheckoutAdjusted = true;
             }
             // express checkout has 2 types of capture. One is with the Clearpay widget (has checksum)

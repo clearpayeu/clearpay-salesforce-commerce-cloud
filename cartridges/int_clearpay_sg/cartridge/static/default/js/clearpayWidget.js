@@ -4,6 +4,7 @@ function createClearpayWidget() {
     target: '#clearpay-widget-container',
     locale: $('#clearpay-widget-locale').val().replace("_", "-"),
     onReady: function (event) {
+      console.log("onReady() called. event=", event);
       clearpayWidget.update({
         amount: {
           amount: $('#clearpay-widget-amount').val(),
@@ -13,6 +14,8 @@ function createClearpayWidget() {
       // Fires when the widget is ready to accept updates.
     },
     onChange: function (event) {
+      console.log("onChange() called. event=", event);
+      console.log(" Amount due today: ", event.data.amountDueToday.amount);
       if (!event.data.isValid) {
         let widgetErrorUrl = $('#clearpay-express-url-widgeterror').val() + "?error=" + encodeURIComponent(event.data.error);
         console.log("Error with Clearpay Widget: " + event.data.error);

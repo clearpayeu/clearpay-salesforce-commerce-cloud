@@ -10,7 +10,7 @@ var Money = require('dw/value/Money');
 /* Global variables */
 var ClearpayUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
 var sitePreferences = ClearpayUtilities.sitePreferencesUtilities;
-var apCheckoutUtilities = ClearpayUtilities.checkoutUtilities;
+var cpCheckoutUtilities = ClearpayUtilities.checkoutUtilities;
 var ctrlCartridgeName = sitePreferences.getControllerCartridgeName();
 var clearpayEnabled = sitePreferences.isClearpayEnabled();
 var expressCheckoutEnabled = sitePreferences.isExpressCheckoutEnabled();
@@ -27,8 +27,10 @@ var cpBrandUtilities = ClearpayUtilities.brandUtilities;
 var thresholdUtilities = require('*/cartridge/scripts/util/thresholdUtilities');
 var brand = cpBrandUtilities.getBrand();
 var threshold = thresholdUtilities.getThresholdAmounts(brand);
-var COHelpers = require('*/cartridge/scripts/checkout/clearpayCheckoutHelpers');
+var ClearpayCOHelpers = require('*/cartridge/scripts/checkout/clearpayCheckoutHelpers');
+var ClearpaySGCOHelpers = require('~/cartridge/scripts/checkout/clearpaySGCheckoutHelpers');
 
+var ClearpayShippingHelpers = require('~/cartridge/scripts/checkout/clearpayShippingHelpers');
 
 function redirectToErrorDisplay(error) {
     let redirectURL = dw.web.URLUtils.https('COBilling-Start', 'clearpay', error);
@@ -70,10 +72,9 @@ function CartStatus() {
         return;
     }
 
-    let ShippingHelpers = require('*/cartridge/scripts/checkout/clearpayShippingHelpers');
-    let cartTotals = ShippingHelpers.calculateCartTaxShipTotals(cart);
+    let cartTotals = ClearpayShippingHelpers.calculateCartTaxShipTotals(cart);
 
-    var clearpayExpressPickupEnabled = COHelpers.shouldEnableExpressPickupMode();
+    var clearpayExpressPickupEnabled = ClearpaySGCOHelpers.shouldEnableExpressPickupMode();
     responseUtils.renderJSON({ cartTotalAmount: cartTotals.totalCost.value, cartTotalCurrency: cartTotals.totalCost.currencyCode, instorepickup: clearpayExpressPickupEnabled });
 }
 
@@ -86,7 +87,6 @@ function CreateToken() {
         return;
     }
     var ShippingMgr = require('dw/order/ShippingMgr');
-    var ShippingHelpers = require('*/cartridge/scripts/checkout/clearpayShippingHelpers');
     // reset all session params if user clicks checkout again
     let ClearpaySession = require('*/cartridge/scripts/util/clearpaySession');
     ClearpaySession.clearSession();
@@ -113,8 +113,8 @@ function CreateToken() {
 
 
     // Get a map of storeId -> store .
-    let storeMap = COHelpers.getInStorePickupsMap(cart.object);
-    let numHomeDeliveries = COHelpers.getNumHomeDeliveries(cart.object);
+    let storeMap = ClearpayCOHelpers.getInStorePickupsMap(cart.object);
+    let numHomeDeliveries = ClearpayCOHelpers.getNumHomeDeliveries(cart.object);
 
     let store = null;
     let storePickup = false;
@@ -155,7 +155,7 @@ function CreateToken() {
     // This is the initial amount we will create the checkout with
     // var createCheckoutPrice = cart.object.getAdjustedMerchandizeTotalGrossPrice();
     var createCheckoutPrice = cart.getNonGiftCertificateAmount();
-    if (!COHelpers.isPriceWithinThreshold(createCheckoutPrice)) {
+    if (!ClearpayCOHelpers.isPriceWithinThreshold(createCheckoutPrice)) {
         responseUtils.renderJSON({ status: 'FAILURE',
             error: Resource.msgf('minimum.threshold.message', brand, null, new Money(threshold.minAmount, cart.object.currencyCode)
              , new Money(threshold.maxAmount, cart.object.currencyCode)) });
@@ -180,7 +180,7 @@ function CreateToken() {
     ClearpaySession.setExpressCheckoutAmount(createCheckoutPrice.value);
     ClearpaySession.setExpressCheckoutCurrency(createCheckoutPrice.currencyCode);
     // Store a checksum of the line items into the session. Check this before we do a capture.
-    ClearpaySession.setItemsChecksum(COHelpers.computeBasketProductLineItemChecksum(cart.object));
+    ClearpaySession.setItemsChecksum(ClearpayCOHelpers.computeBasketProductLineItemChecksum(cart.object));
 
     app.getController('COShipping').PrepareShipments();
 
@@ -197,7 +197,6 @@ function GetShippingMethods() {
     }
     var ShippingMgr = require('dw/order/ShippingMgr');
     var HashMap = require('dw/util/HashMap');
-    var ShippingHelpers = require('~/cartridge/scripts/checkout/clearpayShippingHelpers');
 
     var i,
         address,
@@ -214,16 +213,16 @@ function GetShippingMethods() {
         return;
     }
 
-    if (COHelpers.shouldEnableExpressPickupMode(cart)) {
+    if (ClearpaySGCOHelpers.shouldEnableExpressPickupMode(cart)) {
         // if this is a store pickup, just get the store name
-        let storeMap = COHelpers.getInStorePickupsMap(cart.object);
+        let storeMap = ClearpayCOHelpers.getInStorePickupsMap(cart.object);
         let store = null;
         for (var key in storeMap) {
             store = storeMap[key];
         }
         if (store) {
             // The cart should only have in-store pickup items at this point
-            let costs = ShippingHelpers.calculateCartTaxShipTotals(cart);
+            let costs = ClearpayShippingHelpers.calculateCartTaxShipTotals(cart);
             responseUtils.renderJSON([{
                 id: store.ID,
                 name: store.name,
@@ -268,7 +267,7 @@ function GetShippingMethods() {
         }
 
         // copy in the shipping address to the basket to get tax/shipping rates
-        COHelpers.addShippingAddressToBasket(cart.object, {
+        ClearpaySGCOHelpers.addShippingAddressToBasket(cart.object, {
             name: '',
             line1: addressIn.address1 || '',
             line2: addressIn.address2 || '',
@@ -340,13 +339,12 @@ function PostClearpayCheckoutFlow() {
     var BasketMgr = require('dw/order/BasketMgr');
     var OrderMgr = require('dw/order/OrderMgr');
     var Transaction = require('dw/system/Transaction');
-    var ShippingHelpers = require('*/cartridge/scripts/checkout/clearpayShippingHelpers');
 
-    var apOrderToken = ClearpaySession.getToken();
+    var cpOrderToken = ClearpaySession.getToken();
     // var merchantOrderNum = ClearpaySession.getMerchantReference();
     var redirectURL;
 
-    if (!apOrderToken) {
+    if (!cpOrderToken) {
         ClearpaySession.clearSession();
         Logger.error('Missing token from session.');
         redirectToErrorDisplay(Resource.msg('expresscheckout.error.invalidsession', brand, null));
@@ -354,7 +352,7 @@ function PostClearpayCheckoutFlow() {
     }
 
     // retrieve the order from Clearpay using api
-    var clearPayOrderResponse = require('*/cartridge/scripts/checkout/clearpayGetOrder').GetOrder(apOrderToken);
+    var clearPayOrderResponse = require('*/cartridge/scripts/checkout/clearpayGetOrder').GetOrder(cpOrderToken);
     if (clearPayOrderResponse.error) {
         // responseUtils.renderJSON({ type: 'ProcessOrder', error: clearPayOrderResponse.errorMessage });
         Logger.error(clearPayOrderResponse.errorMessage);
@@ -390,7 +388,6 @@ function PostClearpayCheckoutFlow() {
 
 function DeferredShippingFlow(clearPayOrderResponse) {
     var Transaction = require('dw/system/Transaction');
-    var ShippingHelpers = require('~/cartridge/scripts/checkout/clearpayShippingHelpers');
 
     var cart = app.getModel('Cart').get();
     if (!cart) {
@@ -399,26 +396,26 @@ function DeferredShippingFlow(clearPayOrderResponse) {
         return;
     }
 
-    COHelpers.addShippingAddressToBasket(cart.object, clearPayOrderResponse.shipping);
-    ClearpaySession.setShippingChecksum(COHelpers.computeBasketShippingChecksum(cart.object));
-    COHelpers.addConsumerToBasket(cart.object, clearPayOrderResponse.consumer);
+    ClearpaySGCOHelpers.addShippingAddressToBasket(cart.object, clearPayOrderResponse.shipping);
+    ClearpaySession.setShippingChecksum(ClearpayCOHelpers.computeBasketShippingChecksum(cart.object));
+    ClearpayCOHelpers.addConsumerToBasket(cart.object, clearPayOrderResponse.consumer);
     if (clearPayOrderResponse.billing) {
-        COHelpers.addBillingAddressToBasket(cart.object, clearPayOrderResponse.billing);
+        ClearpayCOHelpers.addBillingAddressToBasket(cart.object, clearPayOrderResponse.billing);
     } else {
         // Use shipping address for billing if billing is not passed in
-        COHelpers.addBillingAddressToBasket(cart.object, clearPayOrderResponse.shipping);
+        ClearpayCOHelpers.addBillingAddressToBasket(cart.object, clearPayOrderResponse.shipping);
     }
 
     app.getController('COShipping').PrepareShipments();
-    let cartTotals = ShippingHelpers.calculateCartTaxShipTotals(cart);
-    var paymentMethodName = apCheckoutUtilities.getPaymentMethodName();
+    let cartTotals = ClearpayShippingHelpers.calculateCartTaxShipTotals(cart);
+    var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
     // Even though we do not know shipping cost yet, create the payment instrument
     // so billing screens will show Clearpay as the selected billing option.
     // We will change it later as amounts get updated.
     Transaction.wrap(function () {
         cart.calculate();
         // remove everything except gift certs
-        COHelpers.removeAllNonGiftCertificatePayments(cart);
+        ClearpaySGCOHelpers.removeAllNonGiftCertificatePayments(cart);
          let paymentInstrument = cart.object.createPaymentInstrument(paymentMethodName, new Money(0.0, cart.object.currencyCode));
         // will compute the amount for us for the payment instrument
         cart.calculatePaymentTransactionTotal();
@@ -433,8 +430,7 @@ function DeferredShippingFlow(clearPayOrderResponse) {
 
 function IntegratedShippingFlow(clearPayOrderResponse) {
     var Transaction = require('dw/system/Transaction');
-    var ShippingHelpers = require('*/cartridge/scripts/checkout/clearpayShippingHelpers');
-    var apOrderToken = ClearpaySession.getToken();
+    var cpOrderToken = ClearpaySession.getToken();
 
     var newOrder = null;
     var cart = app.getModel('Cart').get();
@@ -448,39 +444,39 @@ function IntegratedShippingFlow(clearPayOrderResponse) {
     }
 
     let isStorePickup = false;
-    if (COHelpers.shouldEnableExpressPickupMode(cart)) {
+    if (ClearpaySGCOHelpers.shouldEnableExpressPickupMode(cart)) {
         isStorePickup = true;
     }
 
     let adjustCartResponse = false;
 
     // For in-store pickup, the address will be the address of the store
-    COHelpers.addShippingAddressToBasket(cart.object, clearPayOrderResponse.shipping);
-    ClearpaySession.setShippingChecksum(COHelpers.computeBasketShippingChecksum(cart.object));
+    ClearpaySGCOHelpers.addShippingAddressToBasket(cart.object, clearPayOrderResponse.shipping);
+    ClearpaySession.setShippingChecksum(ClearpayCOHelpers.computeBasketShippingChecksum(cart.object));
 
     if (!isStorePickup) {
         // Need to compute the cost given the chosen shipping selection
-        let shipMethod = ShippingHelpers.getShippingMethodForID(selectedShipOption);
+        let shipMethod = ClearpayShippingHelpers.getShippingMethodForID(selectedShipOption);
         if (!shipMethod) {
             Logger.error('Shipping method returned by Clearpay was invalid.');
             redirectToErrorDisplay(Resource.msg('expresscheckout.error.checkout', brand, null));
             return;
         }
-        ShippingHelpers.setCartShippingMethod(cart, shipMethod);
+        ClearpayShippingHelpers.setCartShippingMethod(cart, shipMethod);
     } else {
         // Should we get the address of the store? Or if it's instore pickup, we will never send
         // Store a checksum of the line items into the session. Check this before we do a capture.
         ClearpaySession.setExpressCheckoutInstorePickup(true);
     }
 
-    let cartTotals = ShippingHelpers.calculateCartTaxShipTotals(cart);
-    COHelpers.addConsumerToBasket(cart.object, clearPayOrderResponse.consumer);
+    let cartTotals = ClearpayShippingHelpers.calculateCartTaxShipTotals(cart);
+    ClearpayCOHelpers.addConsumerToBasket(cart.object, clearPayOrderResponse.consumer);
 
     if (clearPayOrderResponse.billing) {
-        COHelpers.addBillingAddressToBasket(cart.object, clearPayOrderResponse.billing);
+        ClearpayCOHelpers.addBillingAddressToBasket(cart.object, clearPayOrderResponse.billing);
     } else {
         // Use shipping address for billing if billing is not passed in
-        COHelpers.addBillingAddressToBasket(cart.object, clearPayOrderResponse.shipping);
+        ClearpayCOHelpers.addBillingAddressToBasket(cart.object, clearPayOrderResponse.shipping);
     }
     adjustCartResponse = { totalCost: cartTotals.totalCost };
 
@@ -500,15 +496,15 @@ function IntegratedShippingFlow(clearPayOrderResponse) {
         session.forms.billing.fulfilled.value = true;
         // create the payment transaction with Clearpay for the desired amount
         Transaction.wrap(function () {
-            COHelpers.removeAllNonGiftCertificatePayments(cart);
+            ClearpaySGCOHelpers.removeAllNonGiftCertificatePayments(cart);
 
-            var paymentMethodName = apCheckoutUtilities.getPaymentMethodName();
+            var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
             cart.object.createPaymentInstrument(paymentMethodName, new Money(amount, currency));
-            COHelpers.addShippingAddressToBasket(cart.object, clearPayOrderResponse.shipping);
+            ClearpaySGCOHelpers.addShippingAddressToBasket(cart.object, clearPayOrderResponse.shipping);
         });
 
         // puts initial state into paymentTransaction
-        require('*/cartridge/scripts/checkout/clearpayUpdatePreapprovalStatus').getPreApprovalResult(cart.object, { status: 'SUCCESS', orderToken: apOrderToken, cpExpressCheckout: true });
+        require('*/cartridge/scripts/checkout/clearpayUpdatePreapprovalStatus').getPreApprovalResult(cart.object, { status: 'SUCCESS', orderToken: cpOrderToken, cpExpressCheckout: true });
         var redirectURL = '';
         // go into order placement flow
         try {
@@ -532,12 +528,12 @@ function IntegratedShippingFlow(clearPayOrderResponse) {
     } else {
         // Just copy in billing/shipping info, create Clearpay payment instrument, and go to checkout summary view
         // However, consumer can still modify anything, so will recreate as necessary
-        var paymentMethodName = apCheckoutUtilities.getPaymentMethodName();
+        var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
         Transaction.wrap(function () {
-            COHelpers.removeAllNonGiftCertificatePayments(cart);
+            ClearpaySGCOHelpers.removeAllNonGiftCertificatePayments(cart);
 
             let paymentInstrument = cart.object.createPaymentInstrument(paymentMethodName, new Money(amount,currency));
-            COHelpers.addShippingAddressToBasket(cart.object, clearPayOrderResponse.shipping);
+            ClearpaySGCOHelpers.addShippingAddressToBasket(cart.object, clearPayOrderResponse.shipping);
         });
         // Prepopulate the billing form with Clearpay payment type
         app.getForm('billing').object.paymentMethods.selectedPaymentMethodID.htmlValue = paymentMethodName;
@@ -548,7 +544,7 @@ function IntegratedShippingFlow(clearPayOrderResponse) {
         session.forms.billing.fulfilled.value = true;
 
         // puts initial state into paymentTransaction
-        require('*/cartridge/scripts/checkout/clearpayUpdatePreapprovalStatus').getPreApprovalResult(cart.object, { status: 'SUCCESS', orderToken: apOrderToken, cpExpressCheckout: true });
+        require('*/cartridge/scripts/checkout/clearpayUpdatePreapprovalStatus').getPreApprovalResult(cart.object, { status: 'SUCCESS', orderToken: cpOrderToken, cpExpressCheckout: true });
 
         // redirect to order review
         response.redirect(URLUtils.https('COSummary-Start'));
@@ -585,9 +581,9 @@ function ContinueFinalize() {
     app.getController('COShipping').PrepareShipments();
 
     var Transaction = require('dw/system/Transaction');
-    var paymentMethodName = apCheckoutUtilities.getPaymentMethodName();
+    var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
     Transaction.wrap(function () {
-        COHelpers.removeAllNonGiftCertificatePayments(cart);
+        ClearpaySGCOHelpers.removeAllNonGiftCertificatePayments(cart);
         let paymentInstrument = cart.object.createPaymentInstrument(paymentMethodName, new Money(0.0, cart.object.currencyCode));
         cart.calculatePaymentTransactionTotal();
     });
@@ -630,10 +626,9 @@ function FinalizeOrder() {
         return;
     }
 
-    var ShippingHelpers = require('*/cartridge/scripts/checkout/clearpayShippingHelpers');
     var redirectURL;
 
-    var apOrderToken = ClearpaySession.getToken();
+    var cpOrderToken = ClearpaySession.getToken();
 
     let parameterMap = request.getHttpParameterMap();
     let widgetChecksum = parameterMap.checksum.stringValue;
@@ -642,8 +637,8 @@ function FinalizeOrder() {
     app.getController('COShipping').PrepareShipments();
 
     Transaction.wrap(function () {
-        COHelpers.removeAllNonGiftCertificatePayments(cart);
-        var paymentMethodName = apCheckoutUtilities.getPaymentMethodName();
+        ClearpaySGCOHelpers.removeAllNonGiftCertificatePayments(cart);
+        var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
         let paymentInstrument = cart.object.createPaymentInstrument(paymentMethodName, new Money(0.0, cart.object.currencyCode));
         // will compute the amount for us for the payment instrument
         cart.calculatePaymentTransactionTotal();
@@ -652,7 +647,7 @@ function FinalizeOrder() {
 
     // needed so checkout thinks we're past billing stage
     session.forms.billing.fulfilled.value = true;
-    require('*/cartridge/scripts/checkout/clearpayUpdatePreapprovalStatus').getPreApprovalResult(cart.object, { status: 'SUCCESS', orderToken: apOrderToken, cpExpressCheckout: true, cpExpressCheckoutChecksum: widgetChecksum });
+    require('*/cartridge/scripts/checkout/clearpayUpdatePreapprovalStatus').getPreApprovalResult(cart.object, { status: 'SUCCESS', orderToken: cpOrderToken, cpExpressCheckout: true, cpExpressCheckoutChecksum: widgetChecksum });
 
     // go into order placement flow
     try {
@@ -675,10 +670,10 @@ function FinalizeOrder() {
 }
 
 function CancelOrder() {
-    var apOrderToken = ClearpaySession.getToken();
+    var cpOrderToken = ClearpaySession.getToken();
     ClearpaySession.clearSession();
 
-    Logger.debug('Order canceled. apOrderToken=' + apOrderToken);
+    Logger.debug('Order canceled. cpOrderToken=' + cpOrderToken);
     response.redirect(URLUtils.https('Cart-Show'));
 }
 
