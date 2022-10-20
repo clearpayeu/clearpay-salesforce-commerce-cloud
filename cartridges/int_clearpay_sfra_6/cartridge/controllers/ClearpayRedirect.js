@@ -206,7 +206,7 @@ server.get('HandleResponse', server.middleware.https, function (req, res, next) 
             productExists = require('*/cartridge/scripts/checkout/clearpayTokenConflict').checkTokenConflict(currentBasket, req.querystring.orderToken);
             require('*/cartridge/scripts/checkout/clearpayUpdatePreapprovalStatus').getPreApprovalResult(currentBasket, req.querystring);
             if (!productExists || productExists.error) {
-                res.redirect(URLUtils.url('Checkout-Begin', 'stage', 'payment', 'clearpayErrorMessage', Resource.msg('apierror.token.conflict', 'clearpay', null)));
+                res.redirect(URLUtils.url('Checkout-Begin', 'stage', 'payment', 'clearpayErrorMessage', Resource.msg('apierror.flow.invalid', 'clearpay', null)));
             } else {
                 var order = COHelpers.createOrder(currentBasket);
                 paymentStatusUpdated = require('*/cartridge/scripts/checkout/updatePaymentStatus').handlePaymentStatus(order);

@@ -49,7 +49,7 @@
                         <a href="${URLUtils.url('ClearPay-OrderDetails', 'OrderNo', order.orderNo)}" target="_blank">${order.orderNo}</a>
                     </td>
                     <isloop items="${order.getPaymentInstruments()}" var="paymentInstr" status="loopstate">
-                        <isif condition="${paymentInstr.paymentMethod == 'AFTERPAY' || paymentInstr.paymentMethod == 'CLEARPAY'}">
+                        <isif condition="${paymentInstr.paymentMethod == 'CLEARPAY'}">
                             <isset name="paymentInstrument" value="${paymentInstr}" scope="page"/>
                         </isif>
                     </isloop>

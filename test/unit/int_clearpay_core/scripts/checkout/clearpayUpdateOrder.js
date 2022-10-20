@@ -44,7 +44,7 @@ var cpUtilities = {
     },
     checkoutUtilities: {
         getPaymentMethodName: function () {
-            return 'AFTERPAY';
+            return 'CLEARPAY';
         }
     }
 };
@@ -87,9 +87,9 @@ describe('clearpayUpdateOrder', function () {
 
                 paymentMethod: {
                     equals: function (value) {
-                        return value === 'AFTERPAY';
+                        return value === 'CLEARPAY';
                     },
-                    value: 'AFTERPAY'
+                    value: 'CLEARPAY'
                 }
             }
         ]

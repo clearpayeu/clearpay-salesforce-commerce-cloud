@@ -29,9 +29,9 @@ var order = {
         {
             paymentMethod: {
                 equals: function (value) {
-                    return value === 'AFTERPAY';
+                    return value === 'CLEARPAY';
                 },
-                value: 'AFTERPAY'
+                value: 'CLEARPAY'
             }
         }]
 };
@@ -46,7 +46,7 @@ var utilitiesMock = {
             return 'DIRECT_CAPTURE';
         },
         getPaymentMethodName: function () {
-            return 'AFTERPAY';
+            return 'CLEARPAY';
         }
     }
 };
@@ -132,9 +132,9 @@ describe('#clearpayupdateOrderService()', function () {
 
                 paymentMethod: {
                     equals: function (value) {
-                        return value === 'AFTERPAY';
+                        return value === 'CLEARPAY';
                     },
-                    value: 'AFTERPAY'
+                    value: 'CLEARPAY'
                 },
                 paymentTransaction: {
                     custom: {

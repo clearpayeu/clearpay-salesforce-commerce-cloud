@@ -6,10 +6,11 @@ var clearpayUpdateOrderService = module.superModule;
 clearpayUpdateOrderService.sendConfirmationEmail = function (order, containerView) {
     var OrderModel = require('*/cartridge/models/order');
     var emailHelpers = require('*/cartridge/scripts/helpers/emailHelpers');
+    var { brandUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
 
     var orderModel = new OrderModel(order, {
         containerView: containerView || 'basket',
-        countryCode: order.getBillingAddress().getCountryCode().value
+        countryCode: brandUtilities.getCountryCode()
     });
 
     var orderObject = { order: orderModel };

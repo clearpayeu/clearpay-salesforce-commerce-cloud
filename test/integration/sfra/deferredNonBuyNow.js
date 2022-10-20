@@ -73,14 +73,14 @@ describe('Deferred Non-BuyNow', function () {
     //await page.click('#electronics-gps-units');
     await page.waitForSelector('a.link');
     await page.click('a.link');
-    await page.waitForSelector('#afterpay-express-pdp-button');
+    await page.waitForSelector('#clearpay-express-pdp-button');
 
-    messaging = await page.$eval('.afterpay-widget-message', e => e.innerText);
+    messaging = await page.$eval('.clearpay-widget-message', e => e.innerText);
     expect(messaging).to.contain('or 4 payments of');
 
     const newPagePromise = new Promise(x => page.once('popup', x));
 
-    await page.click('#afterpay-express-pdp-button');
+    await page.click('#clearpay-express-pdp-button');
     const cpCheckout = await newPagePromise;
     await ecUtils.popupLogin(cpCheckout, ecUtils.user.email, ecUtils.user.password);
 
@@ -127,10 +127,10 @@ describe('Deferred Non-BuyNow', function () {
     await submitShipButton.click();
 
 
-    // Check for the afterpay widget
+    // Check for the clearpay widget
     //await page.waitForSelector('div[data-testid="ap-amount-due-today"]');
     // Click the place order button
-    let placeOrderButton = await page.waitForSelector('#afterpay-placeorder-button', { visible: true });
+    let placeOrderButton = await page.waitForSelector('#clearpay-placeorder-button', { visible: true });
     await placeOrderButton.click();
 
     await page.waitForTimeout(6000000);

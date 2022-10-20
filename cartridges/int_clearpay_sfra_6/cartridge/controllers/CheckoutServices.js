@@ -23,7 +23,7 @@ server.prepend(
         var paymentMethodID = paymentForm.paymentMethod.value;
         var ClearpaySession = require('*/cartridge/scripts/util/clearpaySession');
 
-        if (paymentMethodID !== 'AFTERPAY' && paymentMethodID !== 'CLEARPAY') {
+        if (paymentMethodID !== 'CLEARPAY') {
             // For express checkout, it's possible there was a Clearpay payment method in the basket,
             // so remove it if a non-Clearpay payment method was selected
             require('~/cartridge/scripts/checkout/clearpayRefArchCheckoutHelpers').removeClearpayPayments(currentBasket);
@@ -202,7 +202,7 @@ server.prepend(
             req.session.privacyCache.set('usingMultiShipping', false);
             usingMultiShipping = false;
         }
-        if (paymentMethodID === 'AFTERPAY' || paymentMethodID === 'CLEARPAY') {
+        if (paymentMethodID === 'CLEARPAY') {
             hooksHelper('app.customer.subscription', 'subscribeTo', [paymentForm.subscribe.checked, currentBasket.customerEmail], function () {});
         }
         var currentLocale = Locale.getLocale(req.locale.id);
@@ -225,7 +225,7 @@ server.prepend(
             error: false
         });
 
-        if (paymentMethodID === 'AFTERPAY' || paymentMethodID === 'CLEARPAY') {
+        if (paymentMethodID === 'CLEARPAY') {
             this.emit('route:Complete', req, res);
         }
     }

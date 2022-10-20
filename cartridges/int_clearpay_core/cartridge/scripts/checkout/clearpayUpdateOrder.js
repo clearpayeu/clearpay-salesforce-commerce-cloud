@@ -2,7 +2,6 @@ var clearpayConstants = require('*/cartridge/scripts/util/clearpayConstants');
 var cpUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
 var cpCheckoutUtilities = cpUtilities.checkoutUtilities;
 var Transaction = require('dw/system/Transaction');
-var Logger = require('dw/system/Logger');
 
 var clearpayUpdateOrder = {
     /**
@@ -11,14 +10,14 @@ var clearpayUpdateOrder = {
      * @param {Object} paymentResult - payment result
      * @param {'DIRECT_CAPTURE'|'AUTHORISE'} paymentMode - payment mode
      */
-    handleUpdateOrder: function (order, paymentResult, paymentMode) {
+    handleUpdateOrder: function (order, paymentResult, paymentMode, isCashAppPay) {
         var paymentTransaction;
 
         try {
-            paymentTransaction = this.getPaymentTransaction(order);
+            paymentTransaction = this.getPaymentTransaction(order, isCashAppPay);
             if (paymentResult.status !== clearpayConstants.PAYMENT_STATUS.DECLINED) {
-                this.savePaymentTransaction(paymentTransaction, paymentResult, paymentMode);
-                this.saveOrder(order, paymentResult);
+                this.savePaymentTransaction(paymentTransaction, paymentResult, paymentMode, isCashAppPay);
+                this.saveOrder(order, paymentResult, isCashAppPay);
             } else {
                 this.savePaymentTransactionDeclined(paymentTransaction, paymentMode);
             }
@@ -36,7 +35,7 @@ var clearpayUpdateOrder = {
      * @returns {dw.order.PaymentTransaction} - transaction
      */
     // eslint-disable-next-line no-unused-vars
-    savePaymentTransaction: function (paymentTransaction, paymentResult, paymentMode) {
+    savePaymentTransaction: function (paymentTransaction, paymentResult, paymentMode, isCashAppPay) {
         var Money = require('dw/value/Money');
         var BrandUtilities = cpUtilities.brandUtilities;
         var payTrans = paymentTransaction;
@@ -44,7 +43,7 @@ var clearpayUpdateOrder = {
 
         Transaction.wrap(function () {
             payTrans.setTransactionID(paymentResult.id || null);
-            payTrans.setPaymentProcessor(clearpayUpdateOrder.getPaymentProcessor());
+            payTrans.setPaymentProcessor(clearpayUpdateOrder.getPaymentProcessor(isCashAppPay));
             payTrans.custom.cpPaymentID = paymentResult.id || null;
             payTrans.custom.cpPaymentMode = paymentMode;
             payTrans.custom.cpCountryCode = BrandUtilities.getCountryCode();
@@ -67,9 +66,9 @@ var clearpayUpdateOrder = {
      * @param {dw.order.Order} order - order
      * @returns {dw.order.PaymentTransaction} - payment transaction
      */
-    getPaymentTransaction: function (order) {
+    getPaymentTransaction: function (order, isCashAppPay) {
         var paymentTransaction;
-        var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
+        var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName(isCashAppPay);
 
         if (!paymentMethodName) {
             return null;
@@ -88,9 +87,9 @@ var clearpayUpdateOrder = {
      * retrieves payment processor
      * @returns {dw.order.PaymentProcessor} - processor
      */
-    getPaymentProcessor: function () {
+    getPaymentProcessor: function (isCashAppPay) {
         var PaymentMgr = require('dw/order/PaymentMgr');
-        var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
+        var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName(isCashAppPay);
 
         if (!paymentMethodName) {
             return null;
@@ -105,11 +104,16 @@ var clearpayUpdateOrder = {
      * @param {Object} paymentResult - result
      * @returns {dw.order.Order} - order
      */
-    saveOrder: function (order, paymentResult) {
+    saveOrder: function (order, paymentResult, isCashAppPay) {
         var Order = require('dw/order/Order');
         var outOrder = order;
         Transaction.begin();
-        outOrder.custom.cpIsClearpayOrder = true;
+        if(!isCashAppPay){
+            outOrder.custom.cpIsClearpayOrder = true;
+        } else {
+            outOrder.custom.isCashAppPayOrder = true;
+        }
+
         if (paymentResult.status === clearpayConstants.PAYMENT_STATUS.APPROVED) {
             outOrder.setPaymentStatus(Order.PAYMENT_STATUS_PAID);
         } else {
@@ -125,10 +129,10 @@ var clearpayUpdateOrder = {
      * @param {'DIRECT_CAPTURE'|'AUTHORISE'} paymentMode - payment mode
      * @returns {dw.order.PaymentTransaction} - transaction
      */
-    savePaymentTransactionDeclined: function (paymentTransaction, paymentMode) {
+    savePaymentTransactionDeclined: function (paymentTransaction, paymentMode,isCashAppPay) {
         var payTrans = paymentTransaction;
         Transaction.begin();
-        payTrans.setPaymentProcessor(this.getPaymentProcessor());
+        payTrans.setPaymentProcessor(this.getPaymentProcessor(isCashAppPay));
         payTrans.custom.cpPaymentMode = paymentMode;
         payTrans.custom.cpInitialStatus = clearpayConstants.PAYMENT_STATUS.DECLINED;
         payTrans.custom.cpToken = null;

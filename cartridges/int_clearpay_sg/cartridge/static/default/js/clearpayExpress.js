@@ -34,12 +34,11 @@ function initAfterpay(settings) {
                         } else {
                             clearpayCreateTokenErrorMessage = res.error;
                             alert(res.error);
-                            console.log('Clearpay Express Checkout: Token Creation Failure: ', res.error);
                             actions.reject(AfterPay.CONSTANTS.SERVICE_UNAVAILABLE);
                         }
                     },
                     error: function () {
-                        console.log('Clearpay Express Checkout: request failure.');
+                        alert('Clearpay payment failed.');
                     }
                 });
             });
@@ -72,7 +71,7 @@ function initAfterpay(settings) {
                     }
                 },
                 error: function () {
-                    console.log('Clearpay Express Checkout: failure in get shipping methods');
+                    alert('Clearpay payment failed.');
                 }
             });
         },
@@ -106,7 +105,7 @@ function reinitializeClearpayPopup() {
             initAfterpay({ pickupflag: instorepickup });
         },
         error: function () {
-            console.log('Clearpay Express cart status request failure.');
+           alert('Clearpay payment failed.');
         }
     });
 }

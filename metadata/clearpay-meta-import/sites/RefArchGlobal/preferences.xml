@@ -33,6 +33,7 @@
             <preference preference-id="cpDisplayPlpInfo">false</preference>
             <preference preference-id="cpPaymentMode">DIRECT_CAPTURE</preference>
             <preference preference-id="enableClearpay">false</preference>
+            <preference preference-id="enableCashAppPay">false</preference>
             <preference preference-id="cpEnableExpressCheckout">true</preference>
             <preference preference-id="cpExpressCheckoutShippingStrategy">integrated</preference>
             <preference preference-id="cpEnableExpressCheckoutBuyNow">true</preference>

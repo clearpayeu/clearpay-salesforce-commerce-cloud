@@ -35,6 +35,7 @@ function returnJsonError(res, next, err) {
 }
 
 function redirectToErrorDisplay(res, error) {
+    ClearpaySession.clearSession();
     res.redirect(URLUtils.url('Checkout-Begin', 'stage', 'payment', 'clearpayErrorMessage', error));
 }
 

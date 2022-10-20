@@ -19,7 +19,7 @@ MockBasket.prototype.removePaymentInstrument = function () {
 
 MockBasket.prototype.createPaymentInstrument = function () {
     return {
-        paymentMethod: "AFTERPAY",
+        paymentMethod: "CLEARPAY",
         paymentTransaction:
             {
                 amount: {
@@ -52,7 +52,7 @@ var item = {
 var clearpayUtilities = {
     checkoutUtilities: {
         getPaymentMethodName: function () {
-            return 'AFTERPAY';
+            return 'CLEARPAY';
         }
     }
 };

@@ -21,16 +21,16 @@ var updatePaymentStatus = {};
 * @param {Object} order - order
 * @returns {Object} - authorization or error
 */
-updatePaymentStatus.handlePaymentStatus = function (order) {
+updatePaymentStatus.handlePaymentStatus = function (order, isCashAppPay) {
     var { checkoutUtilities: cpCheckoutUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
-    var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
     var response;
     var finalPaymentStatus;
     var errorMessage;
     var responseCode;
     var paymentTransaction;
     var cpInitialStatus;
-
+    var isCashAppPay = isCashAppPay || false;
+    var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName(isCashAppPay);
     var impactOrder = order;
 
     if (!paymentMethodName) {
@@ -76,7 +76,7 @@ updatePaymentStatus.handlePaymentStatus = function (order) {
         }
     }
 
-    finalPaymentStatus = require('*/cartridge/scripts/checkout/clearpayHandlePaymentOrder').getPaymentStatus(order, cpInitialStatus, expressCheckoutModel);
+    finalPaymentStatus = require('*/cartridge/scripts/checkout/clearpayHandlePaymentOrder').getPaymentStatus(order, cpInitialStatus, expressCheckoutModel, isCashAppPay);
     response = (finalPaymentStatus.errorMessage) ? finalPaymentStatus.errorMessage : finalPaymentStatus;
     responseCode = cpCheckoutUtilities.getPaymentResponseCode(finalPaymentStatus);
 

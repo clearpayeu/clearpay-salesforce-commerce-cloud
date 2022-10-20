@@ -20,9 +20,9 @@ var order = {
         {
             paymentMethod: {
                 equals: function (value) {
-                    return value === 'AFTERPAY';
+                    return value === 'CLEARPAY';
                 },
-                value: 'AFTERPAY'
+                value: 'CLEARPAY'
             }
         }]
 };
@@ -35,7 +35,7 @@ var utilitiesMock = {
     getSitePreferencesUtilities: function () {
         return {
             getPaymentMode: function () {
-                return 'AFTERPAY';
+                return 'CLEARPAY';
             }
         };
     },

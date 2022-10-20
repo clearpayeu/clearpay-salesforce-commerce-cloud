@@ -63,8 +63,8 @@ describe('Integrated Non-BuyNow', function () {
       await page.waitForTimeout(1000);
   
       let newPagePromise = new Promise(x => page.once('popup', x));
-      // Click the Checkout with Afterpay
-      const cpCheckoutButton = await page.waitForSelector('.afterpay-checkout-button');
+      // Click the Checkout with Clearpay
+      const cpCheckoutButton = await page.waitForSelector('.clearpay-checkout-button');
       await cpCheckoutButton.click();
 
       let cpCheckout = await newPagePromise;
@@ -95,7 +95,7 @@ describe('Integrated Non-BuyNow', function () {
       await ecUtils.verifyShippingAddressOnShippingPage(page, ecUtils.store2);
 
       await page.waitForTimeout(2000);
-      let placeOrderButton = await page.waitForSelector('#afterpay-placeorder-button');
+      let placeOrderButton = await page.waitForSelector('#clearpay-placeorder-button');
       await placeOrderButton.click();
   
       // Check for the thank you page
@@ -147,14 +147,14 @@ describe('Integrated Non-BuyNow', function () {
       await minicartLink.click();
   
       await page.waitForTimeout(1000);
-      // Click the Checkout with Afterpay
-      const cpCheckoutButton = await page.waitForSelector('.afterpay-checkout-button');
+      // Click the Checkout with Clearpay
+      const cpCheckoutButton = await page.waitForSelector('.clearpay-checkout-button');
       await cpCheckoutButton.click();
   
       await page.waitForTimeout(2000);
       await page.waitForSelector('.cart-error-messaging button');
       let errorText = await page.$eval('.cart-error-messaging', x => x.innerText);
-      expect(errorText).to.contain('Afterpay Express Checkout unavailable for your cart');
+      expect(errorText).to.contain('Clearpay Express Checkout unavailable for your cart');
     }).timeout(10000);
 
     it('In-Store pickup - 2 items pickup up from different stores', async function () {
@@ -188,14 +188,14 @@ describe('Integrated Non-BuyNow', function () {
       await minicartLink.click();
 
       await page.waitForTimeout(1000);
-      // Click the Checkout with Afterpay
-      const cpCheckoutButton = await page.waitForSelector('.afterpay-checkout-button');
+      // Click the Checkout with Clearpay
+      const cpCheckoutButton = await page.waitForSelector('.clearpay-checkout-button');
       await cpCheckoutButton.click();
 
       await page.waitForTimeout(2000);
       await page.waitForSelector('.cart-error-messaging button');
       let errorText = await page.$eval('.cart-error-messaging', x => x.innerText);
-      expect(errorText).to.contain('Afterpay Express Checkout unavailable for your cart');
+      expect(errorText).to.contain('Clearpay Express Checkout unavailable for your cart');
     }).timeout(10000);
 
     it('Express Checkout Finalization Flow. Checks cart checkout and pdp button during finalization flow.', async function () {
@@ -211,12 +211,12 @@ describe('Integrated Non-BuyNow', function () {
       await page.keyboard.press('Enter');
 
       // start express checkout from pdp
-      let buyNowButton = await page.waitForSelector('#afterpay-express-pdp-button');
+      let buyNowButton = await page.waitForSelector('#clearpay-express-pdp-button');
       await buyNowButton.click();
 
       let newPagePromise = new Promise(x => page.once('popup', x));
 
-      await page.click('#afterpay-express-pdp-button');
+      await page.click('#clearpay-express-pdp-button');
       let cpCheckout = await newPagePromise;
       await ecUtils.popupLogin(cpCheckout, ecUtils.user.email, ecUtils.user.password);
 
@@ -249,13 +249,13 @@ describe('Integrated Non-BuyNow', function () {
       await minicartLink.click();
 
       await page.waitForTimeout(1000);
-      // Click the Checkout with Afterpay
-      const cpCheckoutButton = await page.waitForSelector('.afterpay-checkout-button');
+      // Click the Checkout with Clearpay
+      const cpCheckoutButton = await page.waitForSelector('.clearpay-checkout-button');
       await cpCheckoutButton.click();
 
       await page.waitForTimeout(1000);
       // Since we are in express checkout finalization flow, should just go back to checkout screen
-      let placeOrderButton = await page.waitForSelector('#afterpay-placeorder-button', { visible: true });
+      let placeOrderButton = await page.waitForSelector('#clearpay-placeorder-button', { visible: true });
       expect(placeOrderButton).to.not.be.null;
 
       // Go back to home
@@ -270,7 +270,7 @@ describe('Integrated Non-BuyNow', function () {
       await page.waitForTimeout(1000);
       await page.keyboard.press('Enter');
 
-      buyNowButton = await page.waitForSelector('#afterpay-continue-finalize-button');
+      buyNowButton = await page.waitForSelector('#clearpay-continue-finalize-button');
       disabledStatus = await page.evaluate(x => x.hasAttribute('disabled'), buyNowButton);
       expect(disabledStatus).to.be.false;
 
@@ -281,9 +281,9 @@ describe('Integrated Non-BuyNow', function () {
       let totalAmount = await ecUtils.getGrandTotalFromCheckout(page);
       expect(totalAmount).to.equal('163.77');
 
-      await page.waitForSelector('#afterpay-payment-shown');
+      await page.waitForSelector('#clearpay-payment-shown');
 
-      placeOrderButton = await page.waitForSelector('#afterpay-placeorder-button', { visible: true });
+      placeOrderButton = await page.waitForSelector('#clearpay-placeorder-button', { visible: true });
       expect(placeOrderButton).to.not.be.null;
       placeOrderButton.click();
 
@@ -299,13 +299,13 @@ describe('Integrated Non-BuyNow', function () {
 
       await ecUtils.navigateToItem(page, '25589004M');
 
-      await page.waitForSelector('.afterpay-widget-message');
-      let messaging = await page.$eval('.afterpay-widget-message', e => e.innerText);
+      await page.waitForSelector('.clearpay-widget-message');
+      let messaging = await page.$eval('.clearpay-widget-message', e => e.innerText);
       expect(messaging).to.contain('or 4 payments of $18.50');
 
       // Make sure Buy Now button is disabled
       await page.waitForTimeout(1000);
-      let buyNowButton = await page.waitForSelector('#afterpay-express-pdp-button');
+      let buyNowButton = await page.waitForSelector('#clearpay-express-pdp-button');
       let disabledStatus = await page.evaluate(x => x.hasAttribute('disabled'), buyNowButton);
 
       console.log("DS: ", disabledStatus);
@@ -324,7 +324,7 @@ describe('Integrated Non-BuyNow', function () {
 
       let newPagePromise = new Promise(x => page.once('popup', x));
 
-      await page.click('#afterpay-express-pdp-button');
+      await page.click('#clearpay-express-pdp-button');
       let cpCheckout = await newPagePromise;
       await ecUtils.popupLogin(cpCheckout, ecUtils.user.email, ecUtils.user.password);
 
@@ -348,7 +348,7 @@ describe('Integrated Non-BuyNow', function () {
       await sizeSelect.type('6');
       await page.waitForTimeout(500);
       await page.keyboard.press('Enter');
-      buyNowButton = await page.waitForSelector('#afterpay-express-pdp-button');
+      buyNowButton = await page.waitForSelector('#clearpay-express-pdp-button');
       disabledStatus = await page.evaluate(x => x.hasAttribute('disabled'), buyNowButton);
       expect(disabledStatus).to.be.false;
 
@@ -377,14 +377,14 @@ describe('Integrated Non-BuyNow', function () {
 
       await page.waitForSelector('a.link');
       await page.click('a.link');
-      await page.waitForSelector('#afterpay-express-pdp-button');
+      await page.waitForSelector('#clearpay-express-pdp-button');
 
-      messaging = await page.$eval('.afterpay-widget-message', e => e.innerText);
+      messaging = await page.$eval('.clearpay-widget-message', e => e.innerText);
       expect(messaging).to.contain('or 4 payments of');
 
       const newPagePromise = new Promise(x => page.once('popup', x));
 
-      await page.click('#afterpay-express-pdp-button');
+      await page.click('#clearpay-express-pdp-button');
       const cpCheckout = await newPagePromise;
       await ecUtils.popupLogin(cpCheckout, ecUtils.user.email, ecUtils.user.password);
 
@@ -469,10 +469,10 @@ describe('Integrated Non-BuyNow', function () {
 
       await page.waitForTimeout(3000);
 
-      // Check for the afterpay widget
+      // Check for the clearpay widget
       //await page.waitForSelector('div[data-testid="ap-amount-due-today"]');
       // Click the place order button
-      let placeOrderButton = await page.waitForSelector('#afterpay-placeorder-button');
+      let placeOrderButton = await page.waitForSelector('#clearpay-placeorder-button');
       await placeOrderButton.click();
 
       // Check for the thank you page

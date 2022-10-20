@@ -16,6 +16,7 @@ var ClearpaySession = {
         session.custom.clearpay_express_checkout_items_checksum = 0;
         session.custom.clearpay_express_instore_pickup = false;
         session.custom.clearpay_express_split_shipment = false;
+        session.custom.is_cashapp = false;
     },
     // Call this whenever the Clearpay Express transaction should be completely cleared
     clearSession: function () {
@@ -30,6 +31,7 @@ var ClearpaySession = {
         delete session.custom.clearpay_express_checkout_items_checksum;
         delete session.custom.clearpay_express_instore_pickup;
         delete session.custom.clearpay_express_split_shipment;
+        delete session.custom.is_cashapp;
     },
     isValid: function () {
         return (!empty(session.custom.clearpay_token));
@@ -98,6 +100,12 @@ var ClearpaySession = {
         return 'token: ' + session.custom.clearpay_token + ' express_checkout: ' + session.custom.clearpay_express_checkout
           + ' finalize_flow: ' + session.custom.clearpay_express_checkout_finalize_flow + ' checkout_amount: ' + session.custom.clearpay_express_checkout_amount
           + ' instore_pickup: ' + session.custom.clearpay_express_checkout_amount;
+    },
+    setIsCashAppPay: function (val) {
+        session.custom.is_cashapp = val;
+    },
+    getIsCashAppPay: function () {
+        return session.custom.is_cashapp;
     }
 };
 

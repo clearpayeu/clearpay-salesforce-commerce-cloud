@@ -11,12 +11,12 @@ var Locale = require('dw/util/Locale');
  */
 var sitePreferencesUtilities = {
 
-    getRedirectConfirmUrl: function () {
-        return URLUtils.https('ClearpayRedirect-HandleResponse').toString();
-    },
-
-    getRedirectCancelUrl: function () {
-        return URLUtils.https('ClearpayRedirect-HandleResponse').toString();
+    getRedirectConfirmUrl: function (isCashAppPay) {
+        if(isCashAppPay){
+            return URLUtils.https('CashApp-HandleResponse').toString();
+        } else {
+            return URLUtils.https('ClearpayRedirect-HandleResponse').toString();
+        }
     },
 
     getPaymentMode: function () {
@@ -41,6 +41,10 @@ var sitePreferencesUtilities = {
 
     isClearpayEnabled: function () {
         return Site.getCurrent().getCustomPreferenceValue('enableClearpay') || false;
+    },
+
+    isCashAppEnabled: function () {
+        return Site.getCurrent().getCustomPreferenceValue('enableCashAppPay') && brandUtilities.getCountryCode() == 'US' || false;
     },
 
     getBrandSettings: function () {
@@ -165,17 +169,22 @@ var brandUtilities = {
  *  Checkout Utilities
  */
 var checkoutUtilities = {
-    getPaymentMethodName: function () {
-        var brandMapping = require('*/cartridge/scripts/brandMapping');
-        var BrandUtilities = brandUtilities;
+   getPaymentMethodName: function (isCashAppPay) {
+        var isCashAppPay = isCashAppPay || false;
+        if(isCashAppPay) {
+            return "CASHAPPPAY";
+        } else {
+            var brandMapping = require('*/cartridge/scripts/brandMapping');
+            var BrandUtilities = brandUtilities;
 
-        var brand = BrandUtilities.getBrand();
-        var mapping = brandMapping[brand];
+            var brand = BrandUtilities.getBrand();
+            var mapping = brandMapping[brand];
 
-        if (mapping) {
-            return mapping.paymentMethod;
-        }
-        return null;
+            if (mapping) {
+                return mapping.paymentMethod;
+            }
+            return null;
+         }
     },
 
     getPaymentMethod: function () {

@@ -4,7 +4,7 @@ var clearpayDirectCaptureService = require('*/cartridge/scripts/logic/services/c
 var clearpayAuthoriseService = require('*/cartridge/scripts/logic/services/clearpayAuthorisePaymentService');
 var PAYMENT_MODE = require('*/cartridge/scripts/util/clearpayConstants').PAYMENT_MODE;
 var PAYMENT_STATUS = require('*/cartridge/scripts/util/clearpayConstants').PAYMENT_STATUS;
-var { checkoutUtilities: cpCheckoutUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
+var { checkoutUtilities: cpCheckoutUtilities, sitePreferencesUtilities : cpSitePreferencesUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
 
 var Site = require('dw/system/Site');
 var Resource = require('dw/web/Resource');
@@ -16,28 +16,29 @@ var OrderMgr = require('dw/order/OrderMgr');
  *  processes all the transaction details related to the payment and order
  */
 var UpdateOrderService = {
-    handleOrder: function (order, paymentStatus, expressCheckoutModel) {
+    handleOrder: function (order, paymentStatus, expressCheckoutModel,isCashAppPay) {
+        var isCashAppPay = isCashAppPay || false
         var authoriseDirectCaptureResult = null;
         if (paymentStatus === PAYMENT_STATUS.DECLINED) {
             authoriseDirectCaptureResult = this.updateDeclinedOrder(order);
         } else if (paymentStatus === PAYMENT_STATUS.FAILED) {
             authoriseDirectCaptureResult = this.updateFailedOrder(order);
         } else if (paymentStatus === PAYMENT_STATUS.APPROVED) {
-            authoriseDirectCaptureResult = this.handleApprovalOrder(order, expressCheckoutModel);
+            authoriseDirectCaptureResult = this.handleApprovalOrder(order, expressCheckoutModel, isCashAppPay);
         } else if (paymentStatus === PAYMENT_STATUS.PENDING) {
             authoriseDirectCaptureResult = this.handlePendingOrder(order);
         }
         return authoriseDirectCaptureResult;
     },
 
-    handleApprovalOrder: function (order, expressCheckoutModel) {
-        var paymentAmount = this.getPaymentAmount(order);
+    handleApprovalOrder: function (order, expressCheckoutModel,isCashAppPay) {
+        var paymentAmount = this.getPaymentAmount(order,isCashAppPay);
 		// express checkout needs payment amount, even for direct capture.
 		// express checkout with deferred flows needs checksum and amount
 		// these are all in expressCheckoutModel
         var authoriseDirectCaptureResult = null;
         var authoriseDirectCaptureService = this.getAuthoriseDirectCaptureService(order);
-        var requestValues = authoriseDirectCaptureService.generateRequest(order, this.getToken(order), order.orderNo, paymentAmount, expressCheckoutModel);
+        var requestValues = authoriseDirectCaptureService.generateRequest(order, this.getToken(order,isCashAppPay), order.orderNo, paymentAmount, expressCheckoutModel);
 
         try {
             authoriseDirectCaptureResult = authoriseDirectCaptureService.getResponse(requestValues.requestUrl, requestValues.requestBody);
@@ -53,7 +54,7 @@ var UpdateOrderService = {
     },
 
     getAuthoriseDirectCaptureService: function (order) {
-        var paymentMode = cpCheckoutUtilities.getPaymentMode(order);
+        var paymentMode = cpCheckoutUtilities.getPaymentMode();
         if (paymentMode === PAYMENT_MODE.AUTHORISE) {
             return clearpayAuthoriseService;
         }
@@ -90,9 +91,9 @@ var UpdateOrderService = {
         return cpPaymentID;
     },
 
-    getToken: function (order) {
+    getToken: function (order,isCashAppPay) {
         var cpToken;
-        var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
+        var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName(isCashAppPay);
 
         if (!paymentMethodName) {
             return null;
@@ -110,8 +111,8 @@ var UpdateOrderService = {
         return cpToken;
     },
     // Need amount for express checkouts
-    getPaymentAmount: function (order) {
-        var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
+    getPaymentAmount: function (order,isCashAppPay) {
+        var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName(isCashAppPay);
         return order.getPaymentInstruments(paymentMethodName)[0].getPaymentTransaction().amount;
     },
     updateOrder: function (order, status) {
@@ -135,6 +136,7 @@ var UpdateOrderService = {
     },
 
     updateApprovedOrder: function (order, containerView) {
+        var  containerView = containerView || 'basket'
         Transaction.begin();
         order.setPaymentStatus(Order.PAYMENT_STATUS_PAID);
         Transaction.commit();
@@ -161,7 +163,7 @@ var UpdateOrderService = {
 
         var orderModel = new OrderModel(order, {
             containerView: containerView || 'basket',
-            countryCode: order.getBillingAddress().getCountryCode().value
+            countryCode: brandUtilities.getCountryCode()
         });
 
         var orderObject = { order: orderModel };

@@ -9,8 +9,8 @@ var cpHandlers = {
     // recompute the amount for the Clearpay payment instrument
     recomputeClearpayPayment: function() {
         var ClearpaySession = require('*/cartridge/scripts/util/clearpaySession');
-        var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
         if (ClearpaySession.isExpressCheckout()) {
+            var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
             var Transaction = require('dw/system/Transaction');
 
             var cart = app.getModel('Cart').get();
@@ -30,13 +30,14 @@ var cpHandlers = {
         }
     },
     // only call when changing to non-Clearpay payment method
-    handleChangedPaymentInstrument: function() {
-        var ClearpaySession = require('*/cartridge/scripts/util/clearpaySession');
-        var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
-        var cart = app.getModel('Cart').get();
-        cart.removePaymentInstruments( cart.getPaymentInstruments(paymentMethodName));
-        // clears all session vars used by Clearpay
-        ClearpaySession.clearSession();
+    handleChangedPaymentInstrument: function(paymentMethod) {
+        if (paymentMethod != 'CASHAPPPAY') {
+            this.removePaymentMethods(true);
+        } 
+        if (paymentMethod != 'CLEARPAY') {
+            this.removePaymentMethods();
+        }
+
     },
     // When the shipping method is updated, we need to update the Clearpay
     // payment in the cart with the correct amount
@@ -45,8 +46,15 @@ var cpHandlers = {
     },
     handleBillingStart: function() {
         this.recomputeClearpayPayment();
+    },
+    removePaymentMethods: function(isCashAppPay){
+        var ClearpaySession = require('*/cartridge/scripts/util/clearpaySession');
+        var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName(isCashAppPay);
+        var cart = app.getModel('Cart').get();
+        cart.removePaymentInstruments( cart.getPaymentInstruments(paymentMethodName));
+        // clears all session vars used by Clearpay
+        ClearpaySession.clearSession();
     }
-
 };
 
 module.exports = cpHandlers;

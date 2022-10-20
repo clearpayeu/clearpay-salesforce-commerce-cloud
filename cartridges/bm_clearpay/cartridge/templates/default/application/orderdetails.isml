@@ -47,7 +47,7 @@
         <tr>
             <td class="table_detail left e w s" nowrap="nowrap"><label class="item-label" for="">${Resource.msg('transaction.status','clearpay',null)}</label></td>
             <isloop items="${order.getPaymentInstruments()}" var="paymentInstr" status="loopstate">
-                <isif condition="${paymentInstr.paymentMethod == 'AFTERPAY' || paymentInstr.paymentMethod == 'CLEARPAY'}">
+                <isif condition="${paymentInstr.paymentMethod == 'CLEARPAY'}">
                     <isset name="paymentInstrument" value="${paymentInstr}" scope="page"/>
                 </isif>
             </isloop>

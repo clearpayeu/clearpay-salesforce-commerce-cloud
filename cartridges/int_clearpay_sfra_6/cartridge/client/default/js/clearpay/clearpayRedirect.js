@@ -215,9 +215,7 @@ var clearpay = {
     },
     selectPaymentMethod: function () {
         if ($('ul.payment-options li.nav-item').length === 1) {
-            $('ul.payment-options li.nav-item a.nav-link.afterpay-tab').addClass('active');
             $('ul.payment-options li.nav-item a.nav-link.clearpay-tab').addClass('active');
-            $('.tab-pane.afterpay-content').addClass('active');
             $('.tab-pane.clearpay-content').addClass('active');
         }
     }

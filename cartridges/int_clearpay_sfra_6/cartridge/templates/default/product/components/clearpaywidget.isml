@@ -25,9 +25,10 @@ if (clearpayAmount.value == 0) {
 }
 var clearpayToken = ClearpaySession.getToken();
 var isExpressCheckoutFinalize = ClearpaySession.isExpressCheckoutFinalizeFlow();
-var clearpayExpressCheckoutEnabled = sitePreferences.isExpressCheckoutEnabled();
+var clearpayEnabled = sitePreferences.isClearpayEnabled();
+var clearpayExpressCheckoutEnabled = clearpayEnabled && sitePreferences.isExpressCheckoutEnabled();
 var BrandUtilities = require("*/cartridge/scripts/util/clearpayUtilities.js").brandUtilities;
-var expressCheckoutJS = BrandUtilities.getBrandSettings().javaScriptUrl + "?merchant_key=demo";
+var expressCheckoutJS = BrandUtilities.getBrandSettings().javaScriptUrl;
 var countrycode = BrandUtilities.getCountryCode();
 var buttonPlaceOrderClass = 'clearpay-placeorder-button';
 </isscript>

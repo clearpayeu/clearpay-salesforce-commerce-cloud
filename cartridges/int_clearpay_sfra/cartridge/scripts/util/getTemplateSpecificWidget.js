@@ -4,7 +4,7 @@
 var Money = require('dw/value/Money');
 
 /* Script Modules */
-var { brandUtilities: cpBrandUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
+var { brandUtilities: cpBrandUtilities, sitePreferencesUtilities:cpSitePreferences } = require('*/cartridge/scripts/util/clearpayUtilities');
 
 var getTemplateSpecificWidget = {};
 
@@ -52,9 +52,11 @@ getTemplateSpecificWidget.getWidgetData = function (productObject, className, cu
         }
 
         var isApplicable = cpBrandUtilities.isClearpayApplicable() && isWithinThreshold.status;
+        var iscashAppApplicable = cpSitePreferences.isCashAppEnabled() && isWithinThreshold.status;
         var cpBrand = cpBrandUtilities.getBrand();
 
         priceContext.cpApplicable = isApplicable;
+        priceContext.cashAppApplicable = iscashAppApplicable;
         priceContext.cpBrand = cpBrand;
     }
 

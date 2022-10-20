@@ -49,7 +49,7 @@ var utilitiesMock = {
     },
     checkoutUtilities: {
         getPaymentMethodName: function () {
-            return 'AFTERPAY';
+            return 'CLEARPAY';
         }
     },
     sitePreferencesUtilities: {

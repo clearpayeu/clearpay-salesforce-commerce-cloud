@@ -110,6 +110,9 @@ var exports = {
             let tabelem = document.querySelector('.clearpay-tab');
             if (window.MutationObserver) {
                 var observer = new MutationObserver(function (mutations) {
+                    if($('.clearpay-tab').hasClass('active')){
+                        clearpayExpressWidget.updateExpressWidget();
+                    }
                     handleStateChange();
                 });
                 observer.observe(tabelem, { attributes: true });

@@ -99,7 +99,7 @@ function refund(orderNo, amountString) {
 
     while (iter.hasNext()) {
         cpPaymentInstrument = iter.next();
-        if (cpPaymentInstrument.paymentMethod === 'AFTERPAY' || cpPaymentInstrument.paymentMethod === 'CLEARPAY') {
+        if (cpPaymentInstrument.paymentMethod === 'CLEARPAY') {
             paymentInstrument = cpPaymentInstrument;
         }
     }

@@ -45,9 +45,9 @@ var lineItemCtnrStub = {
     paymentInstruments: [{
         paymentMethod: {
             equals: function (value) {
-                return value === 'AFTERPAY';
+                return value === 'CLEARPAY';
             },
-            value: 'AFTERPAY'
+            value: 'CLEARPAY'
         },
         paymentTransaction: {
             transactionID: '11148651345',

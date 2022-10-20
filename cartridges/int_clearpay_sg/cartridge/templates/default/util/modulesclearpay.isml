@@ -20,3 +20,7 @@
     name="clearpayexpresscheckout"
     attribute="pagetype"
 />
+
+<ismodule template="product/components/cashappwidget"
+    name="cashappwidget"
+/>

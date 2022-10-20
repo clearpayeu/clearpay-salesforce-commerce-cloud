@@ -33,7 +33,7 @@ var Logger = {
 var clearpayUtilities = {
     checkoutUtilities: {
         getPaymentMethodName: function () {
-            return 'AFTERPAY';
+            return 'CLEARPAY';
         }
     }
 };
@@ -79,9 +79,9 @@ describe('updatePaymentStatus', function () {
 
                     paymentMethod: {
                         equals: function (value) {
-                            return value === 'AFTERPAY';
+                            return value === 'CLEARPAY';
                         },
-                        value: 'AFTERPAY'
+                        value: 'CLEARPAY'
                     },
                     paymentTransaction: {
                         transactionID: '11148651345',
