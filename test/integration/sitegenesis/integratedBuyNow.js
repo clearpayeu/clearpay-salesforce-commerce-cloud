@@ -64,9 +64,9 @@ describe('Integrated Non-BuyNow', function () {
     //await page.waitForSelector('a.link');
     //await page.click('a.link');
 
-    await page.waitForSelector('#afterpay-express-link-button');
+    await page.waitForSelector('#clearpay-express-link-button');
 
-    messaging = await page.$eval('.pdp-afterpay-message', e => e.innerText);
+    messaging = await page.$eval('.pdp-clearpay-message', e => e.innerText);
     expect(messaging).to.contain('or 4 payments of');
 
     let addToCartButton = await page.waitForSelector('button#add-to-cart');
@@ -79,7 +79,7 @@ describe('Integrated Non-BuyNow', function () {
     let miniCartLink = await page.waitForSelector('.mini-cart-link');
     await miniCartLink.click();
 
-    let checkoutButton = await page.waitForSelector('#afterpay-express-button');
+    let checkoutButton = await page.waitForSelector('#clearpay-express-button');
 
     await checkoutButton.click();
 

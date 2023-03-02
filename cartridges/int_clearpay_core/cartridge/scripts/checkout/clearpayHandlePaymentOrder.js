@@ -1,5 +1,7 @@
+'use strict';
+
 var PAYMENT_STATUS = require('*/cartridge/scripts/util/clearpayConstants').PAYMENT_STATUS;
-var { sitePreferencesUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
+var sitePreferencesUtilities = require('*/cartridge/scripts/util/clearpayUtilities').sitePreferencesUtilities;
 var clearpayUpdateOrder = require('*/cartridge/scripts/checkout/clearpayUpdateOrder');
 var baseUpdateOrderService = require('*/cartridge/scripts/logic/services/clearpayUpdateOrderService');
 var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');
@@ -18,6 +20,7 @@ var parsePaymentStatus = function (paymentStatus) {
  * updates order service status
  * @param {Object} order - order
  * @param {number} paymentStatus - payment status
+ * @param {Object} expressCheckoutModel - expressCheckoutModel
  * @returns {number} - payment status
  */
 function getPaymentStatus(order, paymentStatus, expressCheckoutModel) {

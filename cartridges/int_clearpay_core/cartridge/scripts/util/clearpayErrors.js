@@ -1,3 +1,5 @@
+'use strict';
+
 // API Includes
 var Resource = require('dw/web/Resource');
 /**
@@ -80,7 +82,6 @@ clearpayErrors.getErrorResponses = function (responseCode, storefrontView) {
 
     return errorMessage;
 };
-
 
 /*
  * Module exports

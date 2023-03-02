@@ -3,7 +3,7 @@
 /* Script Modules */
 var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');
 var Logger = LogUtils.getLogger('CLEARPAY_CREDIT');
-var { brandUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
+var brandUtilities = require('*/cartridge/scripts/util/clearpayUtilities').brandUtilities;
 var BrandMapping = require('*/cartridge/scripts/brandMapping');
 
 /**

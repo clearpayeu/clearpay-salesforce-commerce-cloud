@@ -1,36 +1,36 @@
 'use strict';
-/* global empty */
 
 /* API Includes */
 var Transaction = require('dw/system/Transaction');
 var Order = require('dw/order/Order');
 var Status = require('dw/system/Status');
-var OrderMgr = require('dw/order/OrderMgr');
-var Resource = require('dw/web/Resource');
 
 /* Script Modules */
 var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');
 var Logger = LogUtils.getLogger('updatePaymentStatus');
-let ClearpaySession = require('*/cartridge/scripts/util/clearpaySession');
-let ECPaymentHelpers = require('*/cartridge/scripts/payment/expressCheckoutPaymentHelpers');
 
 var updatePaymentStatus = {};
 
+/* eslint-disable no-useless-escape */
 /**
 * update Clearpay payment status.
-* @param {Object} order - order
-* @returns {Object} - authorization or error
+* @param {object} order - order
+* @returns {object} - authorization or error
 */
+/* eslint-enable no-useless-escape */
 updatePaymentStatus.handlePaymentStatus = function (order) {
-    var { checkoutUtilities: cpCheckoutUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
-    var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
+    var OrderMgr = require('dw/order/OrderMgr');
+    var Resource = require('dw/web/Resource');
+    var ClearpaySession = require('*/cartridge/scripts/util/clearpaySession');
+    var ECPaymentHelpers = require('*/cartridge/scripts/payment/expressCheckoutPaymentHelpers');
+    var cpCheckoutUtilities = require('*/cartridge/scripts/util/clearpayUtilities').checkoutUtilities;
     var response;
     var finalPaymentStatus;
     var errorMessage;
     var responseCode;
     var paymentTransaction;
     var cpInitialStatus;
-
+    var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
     var impactOrder = order;
 
     if (!paymentMethodName) {
@@ -61,11 +61,7 @@ updatePaymentStatus.handlePaymentStatus = function (order) {
         // make sure the token in the session is still the one we expect. If not, we
         // fail the order
         if (ClearpaySession.getToken() != orderToken) {
-            Transaction.begin();
-            Order.getPaymentInstruments(paymentMethodName)[0].getPaymentTransaction().custom.cpInitialStatus = cpInitialStatus;
-            Order.setPaymentStatus(dw.order.Order.PAYMENT_STATUS_NOTPAID);
-            OrderMgr.failOrder(Order);
-            Transaction.commit();
+            Transaction.wrap(function () { OrderMgr.failOrder(order, true); });
             Logger.error('Payment has been declined. Session changed so there is no way to verify that order created was correct.');
             ClearpaySession.clearSession();
 
@@ -86,7 +82,7 @@ updatePaymentStatus.handlePaymentStatus = function (order) {
 
     Logger.debug('Clearpay final payment status :' + finalPaymentStatus);
 
-    if (finalPaymentStatus === 'APPROVED') {
+    if (finalPaymentStatus === 'APPROVED' || finalPaymentStatus === 'ACTIVE') {
         return { authorized: true };
     } else if (finalPaymentStatus === 'PENDING') {
         return {
@@ -99,10 +95,10 @@ updatePaymentStatus.handlePaymentStatus = function (order) {
         Transaction.begin();
         impactOrder.getPaymentInstruments(paymentMethodName)[0].getPaymentTransaction().custom.cpInitialStatus = cpInitialStatus;
         Transaction.commit();
+        Logger.error('Payment has been declined : ' + responseCode);
         if (ClearpaySession.isValid()) {
             ClearpaySession.clearSession();
         }
-        Logger.error('Payment has been declined : ' + responseCode);
         return {
             ClearpayOrderErrorMessage: errorMessage,
             error: true

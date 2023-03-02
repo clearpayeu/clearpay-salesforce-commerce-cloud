@@ -1,10 +1,9 @@
-/* global request */
+'use strict';
+
 /**
 *
 * Controller to test the clearpay services
 */
-
-'use strict';
 
 /* Global variables */
 var sitePreferences = require('*/cartridge/scripts/util/clearpayUtilities.js').sitePreferencesUtilities;

@@ -14,9 +14,6 @@
             <span>${Resource.msg('msg.card.type.ending', 'confirmation', null)} ${payment.expirationMonth}/${payment.expirationYear}</span>
         </div>
     </isif>
-	<isif condition="${payment.paymentMethod === 'AFTERPAY'}">
-        <span>${Resource.msg('afterpay.orderconfirmation.payment.method.name', 'afterpay', null)}</span>
-    </isif>
     <isif condition="${payment.paymentMethod === 'CLEARPAY'}">
         <span>${Resource.msg('clearpay.orderconfirmation.payment.method.name', 'clearpay', null)}</span>
     </isif>

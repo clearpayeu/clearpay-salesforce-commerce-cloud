@@ -45,11 +45,14 @@ var utilitiesMock = {
         },
         getCountryCode: function () {
             return 'US';
+        },
+        isClearpayApplicable: function () {
+            return true;
         }
     },
     checkoutUtilities: {
         getPaymentMethodName: function () {
-            return 'AFTERPAY';
+            return 'CLEARPAY';
         }
     },
     sitePreferencesUtilities: {
@@ -113,16 +116,12 @@ global.request = {
 
 describe('thresholdUtilities', function () {
 
-    var thresholdUtilitiesBase = proxyquire('../../../../../cartridges/int_clearpay_core/cartridge/scripts/util/thresholdUtilities.js', {
+    var thresholdUtilities = proxyquire('../../../../../cartridges/int_clearpay_core/cartridge/scripts/util/thresholdUtilities.js', {
         'dw/system/Transaction': transaction,
         'dw/order/PaymentMgr': PaymentMgrMock,
         '*/cartridge/scripts/util/clearpayUtilities': utilitiesMock,
         '*/cartridge/scripts/logic/services/clearpayConfigurationService': clearpayConfigurationServiceMock,
         '*/cartridge/scripts/util/clearpayLogUtils': customLogger
-    });
-
-    var thresholdUtilities = proxyquire('../../../../../cartridges/int_clearpay_core/cartridge/scripts/util/v2/thresholdUtilities.js', {
-        '*/cartridge/scripts/util/thresholdUtilities': thresholdUtilitiesBase
     });
 
     it('detect that provided price is below an actual threshold', function () {
@@ -136,4 +135,3 @@ describe('thresholdUtilities', function () {
         assert.equal(result && result.minThresholdAmount, 5);
     });
 });
-

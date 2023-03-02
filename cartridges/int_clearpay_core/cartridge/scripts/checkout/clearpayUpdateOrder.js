@@ -1,8 +1,9 @@
+'use strict';
+
 var clearpayConstants = require('*/cartridge/scripts/util/clearpayConstants');
 var cpUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
 var cpCheckoutUtilities = cpUtilities.checkoutUtilities;
 var Transaction = require('dw/system/Transaction');
-var Logger = require('dw/system/Logger');
 
 var clearpayUpdateOrder = {
     /**
@@ -13,6 +14,8 @@ var clearpayUpdateOrder = {
      */
     handleUpdateOrder: function (order, paymentResult, paymentMode) {
         var paymentTransaction;
+        var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');
+        var Logger = LogUtils.getLogger('clearpayUpdateOrder');
 
         try {
             paymentTransaction = this.getPaymentTransaction(order);
@@ -57,6 +60,9 @@ var clearpayUpdateOrder = {
                 amount = empty(paymentResult.openToCaptureAmount) ? null : new Money(parseFloat(paymentResult.openToCaptureAmount.amount), paymentResult.openToCaptureAmount.currency);
             }
 
+            if (paymentResult.status === clearpayConstants.PAYMENT_STATUS.ACTIVE && amount === null) {
+                amount = empty(paymentResult.amount) ? null : new Money(parseFloat(paymentResult.amount.amount), paymentResult.amount.currency);
+            }
             payTrans.setAmount(amount);
         });
 
@@ -110,6 +116,7 @@ var clearpayUpdateOrder = {
         var outOrder = order;
         Transaction.begin();
         outOrder.custom.cpIsClearpayOrder = true;
+
         if (paymentResult.status === clearpayConstants.PAYMENT_STATUS.APPROVED) {
             outOrder.setPaymentStatus(Order.PAYMENT_STATUS_PAID);
         } else {

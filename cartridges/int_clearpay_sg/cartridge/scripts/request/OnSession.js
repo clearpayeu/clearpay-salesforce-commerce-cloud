@@ -1,3 +1,5 @@
+'use strict';
+
 var Status = require('dw/system/Status');
 
 /**
@@ -5,7 +7,7 @@ var Status = require('dw/system/Status');
  * @returns {dw.system.Status} status
  */
 exports.onSession = function () {
-    var { brandUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
+    var brandUtilities = require('*/cartridge/scripts/util/clearpayUtilities').brandUtilities;
 
     brandUtilities.initBrand(request.locale);
     return new Status(Status.OK);

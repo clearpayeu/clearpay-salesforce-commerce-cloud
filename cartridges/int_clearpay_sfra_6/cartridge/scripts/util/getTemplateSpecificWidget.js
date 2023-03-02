@@ -4,7 +4,7 @@
 var Money = require('dw/value/Money');
 
 /* Script Modules */
-var { brandUtilities: cpBrandUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
+var cpBrandUtilities = require('*/cartridge/scripts/util/clearpayUtilities').brandUtilities;
 
 var getTemplateSpecificWidget = {};
 
@@ -143,7 +143,7 @@ getTemplateSpecificWidget.getCheckoutWidgetData = function (currentBasket, class
         priceContext.minthresholdamount = isWithinThreshold.minThresholdAmount;
     }
 
-    var isApplicable = cpBrandUtilities.isClearpayApplicable() && isWithinThreshold.status;
+    var isApplicable = cpBrandUtilities.isClearpayApplicable();
     var cpBrand = cpBrandUtilities.getBrand();
 
     if (className === 'checkout-clearpay-message') {

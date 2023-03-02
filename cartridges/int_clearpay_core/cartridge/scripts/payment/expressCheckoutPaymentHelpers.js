@@ -2,7 +2,6 @@
 
 var ClearpaySession = require('*/cartridge/scripts/util/clearpaySession');
 var ClearpayCOHelpers = require('*/cartridge/scripts/checkout/clearpayCheckoutHelpers');
-var ExpressCaptureRequestBuilder = require('~/cartridge/scripts/payment/expressCaptureRequestBuilder');
 var cpUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
 var cpCheckoutUtilities = cpUtilities.checkoutUtilities;
 
@@ -16,16 +15,16 @@ var ExpressCheckoutPaymentHelpers = {
         expressCheckoutModel.cpExpressCheckout = order.getPaymentInstruments(paymentMethod)[0].getPaymentTransaction().custom.cpExpressCheckout;
         expressCheckoutModel.cpExpressCheckoutChecksum = order.getPaymentInstruments(paymentMethod)[0].getPaymentTransaction().custom.cpExpressCheckoutChecksum;
         if (expressCheckoutModel.cpExpressCheckout) {
-            let orderToken = order.getPaymentInstruments(paymentMethod)[0].getPaymentTransaction().custom.cpToken;
+            var orderToken = order.getPaymentInstruments(paymentMethod)[0].getPaymentTransaction().custom.cpToken;
             // May need a way to get a session snapshot
             if (ClearpaySession.getToken(orderToken) == orderToken) {
-                let lineItemsChanged = this.checkIfLineItemsChanged(order);
-                let shippingChanged = this.checkIfShippingChanged(order);
+                var lineItemsChanged = this.checkIfLineItemsChanged(order);
+                var shippingChanged = this.checkIfShippingChanged(order);
                 expressCheckoutModel.cpTempShippingAddressChanged = shippingChanged;
                 expressCheckoutModel.cpTempBasketItemsChanged = lineItemsChanged;
-                let initialCheckoutAmount = new dw.value.Money(ClearpaySession.getExpressCheckoutAmount(), ClearpaySession.getExpressCheckoutCurrency());
-                let pt = order.getPaymentInstruments(paymentMethod)[0].getPaymentTransaction();
-                let amount = pt.amount;
+                var initialCheckoutAmount = new dw.value.Money(ClearpaySession.getExpressCheckoutAmount(), ClearpaySession.getExpressCheckoutCurrency());
+                var pt = order.getPaymentInstruments(paymentMethod)[0].getPaymentTransaction();
+                var amount = pt.amount;
                 if (!initialCheckoutAmount.equals(amount)) {
                     expressCheckoutModel.cpTempCheckoutAmountChanged = true;
                 }
@@ -34,7 +33,7 @@ var ExpressCheckoutPaymentHelpers = {
         return expressCheckoutModel;
     },
     checkIfLineItemsChanged: function (order) {
-        let cksum = ClearpayCOHelpers.computeBasketProductLineItemChecksum(order);
+        var cksum = ClearpayCOHelpers.computeBasketProductLineItemChecksum(order);
         if (cksum != ClearpaySession.getItemsChecksum()) {
             return true;
         }
@@ -53,7 +52,7 @@ var ExpressCheckoutPaymentHelpers = {
             return false;
         }
 
-        let cksum = ClearpayCOHelpers.computeBasketShippingChecksum(order);
+        var cksum = ClearpayCOHelpers.computeBasketShippingChecksum(order);
         if (cksum != ClearpaySession.getItemsChecksum()) {
             return true;
         }

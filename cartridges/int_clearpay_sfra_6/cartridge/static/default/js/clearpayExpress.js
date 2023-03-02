@@ -1,14 +1,14 @@
-function initAfterpay(settings) {
+function initClearpay(settings) {
     settings = settings || {};
-    let commenceDelay = settings.commenceDelay || 0;
+    var commenceDelay = settings.commenceDelay || 0;
 
-    let pickupflag = settings.pickupflag || false;
+    var pickupflag = settings.pickupflag || false;
 
-    let target = settings.target || '#clearpay-express-button';
+    var target = settings.target || '#clearpay-express-button';
 
-    let productIdSelector = settings.productIdSelector || null;
-    let productQuantitySelector = settings.productQuantitySelector || null;
-    let clearpayCreateTokenErrorMessage = '';
+    var productIdSelector = settings.productIdSelector || null;
+    var productQuantitySelector = settings.productQuantitySelector || null;
+    var clearpayCreateTokenErrorMessage = '';
     AfterPay.initializeForPopup({
         countryCode: $('#clearpay-express-countrycode').val(),
         pickup: pickupflag,
@@ -21,21 +21,20 @@ function initAfterpay(settings) {
                     url: getShippingOptionUrl,
                     method: 'GET',
                     success: function (data) {
-                        if(data.shipmentType){
+                        if (data.shipmentType) {
                             if (data.shipmentType == 'SplitShipment' || data.shipmentType == 'MultiplePickup') {
                                 AfterPay.shippingOptionRequired = false;
                             }
                         }
-                       
-                        console.log('onCommenceCheckout(). Actions=', actions);
+
                         var clearpayExpressTokenUrl = $('#clearpay-express-url-createtoken').val() + '?s_url=' + encodeURIComponent(window.location.href);
                         // This is to support Clearpay Express from product details page. Add product to cart and checkout.
                         if (productIdSelector && productQuantitySelector) {
-                            let p_elem = document.querySelector(productIdSelector);
-                            let q_elem = document.querySelector(productQuantitySelector);
+                            var p_elem = document.querySelector(productIdSelector);
+                            var q_elem = document.querySelector(productQuantitySelector);
                             clearpayExpressTokenUrl += '&cartAction=add&pid=' + (p_elem.innerText || '') + '&Quantity=' + (q_elem.value || '');
                         }            
-                        console.log('onCommenceCheckout(). TokenUrl: ', clearpayExpressTokenUrl);
+
                         var currentLocation = window.location.href;
                         sleep(commenceDelay).then(() => {
                             $.ajax({
@@ -43,35 +42,29 @@ function initAfterpay(settings) {
                                 url: clearpayExpressTokenUrl,
                                 success: function (res) {
                                     if (res.status == 'SUCCESS') {
-                                        console.log('Result of CreateToken: ', res);
-                                        // var clearpaytoken = res.response.clearpaytoken;
                                         var clearpaytoken = res.token.cpToken;
-                                        console.log('Got token from clearpay: ', clearpaytoken);
                                         actions.resolve(clearpaytoken);
                                     } else {
                                         alert(res.error);
-                                        console.log('Clearpay Express Checkout: Token Creation Failure: ', res.error);
                                         actions.reject(AfterPay.CONSTANTS.SERVICE_UNAVAILABLE);
                                     }
                                 },
                                 error: function () {
-                                    console.log('Clearpay Express Checkout: request failure.');
+                                    alert('Clearpay payment failed.');
                                 }
                             });
                         });
                         
                     },
                     error: function () {
-                        console.log('Clearpay Express Checkout: request failure.');
+                        alert('Clearpay payment failed.');
                     }
                 });
             }
         },
         // NOTE: onShippingAddressChange only needed if shippingOptionRequired is true
         onShippingAddressChange: function (data, actions) {
-            console.log('onShippingAddressChange called. data=', data);
             var shippingMetthodsUrl = $('#clearpay-express-url-getshippingmethods').val();
-            console.log('Calling this to get shipping methods: ' + shippingMetthodsUrl);
             $.ajax({
                 type: 'POST',
                 url: shippingMetthodsUrl,
@@ -87,7 +80,6 @@ function initAfterpay(settings) {
                     phoneNumber: data.phoneNumber
                 },
                 success: function (response) {
-                    console.log('shipping method computed successfully. Returning data to Clearpay portal via resolve. shippingMethods=', response);
                         // Need to handle case where address is unsupported/invalid
                     if (!response.shipmethods || response.shipmethods.length == 0) {
                         actions.reject(AfterPay.CONSTANTS.SHIPPING_ADDRESS_UNSUPPORTED);
@@ -96,19 +88,15 @@ function initAfterpay(settings) {
                     }
                 },
                 error: function () {
-                    console.log('Clearpay Express Checkout: failure in get shipping methods');
+                    alert('Clearpay payment failed.');
                 }
             });
         },
         onComplete: function (event) {
             if (event.data.status == 'SUCCESS') {
-                console.log('onComplete called with SUCCESS');
-                console.log(event.data);
                 var clearpayExpressProcessUrl = $('#clearpay-express-url-processorder').val() + '?orderToken=' + event.data.orderToken + '&merchantReference=' + event.data.merchantReference;
                 $(location).attr('href', clearpayExpressProcessUrl);
             } else {
-                console.log('onComplete failed');
-                console.log(event.data);
                 var errorUrl = $('#clearpay-express-url-cancelorder').val() + '?orderToken=' + event.data.orderToken + '&merchantReference=' + event.data.merchantReference;
                 $(location).attr('href', errorUrl);
             }
@@ -123,19 +111,18 @@ function sleep(ms) {
 
 // Reinitialize the Clearpay popup by first doing an ajax
 // call to the server to determine eligibility for Clearpay Express
-// and calling initAfterpay with the setting
+// and calling initClearpay with the setting
 function reinitializeClearpayPopup() {
-    let getCartStatusUrl = $('#clearpay-express-url-cartstatus').val();
+    var getCartStatusUrl = $('#clearpay-express-url-cartstatus').val();
     $.ajax({
         type: 'GET',
         url: getCartStatusUrl,
         success: function (res) {
             var instorepickup = res.instorepickup;
-            console.log('Instorepickup setting: ', instorepickup);
-            initAfterpay(instorepickup);
+            initClearpay(instorepickup);
         },
         error: function () {
-            console.log('Clearpay Express cart status request failure.');
+            alert('Clearpay payment failed.');
         }
     });
 }
@@ -149,11 +136,11 @@ function reinitializeClearpayPopup() {
  * .item-delivery-options, so wait for that to disappear.
  */
 function initializeDeliveryOptionChangeListener() {
-    let elements = document.querySelectorAll('.delivery-option');
+    var elements = document.querySelectorAll('.delivery-option');
     for (var i = 0; i < elements.length; i++) {
         elements[i].addEventListener('change', function () {
-            let loadingElement = document.querySelector('.item-delivery-options');
-            let observer = new MutationObserver(function (entries) {
+            var loadingElement = document.querySelector('.item-delivery-options');
+            var observer = new MutationObserver(function (entries) {
                 if (!document.querySelector('.item-delivery-options.loading')) {
                     reinitializeClearpayPopup();
                     observer.disconnect();
@@ -163,3 +150,4 @@ function initializeDeliveryOptionChangeListener() {
         });
     }
 }
+

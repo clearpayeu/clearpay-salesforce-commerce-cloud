@@ -1,3 +1,5 @@
+'use strict';
+
 /**
 * ClearPay Transaction Actions
 *
@@ -16,8 +18,7 @@ var UUIDUtils = require('dw/util/UUIDUtils');
 /* Script Modules */
 var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');
 var Logger = LogUtils.getLogger('TransActions');
-var clearpayUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
-var brandUtilities = clearpayUtilities.brandUtilities;
+var brandUtilities = require('*/cartridge/scripts/util/clearpayUtilities').brandUtilities;
 
 /**
  * updates the order status
@@ -87,9 +88,8 @@ function refund(orderNo, amountString) {
     var cpPaymentInstrument;
     var paymentTransaction;
     var status = false;
-    var amountArray = amountString.split(' ');
-    var currency = amountArray[0];
-    var amount = amountArray[1];
+    var currency = order.getCurrencyCode();
+    var amount = amountString;
     var response;
     var paymentID;
     var request;
@@ -99,7 +99,7 @@ function refund(orderNo, amountString) {
 
     while (iter.hasNext()) {
         cpPaymentInstrument = iter.next();
-        if (cpPaymentInstrument.paymentMethod === 'AFTERPAY' || cpPaymentInstrument.paymentMethod === 'CLEARPAY') {
+        if (cpPaymentInstrument.paymentMethod === 'CLEARPAY') {
             paymentInstrument = cpPaymentInstrument;
         }
     }

@@ -1,5 +1,5 @@
 'use strict';
-/* global empty */
+
 var orderCreateService = require('*/cartridge/scripts/order/orderService');
 var TokenModel = require('*/cartridge/scripts/models/clearpayTokenModel.js');
 var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');

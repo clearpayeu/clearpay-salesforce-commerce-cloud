@@ -1,7 +1,7 @@
 'use strict';
+
 var Transaction = require('dw/system/Transaction');
 var PreapprovalModel = require('*/cartridge/scripts/models/preapprovalModel');
-var clearpayUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
 var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');
 var Logger = LogUtils.getLogger('afterpaUpdatePreapprovalStatus');
 
@@ -25,8 +25,10 @@ function parsePreapprovalResult(parameter) {
  * @param {Object} lineItemCtnr - line Item Container
  */
 function updatePreapprovalStatus(preapprovalModel, lineItemCtnr) {
-    const { checkoutUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
-    var paymentTransaction = checkoutUtilities.getPaymentTransaction(lineItemCtnr);
+    var checkoutUtilities = require('*/cartridge/scripts/util/clearpayUtilities').checkoutUtilities;
+    var paymentMethodName = checkoutUtilities.getPaymentMethodName();
+    var paymentInstrument = lineItemCtnr.getPaymentInstruments(paymentMethodName)[0];
+    var paymentTransaction = paymentInstrument ? paymentInstrument.getPaymentTransaction() : null;
     if (paymentTransaction) {
         Logger.debug('Payment status after token generation : ' + preapprovalModel.status);
         Transaction.begin();

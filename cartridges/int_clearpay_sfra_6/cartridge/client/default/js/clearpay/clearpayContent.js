@@ -1,5 +1,4 @@
 'use strict';
-/* global $ */
 
 var clearpay;
 
@@ -16,6 +15,7 @@ function openClearpayModal(e) {
         if ($('#clearpayModal').length) {
             $('#clearpayModal').remove();
         }
+        /* eslint-disable operator-linebreak */
         var htmlString = '<!-- Modal -->' +
             '<div class="modal fade clearpayModal" id="clearpayModal" role="dialog">' +
             '<div class="modal-dialog quick-view-dialog">' +
@@ -30,6 +30,7 @@ function openClearpayModal(e) {
             '</div>' +
             '</div>' +
             '</div>';
+        /* eslint-enable operator-linebreak */
         $('body').append(htmlString);
         $('body').addClass('modal-open');
         $('#clearpayModal').addClass('show');

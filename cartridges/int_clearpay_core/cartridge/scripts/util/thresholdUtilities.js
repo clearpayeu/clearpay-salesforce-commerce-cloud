@@ -1,12 +1,10 @@
-/* global session */
-var PaymentMgr = require('dw/order/PaymentMgr');
+'use strict';
 
 var configurationService = require('*/cartridge/scripts/logic/services/clearpayConfigurationService');
 var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');
 var Logger = LogUtils.getLogger('thresholdUtilities');
-var { brandUtilities, checkoutUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
+var brandUtilities = require('*/cartridge/scripts/util/clearpayUtilities').brandUtilities;
 var clearpayBrand = brandUtilities.getBrand();
-var countryCode = brandUtilities.getCountryCode();
 var result = {
     status: false
 };
@@ -16,7 +14,6 @@ var result = {
  * @description set threshold in session based either on the configuration or from API response
  */
 var thresholdUtilities = {
-    // eslint-disable-next-line no-unused-vars
     parseConfigurationResponse: function (thresholdResponse) {
         var configuration = {
             minAmount: 0,
@@ -38,16 +35,16 @@ var thresholdUtilities = {
 
         return configuration;
     },
-    getThresholdAmounts: function (clearpayBrand) {
-        var prefix = request.getLocale() + clearpayBrand.toUpperCase();
-        var result = {
+    getThresholdAmounts: function (brand) {
+        var prefix = request.getLocale() + brand.toUpperCase();
+        var thresholdResult = {
             minAmount: session.privacy[prefix + 'MinAmount'],
             maxAmount: session.privacy[prefix + 'MaxAmount']
         };
 
         var thresholdResponse;
 
-        if (empty(result.minAmount) || empty(result.maxAmount)) {
+        if (empty(thresholdResult.minAmount) || empty(thresholdResult.maxAmount)) {
             configurationService.generateRequest();
             try {
                 thresholdResponse = configurationService.getResponse();
@@ -60,13 +57,13 @@ var thresholdUtilities = {
                 };
             }
 
-            result = this.parseConfigurationResponse(thresholdResponse);
+            thresholdResult = this.parseConfigurationResponse(thresholdResponse);
         }
 
-        return result;
+        return thresholdResult;
     },
-    saveThresholds: function (clearpayBrand, thresholds) {
-        var prefix = request.getLocale() + clearpayBrand.toUpperCase();
+    saveThresholds: function (brand, thresholds) {
+        var prefix = request.getLocale() + brand.toUpperCase();
         if (thresholds.minAmount) {
             session.privacy[prefix + 'MinAmount'] = thresholds.minAmount;
         } else {
@@ -80,35 +77,30 @@ var thresholdUtilities = {
     },
     checkThreshold: function (price) {
         if (clearpayBrand && (price && price.value)) {
-            result =  this.getThresholdResult(price.value);
+            result = this.getThresholdResult(price.value);
         }
         return result;
     },
     checkPriceThreshold: function (price) {
         if (clearpayBrand && price) {
-            result =  this.getThresholdResult(price);
+            result = this.getThresholdResult(price);
         }
         return result;
     },
-    getThresholdResult: function(price) {
+    getThresholdResult: function (price) {
+        result.status = false;
         if (price) {
             var threshold = this.getThresholdAmounts(clearpayBrand);
             this.saveThresholds(clearpayBrand, threshold);
-            var paymentMethodName = checkoutUtilities.getPaymentMethodName();
-            var paymentMethod;
-            var isApplicable;
+            var isApplicable = brandUtilities.isClearpayApplicable();
 
-            if (paymentMethodName) {
-                paymentMethod = PaymentMgr.getPaymentMethod(paymentMethodName);
-                isApplicable = paymentMethod.isApplicable(session.customer, countryCode, price);
-
-                result.status = isApplicable;
-
-                if (isApplicable) {
-                    result.belowThreshold = price.value <= threshold.minAmount;
-                    result.aboveThreshold = price.value >= threshold.maxAmount;
-                    result.minThresholdAmount = threshold.minAmount;
-                    result.maxThresholdAmount = threshold.maxAmount;
+            if (isApplicable) {
+                result.belowThreshold = price <= threshold.minAmount;
+                result.aboveThreshold = price >= threshold.maxAmount;
+                result.minThresholdAmount = threshold.minAmount;
+                result.maxThresholdAmount = threshold.maxAmount;
+                if (price >= threshold.minAmount && price <= threshold.maxAmount) {
+                    result.status = true;
                 }
             }
         }

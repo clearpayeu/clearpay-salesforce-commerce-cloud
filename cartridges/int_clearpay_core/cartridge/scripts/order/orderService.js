@@ -10,9 +10,9 @@ var OrderRequestBuilder = require('*/cartridge/scripts/order/orderRequestBuilder
 var requestUrl = null;
 var requestBody = {};
 var orderService = {
-    generateRequest: function (lineItemCtnr, url) {
+    generateRequest: function (lineItemCtnr) {
         requestUrl = clearpayUtils.getEndpoint('createOrders');
-        this.generateRequestBody(lineItemCtnr, url);
+        this.generateRequestBody(lineItemCtnr);
     },
 
     getResponse: function () {
@@ -22,12 +22,10 @@ var orderService = {
         return response;
     },
 
-    generateRequestBody: function (lineItemCtnr, url) {
+    generateRequestBody: function (lineItemCtnr) {
         var orderRequestBuilder = new OrderRequestBuilder();
-
         requestBody = orderRequestBuilder.buildRequest({
             basket: lineItemCtnr,
-            url: url,
             requestMethod: 'POST'
         }).get();
     }

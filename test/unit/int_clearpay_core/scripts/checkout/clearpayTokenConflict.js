@@ -3,7 +3,7 @@ var assert = require('chai').assert;
 var expect = require('chai').expect;
 var proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 var sinon = require('sinon');
-var ArrayList = require('../../../../mocks/dw.util.Collection');
+var ArrayList = require('../../../../mocks/dw/util/Collection');
 var BasketMgr = require('../../../../mocks/dw/order/BasketMgr');
 var collections = require('../../../../mocks/clearpayCollections');
 
@@ -65,7 +65,17 @@ var Logger = {
     debug: function () {
     },
     error: function () {
+    }
+};
+
+var checksum = 'jhdfdfbcnuiefhw';
+var coHelpers = {
+    computeResponseProductLineItemChecksum: function () {
+        return checksum;
     },
+    computeBasketProductLineItemChecksum: function () {
+        return checksum
+    }
 };
 
 var token = 'jhdfdfbcnuiefhw';
@@ -78,14 +88,9 @@ describe('#clearpayTokenConflict', function (done) {
             }
         },
         '*/cartridge/scripts/util/clearpayLogUtils': customLogger,
+        '*/cartridge/scripts/checkout/clearpayCheckoutHelpers': coHelpers,
         '*/cartridge/scripts/util/collections': collections,
         'dw/util/ArrayList': ArrayList
-    });
-
-    it('remove bundled items from basket', function () {
-        var basket = createApiBasket(false);
-        var result = clearpayTokenConflict.removeBundledItems(basket);
-        expect(result).to.be.object;
     });
 
     it('check token conflict', function () {

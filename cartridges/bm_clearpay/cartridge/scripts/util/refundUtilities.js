@@ -1,3 +1,5 @@
+'use strict';
+
 var RefundService = require('*/cartridge/scripts/logic/services/clearpayRefundService');
 var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');
 var Logger = LogUtils.getLogger('RefundUtilities');

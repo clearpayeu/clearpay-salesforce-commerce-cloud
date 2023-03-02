@@ -1,4 +1,5 @@
 'use strict';
+
 var clearpayHttpService = require('*/cartridge/scripts/logic/services/clearpayHttpService');
 var clearpayUtils = require('*/cartridge/scripts/util/clearpayUtils');
 var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');

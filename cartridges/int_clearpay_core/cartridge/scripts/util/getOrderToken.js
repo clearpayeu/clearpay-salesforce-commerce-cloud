@@ -1,3 +1,5 @@
+'use strict';
+
 var getOrderService = require('*/cartridge/scripts/logic/services/clearpayGetOrderService');
 var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');
 var Logger = LogUtils.getLogger('getOrderToken');
@@ -23,4 +25,3 @@ var getOrderToken = {
 };
 
 module.exports = getOrderToken;
-

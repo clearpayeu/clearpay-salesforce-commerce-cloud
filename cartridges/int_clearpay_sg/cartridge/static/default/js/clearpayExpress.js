@@ -1,13 +1,13 @@
-function initAfterpay(settings) {
+function initClearpay(settings) {
     settings = settings || {};
-    let commenceDelay = settings.commenceDelay || 0;
+    var commenceDelay = settings.commenceDelay || 0;
 
-    let pickupflag = settings.pickupflag || false;
+    var pickupflag = settings.pickupflag || false;
 
-    let target = settings.target || '#clearpay-express-button';
+    var target = settings.target || '#clearpay-express-button';
 
-    let productIdSelector = settings.productIdSelector || null;
-    let productQuantitySelector = settings.productQuantitySelector || null;
+    var productIdSelector = settings.productIdSelector || null;
+    var productQuantitySelector = settings.productQuantitySelector || null;
     AfterPay.initializeForPopup({
         countryCode: $('#clearpay-express-countrycode').val(),
         pickup: pickupflag,
@@ -17,8 +17,8 @@ function initAfterpay(settings) {
             var clearpayExpressTokenUrl = $('#clearpay-express-url-createtoken').val() + '?s_url=' + encodeURIComponent(window.location.href);
             // This is to support Clearpay Express from product details page. Add product to cart and checkout.
             if (productIdSelector && productQuantitySelector) {
-                let p_elem = document.querySelector(productIdSelector);
-                let q_elem = document.querySelector(productQuantitySelector);
+                var p_elem = document.querySelector(productIdSelector);
+                var q_elem = document.querySelector(productQuantitySelector);
                 clearpayExpressTokenUrl += '&cartAction=add&pid=' + (p_elem.value || '') + '&Quantity=' + (q_elem.value || '');
             }
 
@@ -34,12 +34,11 @@ function initAfterpay(settings) {
                         } else {
                             clearpayCreateTokenErrorMessage = res.error;
                             alert(res.error);
-                            console.log('Clearpay Express Checkout: Token Creation Failure: ', res.error);
                             actions.reject(AfterPay.CONSTANTS.SERVICE_UNAVAILABLE);
                         }
                     },
                     error: function () {
-                        console.log('Clearpay Express Checkout: request failure.');
+                        alert('Clearpay payment failed.');
                     }
                 });
             });
@@ -72,7 +71,7 @@ function initAfterpay(settings) {
                     }
                 },
                 error: function () {
-                    console.log('Clearpay Express Checkout: failure in get shipping methods');
+                    alert('Clearpay payment failed.');
                 }
             });
         },
@@ -95,18 +94,18 @@ function sleep(ms) {
 
 // Reinitialize the Clearpay popup by first doing an ajax
 // call to the server to determine eligibility for Clearpay Express
-// and calling initAfterpay with the setting
+// and calling initClearpay with the setting
 function reinitializeClearpayPopup() {
-    let getCartStatusUrl = $('#clearpay-express-url-cartstatus').val();
+    var getCartStatusUrl = $('#clearpay-express-url-cartstatus').val();
     $.ajax({
         type: 'GET',
         url: getCartStatusUrl,
         success: function (res) {
             var instorepickup = res.instorepickup;
-            initAfterpay({ pickupflag: instorepickup });
+            initClearpay({ pickupflag: instorepickup });
         },
         error: function () {
-            console.log('Clearpay Express cart status request failure.');
+            alert('Clearpay payment failed.');
         }
     });
 }
@@ -120,12 +119,12 @@ function reinitializeClearpayPopup() {
  * .item-delivery-options, so wait for that to disappear.
  */
 function initializeDeliveryOptionChangeListener() {
-    let elements = document.querySelectorAll('.delivery-option');
+    var elements = document.querySelectorAll('.delivery-option');
     for (var i = 0; i < elements.length; i++) {
         elements[i].addEventListener('change', function () {
             if ('MutationObserver' in window) {
-                let loadingElement = document.querySelector('.item-delivery-options');
-                let observer = new MutationObserver(function (entries) {
+                var loadingElement = document.querySelector('.item-delivery-options');
+                var observer = new MutationObserver(function (entries) {
                     if (!document.querySelector('.item-delivery-options.loading')) {
                         reinitializeClearpayPopup();
                         observer.disconnect();

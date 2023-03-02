@@ -1,5 +1,6 @@
 'use strict';
-var { checkoutUtilities: cpCheckoutUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
+
+var cpCheckoutUtilities = require('*/cartridge/scripts/util/clearpayUtilities').checkoutUtilities;
 var ClearpayCOHelpers = require('*/cartridge/scripts/checkout/clearpayCheckoutHelpers');
 
 var checkoutTools = {
@@ -42,8 +43,8 @@ var checkoutTools = {
             basket.defaultShipment
         );
         */
-        let name = ClearpayCOHelpers.splitName(cpShipping.name || '');
-        let stripLeadingOne = ClearpayCOHelpers.stripUSPhoneNumberLeadingOne;
+        var name = ClearpayCOHelpers.splitName(cpShipping.name || '');
+        var stripLeadingOne = ClearpayCOHelpers.stripUSPhoneNumberLeadingOne;
         Transaction.wrap(function () {
             if (shippingAddress === null) {
                 shippingAddress = shipment.createShippingAddress();
@@ -64,41 +65,41 @@ var checkoutTools = {
         });
     },
     shouldEnableExpressPickupMode: function (basket) {
-        basket = basket || dw.order.BasketMgr.getCurrentBasket();
-        if (!basket) {
+        var currentBasket = basket || dw.order.BasketMgr.getCurrentBasket();
+        if (!currentBasket) {
             return false;
         }
-        let storeMap = ClearpayCOHelpers.getInStorePickupsMap(basket);
+        var storeMap = ClearpayCOHelpers.getInStorePickupsMap(currentBasket);
         // items that are being shipped
-        let numNonStorePickups =ClearpayCOHelpers.getNumHomeDeliveries(basket);
+        var numNonStorePickups = ClearpayCOHelpers.getNumHomeDeliveries(currentBasket);
         if ((numNonStorePickups == 0) && (Object.keys(storeMap).length == 1)) {
             return true;
         }
         return false;
     },
     getCartShipmentType: function (basket) {
-        let storeMap = ClearpayCOHelpers.getInStorePickupsMap(basket);
-        let numHomeDeliveries = ClearpayCOHelpers.getNumHomeDeliveries(basket);
+        var storeMap = ClearpayCOHelpers.getInStorePickupsMap(basket);
+        var numHomeDeliveries = ClearpayCOHelpers.getNumHomeDeliveries(basket);
         var shipmentType = '';
 
         if ((numHomeDeliveries == 0) && (Object.keys(storeMap).length == 1)) {
             shipmentType = 'SingleStorePickup';
         } else if (((numHomeDeliveries > 0) && (Object.keys(storeMap).length > 0))) {
             shipmentType = 'SplitShipment';
-        } else if(Object.keys(storeMap).length > 1){
+        } else if (Object.keys(storeMap).length > 1) {
             shipmentType = 'MultiplePickup';
         }
 
         return shipmentType;
     },
     removeAllNonGiftCertificatePayments: function (basket) {
-        let PaymentInstrument = require('dw/order/PaymentInstrument');
+        var PaymentInstrument = require('dw/order/PaymentInstrument');
         var Transaction = require('dw/system/Transaction');
         Transaction.wrap(function () {
-            let payInstr = basket.getPaymentInstruments();
-            let iter = payInstr.iterator();
+            var payInstr = basket.getPaymentInstruments();
+            var iter = payInstr.iterator();
             while (iter.hasNext()) {
-                let pi = iter.next();
+                var pi = iter.next();
                 if (!PaymentInstrument.METHOD_GIFT_CERTIFICATE.equals(pi.getPaymentMethod())) {
                     basket.removePaymentInstrument(pi);
                 }
@@ -106,14 +107,13 @@ var checkoutTools = {
         });
     },
     removeClearpayPayments: function (basket) {
-        let PaymentInstrument = require('dw/order/PaymentInstrument');
         var Transaction = require('dw/system/Transaction');
         var paymentMethod = cpCheckoutUtilities.getPaymentMethodName();
         Transaction.wrap(function () {
-            let payInstr = basket.getPaymentInstruments(paymentMethod);
-            let iter = payInstr.iterator();
+            var payInstr = basket.getPaymentInstruments(paymentMethod);
+            var iter = payInstr.iterator();
             while (iter.hasNext()) {
-                let pi = iter.next();
+                var pi = iter.next();
                 basket.removePaymentInstrument(pi);
             }
         });
@@ -130,7 +130,7 @@ var checkoutTools = {
         });
 
         // Re-calculate the payments.
-        var calculatedPaymentTransaction = COHelpers.calculatePaymentTransaction(
+        COHelpers.calculatePaymentTransaction(
             basket
         );
     }

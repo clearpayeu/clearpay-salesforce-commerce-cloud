@@ -65,9 +65,9 @@ describe('Deferred Non-BuyNow', function () {
     //await page.waitForSelector('a.link');
     //await page.click('a.link');
 
-    await page.waitForSelector('#afterpay-express-link-button');
+    await page.waitForSelector('#clearpay-express-link-button');
 
-    messaging = await page.$eval('.pdp-afterpay-message', e => e.innerText);
+    messaging = await page.$eval('.pdp-clearpay-message', e => e.innerText);
     expect(messaging).to.contain('or 4 payments of');
 
     let addToCartButton = await page.waitForSelector('button#add-to-cart');
@@ -80,7 +80,7 @@ describe('Deferred Non-BuyNow', function () {
     let miniCartLink = await page.waitForSelector('.mini-cart-link');
     await miniCartLink.click();
 
-    let checkoutButton = await page.waitForSelector('#afterpay-express-button');
+    let checkoutButton = await page.waitForSelector('#clearpay-express-button');
 
     await checkoutButton.click();
 
@@ -126,7 +126,7 @@ describe('Deferred Non-BuyNow', function () {
     orderValue = await ecUtils.getOrderValue(page);
     expect(orderValue).to.equal('268.27');
 
-    // Make sure the displayed Afterpay payment amount has updated as well
+    // Make sure the displayed Clearpay payment amount has updated as well
     miniBillingAmount = await ecUtils.getMiniBillingAmount(page);
     expect(miniBillingAmount).to.equal('268.27');
 
@@ -134,10 +134,10 @@ describe('Deferred Non-BuyNow', function () {
     let continueToBilling = await page.waitForSelector('form.checkout-shipping button');
     await continueToBilling.click();
 
-    // Make sure Afterpay payment type selected
+    // Make sure Clearpay payment type selected
     let selectedPaymentType = await page.waitForSelector('input[type="radio"][name="dwfrm_billing_paymentMethods_selectedPaymentMethodID"]');
     let selectedPaymentTypeValue = await page.evaluate(x => x.value, selectedPaymentType);
-    expect(selectedPaymentTypeValue).to.equal('AFTERPAY_PBI');
+    expect(selectedPaymentTypeValue).to.equal('CLEARPAY');
 
     // Make sure amounts on billing page are still the same
     let checkoutPrice = await ecUtils.getOrderValue(page);
@@ -148,10 +148,10 @@ describe('Deferred Non-BuyNow', function () {
 
     await page.waitForTimeout(1000);
 
-    // Check for the afterpay widget
+    // Check for the clearpay widget
     //await page.waitForSelector('div[data-testid="ap-amount-due-today"]');
     // Click the place order button
-    let placeOrderButton = await page.waitForSelector('#afterpay-express-placeorder-button');
+    let placeOrderButton = await page.waitForSelector('#clearpay-express-placeorder-button');
     await placeOrderButton.click();
 
     // Check for the thank you page

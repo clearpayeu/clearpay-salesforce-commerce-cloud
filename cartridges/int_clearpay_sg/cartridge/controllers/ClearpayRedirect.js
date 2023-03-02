@@ -1,5 +1,4 @@
 'use strict';
-/* global empty, request */
 
 /**
  * Controller to handle the response from Clearpay
@@ -44,7 +43,7 @@ function HandleResponse() {
     while (iter.hasNext()) {
         clearpayPaymentInstrument = iter.next();
 
-        if (clearpayPaymentInstrument.paymentMethod === 'AFTERPAY' || clearpayPaymentInstrument.paymentMethod === 'CLEARPAY') {
+        if (clearpayPaymentInstrument.paymentMethod === 'CLEARPAY') {
             paymentInstrument = clearpayPaymentInstrument;
         }
     }
@@ -59,14 +58,8 @@ function HandleResponse() {
             orderToken: orderTokenString
         });
 
-        if (!productExists) {
-            if (productExists.error) {
-                redirectURL = URLUtils.https('COBilling-Start', 'clearpay', Resource.msg('apierror.flow.default', session.privacy.clearpayBrand, null));
-            }
-
-            redirectURL = URLUtils.https('COBilling-Start', 'clearpay', Resource.msg('apierror.token.conflict', session.privacy.clearpayBrand, null));
-        } else if (PreapprovalResult.error) {
-            redirectURL = URLUtils.https('COBilling-Start', 'clearpay', Resource.msg('apierror.flow.default', session.privacy.clearpayBrand, null));
+        if (!productExists || PreapprovalResult.error) {
+            redirectURL = URLUtils.https('COBilling-Start', 'clearpay', Resource.msg('apierror.flow.invalid', session.privacy.clearpayBrand, null));
         } else {
             try {
                 placeOrderResult = COPlaceOrder.Start(); // eslint-disable-line

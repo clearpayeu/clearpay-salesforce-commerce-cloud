@@ -37,23 +37,44 @@ var utilitiesMock = {
     checkoutUtilities: {
         getPaymentTransaction: function () {
             return paymentTransaction;
+        },
+        getPaymentMethodName: function () {
+            return 'CLEARPAY';
         }
     }
 };
 
 var lineItemCtnrStub = {
-    paymentInstruments: [{
-        paymentMethod: {
-            equals: function (value) {
-                return value === 'AFTERPAY';
+    getPaymentInstruments: function () {
+        return {
+            paymentMethod: {
+                equals: function (value) {
+                    return value === 'CLEARPAY';
+                },
+                value: 'CLEARPAY'
             },
-            value: 'AFTERPAY'
-        },
-        paymentTransaction: {
-            transactionID: '11148651345',
-            amount: {value: 100}
+            paymentTransaction: {
+                transactionID: '11148651345',
+                amount: {value: 100},
+                custom: {
+                    apInitialStatus: "approved"
+                }
+            }
         }
-    }]
+    }
+};
+
+var customLogger = {
+    getLogger: function() {
+	return Logger;
+	}
+};
+
+var Logger = {
+    debug: function () {
+    },
+    error: function () {
+    },
 };
 
 describe('clearpayUpdatePreapprovalStatus', function () {
@@ -62,7 +83,7 @@ describe('clearpayUpdatePreapprovalStatus', function () {
         'dw/system/Transaction': transaction,
         '*/cartridge/scripts/models/preapprovalModel': stubPreapprovalModel,
         '*/cartridge/scripts/util/clearpayUtilities': utilitiesMock,
-        'dw/system/Logger': loggerMock
+        '*/cartridge/scripts/util/clearpayLogUtils': customLogger
     });
 
     describe('#parsePreapprovalResult()', function () {

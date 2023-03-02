@@ -24,29 +24,22 @@ var orderMgrMock = {
     }
 };
 
-var order = {
-    paymentInstruments: [
-        {
-            paymentMethod: {
-                equals: function (value) {
-                    return value === 'AFTERPAY';
-                },
-                value: 'AFTERPAY'
-            }
-        }]
-};
-
 var paymentStatus = {
     status: 'some status'
 };
 
 var utilitiesMock = {
     checkoutUtilities: {
+        getPaymentMethodName: function () {
+            return 'CLEARPAY';
+        }
+    },
+    sitePreferencesUtilities: {
         getPaymentMode: function () {
             return 'DIRECT_CAPTURE';
         },
         getPaymentMethodName: function () {
-            return 'AFTERPAY';
+            return 'CLEARPAY';
         }
     }
 };
@@ -75,7 +68,6 @@ var HashMapMock = function (data) {
         }
     };
 };
-
 
 describe('#clearpayupdateOrderService()', function () {
 
@@ -129,12 +121,11 @@ describe('#clearpayupdateOrderService()', function () {
     order = {
         paymentInstruments: [
             {
-
                 paymentMethod: {
                     equals: function (value) {
-                        return value === 'AFTERPAY';
+                        return value === 'CLEARPAY';
                     },
-                    value: 'AFTERPAY'
+                    value: 'CLEARPAY'
                 },
                 paymentTransaction: {
                     custom: {
@@ -145,7 +136,23 @@ describe('#clearpayupdateOrderService()', function () {
                 }
 
             }
-        ]
+        ],
+        getPaymentInstruments: function (paymentMethod) {
+            return [
+                {
+                    getPaymentTransaction: function () {
+                        return [{
+                            transactionID: '11148651345',
+                            amount: {value: 100},
+                            custom: {
+                                apInitialStatus: "approved",
+                                aptoken: "012abcdef232"
+                            }
+                        }]
+                    }
+                }
+            ]
+        }
     };
 
     it('handled order details successfully', function () {

@@ -1,11 +1,13 @@
 'use strict';
+
 var paymentService = require('*/cartridge/scripts/payment/paymentService');
 var clearpayDirectCaptureService = require('*/cartridge/scripts/logic/services/clearpayDirectCapturePaymentService');
 var clearpayAuthoriseService = require('*/cartridge/scripts/logic/services/clearpayAuthorisePaymentService');
 var PAYMENT_MODE = require('*/cartridge/scripts/util/clearpayConstants').PAYMENT_MODE;
 var PAYMENT_STATUS = require('*/cartridge/scripts/util/clearpayConstants').PAYMENT_STATUS;
-var { checkoutUtilities: cpCheckoutUtilities } = require('*/cartridge/scripts/util/clearpayUtilities');
-
+var cpCheckoutUtilities = require('*/cartridge/scripts/util/clearpayUtilities').checkoutUtilities;
+var cpSitePreferencesUtilities = require('*/cartridge/scripts/util/clearpayUtilities').sitePreferencesUtilities;
+var brandUtilities = require('*/cartridge/scripts/util/clearpayUtilities').brandUtilities;
 var Site = require('dw/system/Site');
 var Resource = require('dw/web/Resource');
 var Order = require('dw/order/Order');
@@ -32,13 +34,12 @@ var UpdateOrderService = {
 
     handleApprovalOrder: function (order, expressCheckoutModel) {
         var paymentAmount = this.getPaymentAmount(order);
-		// express checkout needs payment amount, even for direct capture.
-		// express checkout with deferred flows needs checksum and amount
-		// these are all in expressCheckoutModel
+        // express checkout needs payment amount, even for direct capture.
+        // express checkout with deferred flows needs checksum and amount
+        // these are all in expressCheckoutModel
         var authoriseDirectCaptureResult = null;
-        var authoriseDirectCaptureService = this.getAuthoriseDirectCaptureService(order);
+        var authoriseDirectCaptureService = this.getAuthoriseDirectCaptureService();
         var requestValues = authoriseDirectCaptureService.generateRequest(order, this.getToken(order), order.orderNo, paymentAmount, expressCheckoutModel);
-
         try {
             authoriseDirectCaptureResult = authoriseDirectCaptureService.getResponse(requestValues.requestUrl, requestValues.requestBody);
         } catch (e) {
@@ -52,8 +53,8 @@ var UpdateOrderService = {
         return authoriseDirectCaptureResult;
     },
 
-    getAuthoriseDirectCaptureService: function (order) {
-        var paymentMode = cpCheckoutUtilities.getPaymentMode(order);
+    getAuthoriseDirectCaptureService: function () {
+        var paymentMode = cpSitePreferencesUtilities.getPaymentMode();
         if (paymentMode === PAYMENT_MODE.AUTHORISE) {
             return clearpayAuthoriseService;
         }
@@ -135,10 +136,11 @@ var UpdateOrderService = {
     },
 
     updateApprovedOrder: function (order, containerView) {
+        var orderContainerView = containerView || 'basket';
         Transaction.begin();
         order.setPaymentStatus(Order.PAYMENT_STATUS_PAID);
         Transaction.commit();
-        this.sendConfirmationEmail(order, containerView);
+        this.sendConfirmationEmail(order, orderContainerView);
     },
 
     updateStatusOrder: function (order, authoriseDirectCaptureResult) {
@@ -161,7 +163,7 @@ var UpdateOrderService = {
 
         var orderModel = new OrderModel(order, {
             containerView: containerView || 'basket',
-            countryCode: order.getBillingAddress().getCountryCode().value
+            countryCode: brandUtilities.getCountryCode()
         });
 
         var orderObject = { order: orderModel };

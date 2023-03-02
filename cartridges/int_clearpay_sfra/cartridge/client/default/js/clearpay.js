@@ -1,5 +1,5 @@
 'use strict';
-/* global $ */
+
 var processInclude = require('base/util');
 /**
  * Gets Widget HTML from ClearPay API
@@ -28,6 +28,11 @@ function getWidget(updatedProductID, updatedProductPrice, className, $productCon
             } else if (typeof $productContainer === 'undefined') {
                 $('.clearpay-widget').empty().show();
             }
+
+            $('#clearpay-express-pdp-button').addClass('clearpay-hide');
+            if (data.withinThreshold) {
+                $('#clearpay-express-pdp-button').removeClass('clearpay-hide');
+            }
         }
     });
 }
@@ -55,7 +60,7 @@ function updateStorePickupState() {
             success: function (data) {
                 if (data.instorepickup) {
                     $('#clearpay-express-storepickup').val(data.instorepickup.toString());
-                    initAfterpay({ pickupflag: data.instorepickup });
+                    initClearpay({ pickupflag: data.instorepickup });
                 }
 
                 $('#clearpay-express-button').toggleClass('clearpay-hide', !data.withinThreshold);
@@ -63,7 +68,6 @@ function updateStorePickupState() {
         });
     }
 }
-
 
 $(document).ready(function () {
     processInclude(require('./clearpay/clearpayContent'));
@@ -88,18 +92,17 @@ $(document).ready(function () {
         }
     });
 
-    $('#clearpay-continue-finalize-button').on('click', function (e) {
+    $('#clearpay-continue-finalize-button').on('click', function () {
         window.location.href = $('#clearpayurl-continuefinalize').val();
     });
 
-
-    if (typeof initAfterpay === 'function') {
+    if (typeof initClearpay === 'function') {
         if ($('#clearpay-express-pdp-button').length > 0) {
-            initAfterpay({pickupflag: "false", commenceDelay: 200, target: '#clearpay-express-pdp-button'});
+            initClearpay({ pickupflag: 'false', commenceDelay: 200, target: '#clearpay-express-pdp-button' });
         }
 
         if ($('#clearpay-express-button').length > 0) {
-            initAfterpay({pickupflag: $('#clearpay-express-storepickup').val() === "true"});
+            initClearpay({ pickupflag: $('#clearpay-express-storepickup').val() === 'true' });
         }
     }
 
@@ -118,13 +121,13 @@ $(document).ready(function () {
             }
         }
 
-        // make sure we call initAfterpay after the minicart loads so checkout click will work
+        // make sure we call initClearpay after the minicart loads so checkout click will work
         if ($('.minicart #clearpay-express-button').length > 0) {
-            let cnt = 0;
-            let sid = setInterval(function () {
-                if (typeof initAfterpay === 'function' && typeof AfterPay !== 'undefined') {
+            var cnt = 0;
+            var sid = setInterval(function () {
+                if (typeof initClearpay === 'function' && typeof AfterPay !== 'undefined') {
                     clearInterval(sid);
-                    initAfterpay({ pickupflag: $('#clearpay-express-storepickup').val() === 'true' });
+                    initClearpay({ pickupflag: $('#clearpay-express-storepickup').val() === 'true' });
                 }
                 if (cnt === 10) {
                     clearInterval(sid);
@@ -134,11 +137,19 @@ $(document).ready(function () {
         }
 
         // On pdp page, if a store is selected, disable buy now express checkout button.
-        $('#clearpay-express-pdp-button').toggleClass('clearpay-hide', $('.store-name').length);
-
+        if ($('.store-name').length > 0) {
+            $('#clearpay-express-pdp-button').addClass('clearpay-hide');
+        }
 
         if ($('.cart-page').length > 0) {
             // Just put a loading class on the url input so this does not get called recursively
+            if ($('#clearpay-express-url-cartstatus').hasClass('loading')) {
+                updateStorePickupState();
+                $('#clearpay-express-url-cartstatus').removeClass('loading');
+            }
+        }
+
+        if ($('div').hasClass('popover popover-bottom show')) {
             if ($('#clearpay-express-url-cartstatus').hasClass('loading')) {
                 updateStorePickupState();
                 $('#clearpay-express-url-cartstatus').removeClass('loading');

@@ -22,12 +22,12 @@ server.prepend(
         var paymentForm = server.forms.getForm('billing');
         var paymentMethodID = paymentForm.paymentMethod.value;
         var ClearpaySession = require('*/cartridge/scripts/util/clearpaySession');
-
-        if (paymentMethodID !== 'AFTERPAY' && paymentMethodID !== 'CLEARPAY') {
+        ClearpaySession.clearSession();
+        if (paymentMethodID !== 'CLEARPAY') {
             // For express checkout, it's possible there was a Clearpay payment method in the basket,
             // so remove it if a non-Clearpay payment method was selected
             require('~/cartridge/scripts/checkout/clearpayRefArchCheckoutHelpers').removeClearpayPayments(currentBasket);
-            ClearpaySession.clearSession();
+            // ClearpaySession.clearSession();
             next();
             return;
         }
@@ -81,8 +81,7 @@ server.prepend(
         };
         if (Object.prototype.hasOwnProperty
             .call(paymentForm.addressFields, 'states')) {
-            viewData.address.stateCode =
-                { value: paymentForm.addressFields.states.stateCode.value };
+            viewData.address.stateCode = { value: paymentForm.addressFields.states.stateCode.value };
         }
         viewData.paymentMethod = {
             value: paymentForm.paymentMethod.value,
@@ -131,7 +130,7 @@ server.prepend(
                 billingAddress.setStateCode(billingData.address.stateCode.value);
             }
             billingAddress.setCountryCode(billingData.address.countryCode.value);
-            if (paymentMethodID === 'AFTERPAY' || paymentMethodID === 'CLEARPAY') {
+            if (paymentMethodID === 'CLEARPAY') {
                 billingAddress.setPhone(billingData.phone.value);
                 currentBasket.setCustomerEmail(billingData.email.value);
             }
@@ -139,8 +138,7 @@ server.prepend(
         // if there is no selected payment option and balance is greater than zero
         if (!paymentMethodID && currentBasket.totalGrossPrice.value > 0) {
             var noPaymentMethod = {};
-            noPaymentMethod[billingData.paymentMethod.htmlName] =
-                Resource.msg('error.no.selected.payment.method', 'creditCard', null);
+            noPaymentMethod[billingData.paymentMethod.htmlName] = Resource.msg('error.no.selected.payment.method', 'creditCard', null);
             delete billingData.paymentInformation;
             res.json({
                 form: billingForm,
@@ -161,7 +159,8 @@ server.prepend(
         var processor = PaymentMgr.getPaymentMethod(paymentMethodID).getPaymentProcessor();
         var processorResult = null;
         if (HookMgr.hasHook('app.payment.processor.' + processor.ID.toLowerCase())) {
-            processorResult = HookMgr.callHook('app.payment.processor.' + processor.ID.toLowerCase(),
+            processorResult = HookMgr.callHook(
+                'app.payment.processor.' + processor.ID.toLowerCase(),
                 'Handle',
                 currentBasket,
                 billingData.paymentInformation
@@ -203,7 +202,7 @@ server.prepend(
             req.session.privacyCache.set('usingMultiShipping', false);
             usingMultiShipping = false;
         }
-        if (paymentMethodID === 'AFTERPAY' || paymentMethodID === 'CLEARPAY') {
+        if (paymentMethodID === 'CLEARPAY') {
             hooksHelper('app.customer.subscription', 'subscribeTo', [paymentForm.subscribe.checked, billingForm.contactInfoFields.email.htmlValue], function () {});
         }
         var currentLocale = Locale.getLocale(req.locale.id);
@@ -226,7 +225,7 @@ server.prepend(
             error: false
         });
 
-        if (paymentMethodID === 'AFTERPAY' || paymentMethodID === 'CLEARPAY') {
+        if (paymentMethodID === 'CLEARPAY') {
             this.emit('route:Complete', req, res);
         }
     }

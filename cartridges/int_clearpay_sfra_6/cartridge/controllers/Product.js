@@ -1,5 +1,4 @@
 'use strict';
-/* global empty */
 
 var server = require('server');
 
@@ -57,7 +56,6 @@ server.get('IncludeClearpayMessage',
     function (req, res, next) {
         res.render('util/clearpayMessageInclude');
         next();
-    }
-);
+    });
 
 module.exports = server.exports();

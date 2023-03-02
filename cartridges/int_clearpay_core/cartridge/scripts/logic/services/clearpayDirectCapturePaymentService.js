@@ -1,8 +1,7 @@
 'use strict';
+
 var clearpayHttpService = require('*/cartridge/scripts/logic/services/clearpayHttpService');
 var clearpayUtils = require('*/cartridge/scripts/util/clearpayUtils');
-var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');
-var Logger = LogUtils.getLogger('clearpayDirectCapturePaymentService');
 
 /**
  *  request and response definitions for payment service type 'direct capture'
@@ -17,8 +16,8 @@ var DirectCapturePaymentService = {
             var shippingObj = null;
             var itemsObj = null;
             var isCheckoutAdjusted = false;
-            let CaptureHelpers = require('*/cartridge/scripts/payment/expressCaptureHelpers');
-            let body = CaptureHelpers.generateItemsAndShippingBody(order);
+            var CaptureHelpers = require('*/cartridge/scripts/payment/expressCaptureHelpers');
+            var body = CaptureHelpers.generateItemsAndShippingBody(order);
             if (expressCheckoutModel.cpTempShippingAddressChanged) {
                 shippingObj = body.shipping;
                 isCheckoutAdjusted = true;
@@ -35,7 +34,7 @@ var DirectCapturePaymentService = {
             // and one does not (usually BuyNow)
             if (expressCheckoutModel.cpExpressCheckoutChecksum) {
                 requestBody = this.generateRequestBodyExpressCheckoutWithChecksum(token, orderNo,
-                     amount, expressCheckoutModel.cpExpressCheckoutChecksum, itemsObj, shippingObj, isCheckoutAdjusted);
+                    amount, expressCheckoutModel.cpExpressCheckoutChecksum, itemsObj, shippingObj, isCheckoutAdjusted);
             } else {
                 requestBody = this.generateRequestBodyExpressCheckout(token, orderNo, amount);
             }

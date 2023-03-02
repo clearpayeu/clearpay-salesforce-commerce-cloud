@@ -1,3 +1,6 @@
+$tablet : 767px;
+$laptop : 960px;
+
 .product-detail .clearpay-widget-message .clearpay-link {
     font-size: 0.75em;
     padding: 0.375em 0.9375em;
@@ -21,8 +24,8 @@
 
 .clearpay-image {
     vertical-align: middle;
-    width: 7em;
-    margin: 5px 0;
+    width: 10em;
+    margin: 0;
 }
 
 .pdp-clearpay-message {
@@ -135,7 +138,7 @@
 .redirect-text {
     text-align: center;
     margin-top: 2.1875em;
-    font-size: 1.375em;
+    font-size: 2.375em;
 }
 
 .checkout-clearpay-message {
@@ -167,7 +170,7 @@
 .checkout-clearpay-message {
     background: #f9f9f9;
     padding: 25px;
-    @media screen and (max-width: 767px) {
+    @media screen and (max-width: $tablet) {
         padding: 25px 10px;
     }
 }
@@ -177,8 +180,8 @@
     color: #9bcee8;
     font-size: 1em;
     width: 25%;
-    @media screen and (max-width: 767px) {
-        font-size: .85em;
+    @media screen and (max-width: $tablet) {
+        font-size: 0.85em;
     }
 }
 
@@ -187,9 +190,9 @@
     padding-top: 0.9375em;
     padding-bottom: 0;
     color: #999;
-    font-size: .85em;
-    @media screen and (max-width: 767px) {
-        font-size: .75em;
+    font-size: 0.85em;
+    @media screen and (max-width: $tablet) {
+        font-size: 0.75em;
     }
 }
 
@@ -222,56 +225,29 @@
 .learn-more {
     text-align: right;
 }
-.afterpay-checkout-button {
-    width: 246px;
-    height: 37px;
-    background-image: url('https://static.afterpay.com/button/checkout-with-afterpay/white-on-black.svg'); 
-    background-size: cover; 
-    background-color: #000000 !important;
-}
 
 .clearpay-checkout-button {
     width: 246px;
     height: 37px;
-    background-image: url('https://static.afterpay.com/button/checkout-with-clearpay/white-on-black.svg'); 
-    background-size: cover; 
-    background-color: #000000 !important;
-}
-
-.afterpay-placeorder-button {
-    width: 246px;
-    height: 37px;
-    background-image: url('https://static.afterpay.com/button/place-order-with-afterpay/white-on-black.svg');
-    background-size: cover; 
-    background-color: #000000 !important;
+    background-image: url('https://static.afterpay.com/button/checkout-with-clearpay/white-on-black.svg');
+    background-size: cover;
+    background-color: #000 !important;
 }
 
 .clearpay-placeorder-button {
     width: 246px;
     height: 37px;
     background-image: url('https://static.afterpay.com/button/place-order-with-clearpay/white-on-black.svg');
-    background-size: cover; 
-    background-color: #000000 !important;
-}
-
-.afterpay-paynow-button {
-    width: 246px !important;
-    height: 37px;
-    background-image: url('https://static.afterpay.com/button/buy-now-with-afterpay/white-on-black.svg'); 
-    background-size: cover; 
-    margin-left: 10px;
-    background-color: #000000 !important;
-    /*border-style: none;*/
+    background-size: cover;
+    background-color: #000 !important;
 }
 
 .clearpay-paynow-button {
     width: 246px !important;
     height: 37px;
-    background-image: url('https://static.afterpay.com/button/buy-now-with-clearpay/white-on-black.svg'); 
-    background-size: cover; 
-    margin-left: 10px;
-    background-color: #000000 !important;
-    /*border-style: none;*/
+    background-image: url('https://static.afterpay.com/button/buy-now-with-clearpay/white-on-black.svg');
+    background-size: cover;
+    background-color: #000 !important;
 }
 
 .clearpay-summary-button-container {
@@ -286,27 +262,28 @@
 
 .clearpay-paynow-pdp {
     float: left;
-    padding-left: .5em;
+    padding-left: 0.5em;
 }
 
-@media only screen and (max-width: 960px) {
+@media only screen and (max-width: $laptop) {
     .clearpay-paynow-pdp {
         margin-top: 10px;
     }
 }
 
-
 .clearpay-summary {
-    margin-top: 0px;
+    margin-top: 0;
     position: absolute;
     top: 50%;
     left: 50%;
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
 }
+
 .clearpay-back-button {
     height: 37px;
 }
+
 .clearpay-paymethod-widget-div {
     width: 100%;
     margin-bottom: 25px;
@@ -317,6 +294,6 @@
     align-items: flex-start;
 }
 
-clearpay-widget-hideuntilready {
+.clearpay-widget-hideuntilready {
     visibility: hidden;
 }

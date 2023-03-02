@@ -3,10 +3,33 @@ var assert = require('chai').assert;
 var expect = require('chai').expect;
 var proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 var sinon = require('sinon');
+const OrderMgr = require('../../../../mocks/dw/order/OrderMgr');
 var OrderMock = require('../../../../mocks/models/order');
+var dwOrder = require('../../../../mocks/dw/order/Order');
 
 var order = new OrderMock();
-
+var Order = new dwOrder();
+Order = {
+    setPaymentStatus: function (paymentStatus) {
+        
+    },
+    getPaymentInstruments: function (paymentMethod) {
+        return [
+            {
+                getPaymentTransaction: function () {
+                    return {
+                        transactionID: '11148651345',
+                        amount: {value: 100},
+                        custom: {
+                            apInitialStatus: "approved",
+                            apToken: "012abcdef232"
+                        }
+                    }
+                }
+            }
+        ]
+    }
+};
 var transaction = {
     wrap: function (callBack) {
         return callBack.call();
@@ -27,16 +50,43 @@ var statusMock = {};
 
 var Logger = {
     debug: function () {
+    },
+    error: function () {
     }
 };
 
 var clearpayUtilities = {
     checkoutUtilities: {
         getPaymentMethodName: function () {
-            return 'AFTERPAY';
+            return 'CLEARPAY';
         }
     }
 };
+
+var apSession = {
+    isValid: function () {
+        return true;
+    },
+    getToken: function () {
+        return 'M2QwZTQxZDJmOTYyMjc';
+    },
+    clearSession: function () {
+    },
+
+}
+
+var ecPaymentHelpers = {
+    createExpressCheckoutModelFromOrderAndSession: function () {
+        var expressCheckoutModelObject = {
+            apExpressCheckout: false,
+            apExpressCheckoutChecksum: '',
+            apTempShippingAddressChanged: false,
+            apTempBasketItemsChanged: false,
+            apTempCheckoutAmountChanged: null
+        };
+        return expressCheckoutModelObject;
+    }
+}
 
 beforeEach(function () {
     if (Logger.debug.restore) {
@@ -50,10 +100,18 @@ describe('updatePaymentStatus', function () {
 
         var updatePaymentStatus = proxyquire('../../../../../cartridges/int_clearpay_sfra/cartridge/scripts/checkout/updatePaymentStatus.js', {
             'dw/system/Transaction': transaction,
-            'dw/order/Order': OrderMock,
+            'dw/order/Order': Order,
+            'dw/order/OrderMgr': OrderMgr,
             'dw/system/Status': statusMock,
+            '*/cartridge/scripts/util/clearpaySession': apSession,
+            'dw/web/Resource': {
+                msg: function () {
+                    return 'someString';
+                }
+            },
             '*/cartridge/scripts/util/clearpayLogUtils': customLogger,
             '*/cartridge/scripts/util/clearpayUtilities': clearpayUtilities,
+            '*/cartridge/scripts/payment/expressCheckoutPaymentHelpers': ecPaymentHelpers,
             '*/cartridge/scripts/checkout/clearpayHandlePaymentOrder': {
                 getPaymentStatus: function () {
                     return {
@@ -69,19 +127,19 @@ describe('updatePaymentStatus', function () {
                 }
             }
         });
-        OrderMock.ORDER_STATUS_CREATED = 0;
+        Order.ORDER_STATUS_CREATED = 0;
         order.orderNo = '1234567';
         order.status = {};
 
-        OrderMock = {
+        order = {
             paymentInstruments: [
                 {
 
                     paymentMethod: {
                         equals: function (value) {
-                            return value === 'AFTERPAY';
+                            return value === 'CLEARPAY';
                         },
-                        value: 'AFTERPAY'
+                        value: 'CLEARPAY'
                     },
                     paymentTransaction: {
                         transactionID: '11148651345',
@@ -91,10 +149,26 @@ describe('updatePaymentStatus', function () {
                         }
                     }
                 }
-            ]
+            ],
+            getPaymentInstruments: function (paymentMethod) {
+                return [
+                    {
+                        getPaymentTransaction: function () {
+                            return {
+                                transactionID: '11148651345',
+                                amount: {value: 100},
+                                custom: {
+                                    apInitialStatus: "approved",
+                                    apToken: "012abcdef232"
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
         };
         it('when service is unavailable', function () {
-            var result = updatePaymentStatus.handlePaymentStatus(OrderMock);
+            var result = updatePaymentStatus.handlePaymentStatus(order);
             expect(result).to.be.object;
         });
     });

@@ -1,6 +1,8 @@
 'use strict';
 
 var proxyquire = require('proxyquire').noCallThru().noPreserveCache();
+var urlUtilsMock = require('../dw/web/URLUtils');
+var SiteMock = require('../dw/system/Site');
 
 var clearpayServiceHandler = {
     data: {},
@@ -83,6 +85,13 @@ var clearpayUtilities = {
 function proxyModel() {
     return proxyquire('../../../cartridges/int_clearpay_core/cartridge/scripts/logic/services/clearpayHttpService',
         {
+            'dw/web/URLUtils': urlUtilsMock,
+            'dw/system/Site': SiteMock,
+            'dw/web/Resource': {
+                msg: function () {
+                    return 'someString';
+                }
+            },
             'dw/svc/LocalServiceRegistry': {
                 createService: function (serviceId, configObj) {
                     return {

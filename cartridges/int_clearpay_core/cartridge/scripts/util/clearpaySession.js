@@ -43,15 +43,12 @@ var ClearpaySession = {
     isExpressCheckout: function () {
         return session.custom.clearpay_express_checkout == true;
     },
-
     setExpressCheckoutFinalizeFlow: function (val) {
         session.custom.clearpay_express_checkout_finalize_flow = val;
     },
     isExpressCheckoutFinalizeFlow: function () {
         return session.custom.clearpay_express_checkout_finalize_flow == true;
     },
-
-
     setExpressCheckoutAmount: function (amount) {
         session.custom.clearpay_express_checkout_amount = amount;
     },

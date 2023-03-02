@@ -1,5 +1,7 @@
 'use strict';
-var { checkoutUtilities: cpCheckoutUtilities, sitePreferencesUtilities: sitePreferences } = require('*/cartridge/scripts/util/clearpayUtilities');
+
+var cpCheckoutUtilities = require('*/cartridge/scripts/util/clearpayUtilities').checkoutUtilities;
+var sitePreferences = require('*/cartridge/scripts/util/clearpayUtilities').sitePreferencesUtilities;
 var ctrlCartridgeName = sitePreferences.getControllerCartridgeName();
 
 /* Script Modules */
@@ -7,10 +9,10 @@ var app = require(ctrlCartridgeName + '/cartridge/scripts/app');
 
 var cpHandlers = {
     // recompute the amount for the Clearpay payment instrument
-    recomputeClearpayPayment: function() {
+    recomputeClearpayPayment: function () {
         var ClearpaySession = require('*/cartridge/scripts/util/clearpaySession');
-        var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
         if (ClearpaySession.isExpressCheckout()) {
+            var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
             var Transaction = require('dw/system/Transaction');
 
             var cart = app.getModel('Cart').get();
@@ -22,7 +24,7 @@ var cpHandlers = {
                 }
                 Transaction.wrap(function () {
                     require('~/cartridge/scripts/checkout/clearpaySGCheckoutHelpers').removeAllNonGiftCertificatePayments(cart);
-                    var paymentInstrument = cart.object.createPaymentInstrument(paymentMethodName, new dw.value.Money(0.0, cart.object.currencyCode));
+                    cart.object.createPaymentInstrument(paymentMethodName, new dw.value.Money(0.0, cart.object.currencyCode));
                     // will compute the amount for us for the payment instrument
                     cart.calculatePaymentTransactionTotal();
                 });
@@ -30,23 +32,27 @@ var cpHandlers = {
         }
     },
     // only call when changing to non-Clearpay payment method
-    handleChangedPaymentInstrument: function() {
-        var ClearpaySession = require('*/cartridge/scripts/util/clearpaySession');
-        var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
-        var cart = app.getModel('Cart').get();
-        cart.removePaymentInstruments( cart.getPaymentInstruments(paymentMethodName));
-        // clears all session vars used by Clearpay
-        ClearpaySession.clearSession();
+    handleChangedPaymentInstrument: function (paymentMethod) {
+        if (paymentMethod != 'CLEARPAY') {
+            this.removePaymentMethods();
+        }
     },
     // When the shipping method is updated, we need to update the Clearpay
     // payment in the cart with the correct amount
-    handleShippingMethodUpdate: function() {
+    handleShippingMethodUpdate: function () {
         this.recomputeClearpayPayment();
     },
-    handleBillingStart: function() {
+    handleBillingStart: function () {
         this.recomputeClearpayPayment();
+    },
+    removePaymentMethods: function () {
+        var ClearpaySession = require('*/cartridge/scripts/util/clearpaySession');
+        var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
+        var cart = app.getModel('Cart').get();
+        cart.removePaymentInstruments(cart.getPaymentInstruments(paymentMethodName));
+        // clears all session vars used by Clearpay
+        ClearpaySession.clearSession();
     }
-
 };
 
 module.exports = cpHandlers;

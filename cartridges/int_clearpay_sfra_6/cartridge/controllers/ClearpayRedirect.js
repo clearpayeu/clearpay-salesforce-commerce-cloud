@@ -5,10 +5,8 @@ var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
 var csrfProtection = require('*/cartridge/scripts/middleware/csrf');
 var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');
 var Logger = LogUtils.getLogger('ClearpayRedirect');
-var {
-         brandUtilities: cpBrandUtilities,
-         checkoutUtilities: cpCheckoutUtilities
-     } = require('*/cartridge/scripts/util/clearpayUtilities');
+var cpCheckoutUtilities = require('*/cartridge/scripts/util/clearpayUtilities').checkoutUtilities;
+var cpBrandUtilities = require('*/cartridge/scripts/util/clearpayUtilities').brandUtilities;
 
 /* API Includes */
 var OrderMgr = require('dw/order/OrderMgr');
@@ -16,7 +14,6 @@ var URLUtils = require('dw/web/URLUtils');
 var Transaction = require('dw/system/Transaction');
 var Resource = require('dw/web/Resource');
 var BasketMgr = require('dw/order/BasketMgr');
-
 
 /**
  * redirects to Clearpay payment page after generating valid token
@@ -53,7 +50,6 @@ server.get('PrepareRedirect', server.middleware.https, function (req, res, next)
     }
     next();
 });
-
 
 /** saves clearpay payment method in payment instrument */
 server.post('IsClearpay',
@@ -206,7 +202,7 @@ server.get('HandleResponse', server.middleware.https, function (req, res, next) 
             productExists = require('*/cartridge/scripts/checkout/clearpayTokenConflict').checkTokenConflict(currentBasket, req.querystring.orderToken);
             require('*/cartridge/scripts/checkout/clearpayUpdatePreapprovalStatus').getPreApprovalResult(currentBasket, req.querystring);
             if (!productExists || productExists.error) {
-                res.redirect(URLUtils.url('Checkout-Begin', 'stage', 'payment', 'clearpayErrorMessage', Resource.msg('apierror.token.conflict', 'clearpay', null)));
+                res.redirect(URLUtils.url('Checkout-Begin', 'stage', 'payment', 'clearpayErrorMessage', Resource.msg('apierror.flow.invalid', 'clearpay', null)));
             } else {
                 var order = COHelpers.createOrder(currentBasket);
                 paymentStatusUpdated = require('*/cartridge/scripts/checkout/updatePaymentStatus').handlePaymentStatus(order);

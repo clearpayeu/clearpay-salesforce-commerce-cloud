@@ -1,11 +1,11 @@
 'use strict';
 
 var clearpayRedirect = require('../clearpay/clearpayRedirect');
-//var clearpayWidget = require('../clearpay/clearpayWidget');
 var clearpayExpressWidget = require('../clearpay/clearpayExpressWidget');
-var baseCheckout = require('base/checkout/checkout');
 
-// Hide all states
+/**
+ * Hide all states
+ */
 function hideAllStates() {
     $('.ap-checkout-ship').addClass('clearpay-hide');
 
@@ -21,10 +21,12 @@ function hideAllStates() {
     $('.ap-checkout-po-noecf').addClass('clearpay-hide');
 }
 
-// Handle changes between different checkout stages
+/**
+ * Handle changes between different checkout stages
+ */
 function handleStateChange() {
-    let cmElem = document.querySelector('#checkout-main');
-    let stage = cmElem.getAttribute('data-checkout-stage');
+    var cmElem = document.querySelector('#checkout-main');
+    var stage = cmElem.getAttribute('data-checkout-stage');
 
     var ecFinalize = false;
     if ($('#clearpay-express-checkout-finalize').length > 0 && $('#clearpay-express-checkout-finalize').val() === 'true') {
@@ -52,7 +54,7 @@ function handleStateChange() {
             $('.ap-checkout-pay-notab-noecf').removeClass('clearpay-hide');
         }
     } else if (stage === 'placeOrder') {
-        let isClearpayPayment = $('#clearpay-payment-shown').length;
+        var isClearpayPayment = $('#clearpay-payment-shown').length;
 
         hideAllStates();
         if (isClearpayPayment) {
@@ -83,58 +85,59 @@ var exports = {
                     clearpayRedirect.generalValidation();
                 }
             });
-         // update the widget with correct amounts on initial page load
+            // update the widget with correct amounts on initial page load
             clearpayExpressWidget.updateExpressWidget();
 
-         // Call handleStage when page is loaded/reloaded
+            // Call handleStage when page is loaded/reloaded
             handleStateChange();
 
-            let cmElem = document.querySelector('#checkout-main');            
-         // Call handleStage with new stage whenever we detect the stage change
-         // SFRA base changes attributes on #checkout-main to indicate stage of checkout flow changes
+            var cmElem = document.querySelector('#checkout-main');
+            // Call handleStage with new stage whenever we detect the stage change
+            // SFRA base changes attributes on #checkout-main to indicate stage of checkout flow changes
             if (window.MutationObserver) {
-                var observer = new MutationObserver(function (mutations) {
-                    for (let mutation of mutations) {
+                var cmElemObserver = new MutationObserver(function (mutations) {
+                    Object.values(mutations).forEach(function (mutation) {
                         if (mutation.type === 'attributes') {
                             handleStateChange();
                         }
-                    }
+                    });
                 });
-                observer.observe(cmElem, { attributes: true });
+                cmElemObserver.observe(cmElem, { attributes: true });
             } else {
-             // If no MutationObserver support, just use interval to poll state
-                var checkState = setInterval(function () {
+                // If no MutationObserver support, just use interval to poll state
+                setInterval(function () {
                     handleStateChange();
                 }, 500);
             }
 
-         // Call handleStage with new stage whenever clearpay payment tab is pressed
-            let tabelem = document.querySelector('.clearpay-tab');
+            // Call handleStage with new stage whenever clearpay payment tab is pressed
+            var tabelem = document.querySelector('.clearpay-tab');
             if (window.MutationObserver) {
-                var observer = new MutationObserver(function (mutations) {
+                var tabelemObserver = new MutationObserver(function () {
+                    if ($('.clearpay-tab').hasClass('active')) {
+                        clearpayExpressWidget.updateExpressWidget();
+                    }
                     handleStateChange();
                 });
-                observer.observe(tabelem, { attributes: true });
+                tabelemObserver.observe(tabelem, { attributes: true });
             }
-
 
             if (typeof createClearpayWidget === 'function') {
                 createClearpayWidget();
             }
 
-         // Handle place-order button click
+            // Handle place-order button click
             $('#clearpay-placeorder-button').on('click', function () {
                 if (typeof clearpayWidget !== 'undefined') {
-                    let url = $('#clearpay-express-url-finalize').val();
-                    let checksum = clearpayWidget.paymentScheduleChecksum;
+                    var url = $('#clearpay-express-url-finalize').val();
+                    var checksum = clearpayWidget.paymentScheduleChecksum;
                     window.location.href = url + '?checksum=' + checksum;
                 }
             });
 
-         // if express checkout finalization flow, then select the clearpay payment
-         // tab by default
-            if (($('#clearpay-express-checkout-finalize').val() === 'true') &&
-             (parseFloat($('#clearpay-widget-amount').val()) > 0.0)) {
+            // if express checkout finalization flow, then select the clearpay payment
+            // tab by default
+            if (($('#clearpay-express-checkout-finalize').val() === 'true') && (parseFloat($('#clearpay-widget-amount').val()) > 0.0)) {
                 $('.clearpay-content').addClass('active');
                 $('.clearpay-tab').addClass('active');
                 $('.credit-card-content').removeClass('active');

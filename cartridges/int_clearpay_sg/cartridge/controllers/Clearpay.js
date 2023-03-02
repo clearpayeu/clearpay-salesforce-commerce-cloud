@@ -1,6 +1,6 @@
-/* eslint-disable no-new-wrappers */
 'use strict';
 
+/* eslint-disable no-new-wrappers */
 /**
 *
 * Controller to render the Clearpay messages and terms
@@ -10,7 +10,8 @@
 var Money = require('dw/value/Money');
 
 /* Script Modules */
-var { brandUtilities: BrandUtilities, sitePreferencesUtilities: SitePreferences } = require('*/cartridge/scripts/util/clearpayUtilities');
+var BrandUtilities = require('*/cartridge/scripts/util/clearpayUtilities').brandUtilities;
+var SitePreferences = require('*/cartridge/scripts/util/clearpayUtilities').sitePreferencesUtilities;
 var ctrlCartridgeName = SitePreferences.getControllerCartridgeName();
 var thresholdUtilities = require('*/cartridge/scripts/util/thresholdUtilities');
 
@@ -27,7 +28,7 @@ function renderMessage() {
     var clearpayBrand = params.clearpayBrand.stringValue;
     var applyCaching;
 
-    if (totalprice && !isNaN(totalprice)) {
+    if (totalprice && !(totalprice.isNaN)) {
         totalprice = new Money(totalprice, session.currency);
     } else {
         return;

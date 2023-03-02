@@ -1,3 +1,5 @@
+'use strict';
+
 var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');
 var Logger = LogUtils.getLogger('ClearpayTokenConflict');
 var ClearpayCOHelpers = require('*/cartridge/scripts/checkout/clearpayCheckoutHelpers');
@@ -21,7 +23,7 @@ function checkTokenConflict(basket, token) {
     }
 
     var cksum = ClearpayCOHelpers.computeResponseProductLineItemChecksum(tokenValidate);
-    if (cksum != ClearpayCOHelpers.computeBasketProductLineItemChecksum(basket)) {
+    if (cksum !== ClearpayCOHelpers.computeBasketProductLineItemChecksum(basket)) {
         sameBasket = false;
     }
     return sameBasket;

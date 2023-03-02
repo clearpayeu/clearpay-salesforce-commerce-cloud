@@ -6,8 +6,8 @@ var sinon = require('sinon');
 var loggerMock = require('../../../../mocks/dw/system/Logger');
 var clearpayConstants = require('../../../../../cartridges/int_clearpay_core/cartridge/scripts/util/clearpayConstants');
 var OrderMock = require('../../../../mocks/models/order');
-var moneyMock = require('../../../../mocks/dw.value.Money');
-var ArrayList = require('../../../../mocks/dw.util.Collection.js');
+var moneyMock = require('../../../../mocks/dw/value/Money');
+var ArrayList = require('../../../../mocks/dw/util/Collection.js');
 var PaymentMgrMock = require('../../../../mocks/dw/order/PaymentMgr');
 
 var order = new OrderMock();
@@ -44,7 +44,7 @@ var cpUtilities = {
     },
     checkoutUtilities: {
         getPaymentMethodName: function () {
-            return 'AFTERPAY';
+            return 'CLEARPAY';
         }
     }
 };
@@ -56,22 +56,11 @@ global.empty = function (value) {
     return !value;
 };
 
-var abstractClearpayUpdateOrder = proxyquire('../../../../../cartridges/int_clearpay_core/cartridge/scripts/checkout/clearpayUpdateOrder.js', {
-    '*/cartridge/scripts/util/clearpayConstants': clearpayConstants,
-    '*/cartridge/scripts/util/clearpayUtilities': cpUtilities,
-    'dw/system/Transaction': transaction,
-    'dw/system/Logger': loggerMock,
-    'dw/order/Order': OrderMock,
-    'dw/value/Money': moneyMock,
-    'dw/order/PaymentMgr': PaymentMgrMock
-});
-
 describe('clearpayUpdateOrder', function () {
 
-    var clearpayUpdateOrder = proxyquire('../../../../../cartridges/int_clearpay_core/cartridge/scripts/checkout/v2/clearpayUpdateOrder.js', {
+    var clearpayUpdateOrder = proxyquire('../../../../../cartridges/int_clearpay_core/cartridge/scripts/checkout/clearpayUpdateOrder.js', {
         '*/cartridge/scripts/util/clearpayConstants': clearpayConstants,
         '*/cartridge/scripts/util/clearpayUtilities': cpUtilities,
-        '*/cartridge/scripts/checkout/clearpayUpdateOrder': abstractClearpayUpdateOrder,
         'dw/system/Transaction': transaction,
         'dw/system/Logger': loggerMock,
         'dw/order/Order': OrderMock,
@@ -87,9 +76,9 @@ describe('clearpayUpdateOrder', function () {
 
                 paymentMethod: {
                     equals: function (value) {
-                        return value === 'AFTERPAY';
+                        return value === 'CLEARPAY';
                     },
-                    value: 'AFTERPAY'
+                    value: 'CLEARPAY'
                 }
             }
         ]
