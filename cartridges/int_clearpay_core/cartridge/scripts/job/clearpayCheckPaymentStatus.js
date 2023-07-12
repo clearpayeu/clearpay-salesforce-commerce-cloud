@@ -51,7 +51,7 @@ var getUpdateOrderService = function () {
         var paymentTransaction = ClearpayCheckoutUtilities.getPaymentTransaction(order);
 
         Transaction.wrap(function () {
-            if (paymentMode === PAYMENT_MODE.AUTHORISE) {
+            if (paymentMode == PAYMENT_MODE.AUTHORISE) {
                 paymentTransaction.custom.cpAuthoriseStatus = status;
             } else {
                 paymentTransaction.custom.cpDirectPaymentStatus = status;

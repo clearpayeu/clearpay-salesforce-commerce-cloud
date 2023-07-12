@@ -104,6 +104,7 @@
                     <isinclude template="product/components/clearpaywidget" />
                     <div id="clearpay-widget-container"></div>
                 </div>
+
                 <!----------------------------------------------------------------------------------->
                 <!-- Checkout Workflow Buttons -->
                 <!----------------------------------------------------------------------------------->

@@ -17,14 +17,14 @@
             var sitePreferences = require("*/cartridge/scripts/util/clearpayUtilities.js").sitePreferencesUtilities;
             var clearpayPLPEnable = sitePreferences.isDisplayPlpInfo();
         </isscript>
-        <isif condition="${pdict.cpApplicable == true && clearpayPLPEnable}">
+        <isif condition="${clearpayPLPEnable}">
             <isinclude template="util/modulesClearpay"/>
 
             <isclearpaymessage
                 classname="${pdict.classname}"
-                belowthreshold="${pdict.belowthreshold}"
                 brand="${pdict.cpBrand}"
                 totalprice="${pdict.totalPrice}"
+                eligible="${pdict.cpEligible}"
             />
         </isif>
 

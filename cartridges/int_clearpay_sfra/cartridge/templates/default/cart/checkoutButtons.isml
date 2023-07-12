@@ -22,7 +22,10 @@ clearpayExpressPickupEnabled - does the current cart and selected ship method in
     var clearpayExpressCheckoutPdpEnabled = sitePreferences.isExpressCheckoutPdpEnabled();
     var ClearpayCOHelpers = require('*/cartridge/scripts/checkout/clearpayCheckoutHelpers');
     var clearpayExpressPickupEnabled = require('~/cartridge/scripts/checkout/clearpayRefArchCheckoutHelpers').shouldEnableExpressPickupMode();
+    var clearpayExpressCheckoutBuyNowEnabled = sitePreferences.isExpressCheckoutBuyNowEnabled();
+    var clearpayExpressCheckoutShippingStrategy = sitePreferences.getExpressCheckoutShippingStrategy() == 'integrated';
     var disableClearpayPaymentMethod = ! ClearpayCOHelpers.isBasketAmountWithinThreshold();
+
     var checkoutButtonClass = 'clearpay-checkout-button';
 
     if (disableClearpayPaymentMethod) {
@@ -30,9 +33,9 @@ clearpayExpressPickupEnabled - does the current cart and selected ship method in
     }
 </isscript>
 <iscomment>Start of Clearpay</iscomment>
-<isset name="clearpayExpressCheckoutPage" value="cart" scope="page" />
-<isinclude template="product/components/clearpayexpresscheckout" />
 <isif condition="${clearpayExpressCheckoutEnabled}">
+    <isset name="clearpayExpressCheckoutPage" value="cart" scope="page" />
+    <isinclude template="product/components/clearpayexpresscheckout" />
     <div class="mb-sm-3">
         <isif condition="${isExpressCheckoutFinalize}">
             <a href="${URLUtils.url('ClearpayExpress-ContinueFinalize')}" class="${checkoutButtonClass} btn btn-block checkout-btn ${pdict.valid.error ? 'disabled' : ''}">

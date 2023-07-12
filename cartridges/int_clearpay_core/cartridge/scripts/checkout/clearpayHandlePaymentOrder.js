@@ -29,7 +29,7 @@ function getPaymentStatus(order, paymentStatus, expressCheckoutModel) {
     var paymentResult;
     try {
         paymentResult = baseUpdateOrderService.handleOrder(order, parsedPaymentStatus, expressCheckoutModel);
-        if (paymentResult && paymentResult.status === 'DECLINED') {
+        if (paymentResult && paymentResult.status === PAYMENT_STATUS.DECLINED) {
             parsedPaymentStatus = paymentResult.status;
         }
         clearpayUpdateOrder.handleUpdateOrder(order, paymentResult, sitePreferencesUtilities.getPaymentMode().value);

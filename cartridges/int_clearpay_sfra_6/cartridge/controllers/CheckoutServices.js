@@ -156,14 +156,12 @@ server.prepend(
 
         var processorResult = null;
         if (HookMgr.hasHook('app.payment.processor.' + processor.ID.toLowerCase())) {
-            processorResult = HookMgr.callHook(
-                'app.payment.processor.' + processor.ID.toLowerCase(),
+            processorResult = HookMgr.callHook('app.payment.processor.' + processor.ID.toLowerCase(),
                 'Handle',
                 currentBasket,
                 billingData.paymentInformation,
                 paymentMethodID,
-                req
-            );
+                req);
         } else {
             processorResult = HookMgr.callHook('app.payment.processor.default', 'Handle');
         }

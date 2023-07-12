@@ -2,8 +2,8 @@
 <isif condition="${clearpayExpressCheckoutEnabled && (pdict.pagetype != 'product_detail' || clearpayExpressCheckoutPdpEnabled)}">
     <input id="clearpay-express-countrycode" type="hidden" value="${countrycode}" />
     <input id="clearpay-express-storepickup" type="hidden" value="${clearpayExpressPickupEnabled}" />
-    <input id="clearpay-express-buynow" type="hidden" value="${dw.system.Site.current.preferences.custom.cpEnableExpressCheckoutBuyNow}" />
-    <input id="clearpay-express-shipping-option-required" type="hidden" value="${dw.system.Site.current.preferences.custom.cpExpressCheckoutShippingStrategy == 'integrated'}" />
+    <input id="clearpay-express-buynow" type="hidden" value="${clearpayExpressCheckoutBuyNowEnabled}" />
+    <input id="clearpay-express-shipping-option-required" type="hidden" value="${clearpayExpressCheckoutShippingStrategy}" />
     <input id="clearpay-express-url-createtoken" type="hidden" value="${URLUtils.url('ClearpayExpress-CreateToken')}" />
     <input id="clearpay-express-url-getshippingmethods" type="hidden" value="${URLUtils.url('ClearpayExpress-GetShippingMethods')}" />
     <input id="clearpay-express-url-processorder" type="hidden" value="${URLUtils.url('ClearpayExpress-PostClearpayCheckoutFlow')}" />

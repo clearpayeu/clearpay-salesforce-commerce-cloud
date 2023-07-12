@@ -7,9 +7,7 @@ server.extend(Product);
 
 var setClearpayMessageContext = function (req, res, next) {
     var productTileParams = res.getViewData();
-    var priceContext;
-
-    priceContext = require('*/cartridge/scripts/util/getTemplateSpecificWidget').getWidgetData(
+    var priceContext = require('*/cartridge/scripts/util/getTemplateSpecificWidget').getWidgetData(
         productTileParams.product,
         'pdp-clearpay-message',
         req.session.currency.currencyCode,
@@ -17,6 +15,7 @@ var setClearpayMessageContext = function (req, res, next) {
     );
 
     res.setViewData(priceContext);
+
     next();
 };
 
@@ -47,6 +46,7 @@ server.get('IncludeClearpayMessage',
     server.middleware.include,
     function (req, res, next) {
         var ProductFactory = require('*/cartridge/scripts/factories/product');
+
         res.setViewData({
             product: ProductFactory.get(req.querystring)
         });

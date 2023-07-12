@@ -47,20 +47,32 @@ function getClearpayHttpService() {
             service.setRequestMethod(requestBody.requestMethod);
             service.addHeader('Content-Type', 'application/json');
 
-            var clearpayCartridge = 'ClearpayCartridge/23.2.0-rc1';
+            var clearpayCartridge = 'ClearpayCartridge/23.3.0';
             var merchantID = service.configuration.credential.user;
             var siteURL = URLUtils.httpsHome().toString();
             var storeFront = Site.getCurrent().getID();
             var hostURL = siteURL.substring(0, siteURL.indexOf('/', 14));
             var compatibilityMode = dw.system.System.getCompatibilityMode();
             var storefrontVersion = '';
-            if (storeFront.includes('SiteGenesis')) {
+            if (storeFront.indexOf('SiteGenesis') >= 0) {
                 storefrontVersion = Resource.msg('revisioninfo.revisionnumber', 'revisioninfo', null);
-            } else if (storeFront.includes('RefArch')) {
+            } else if (storeFront.indexOf('RefArch') >= 0) {
                 storefrontVersion = Resource.msg('global.version.number', 'version', null);
             }
 
-            var userAgent = clearpayCartridge + ' (SalesforceCommmerceCloud; ' + storeFront + '/' + storefrontVersion + '; CompatibilityMode/' + compatibilityMode + '; Merchant/' + merchantID + ') ' + hostURL;
+            var uaAdditionalInfo = [
+                'SalesforceCommerceCloud',
+                storeFront + '/' + storefrontVersion,
+                'CompatibilityMode/' + compatibilityMode,
+                'Merchant/' + merchantID,
+                'CashAppEnabled/0'
+            ].join('; ');
+
+            var userAgent = [
+                clearpayCartridge,
+                '(' + uaAdditionalInfo + ')',
+                hostURL
+            ].join(' ');
 
             service.addHeader('User-Agent', userAgent);
 

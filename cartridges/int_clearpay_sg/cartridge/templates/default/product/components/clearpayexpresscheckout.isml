@@ -15,7 +15,8 @@ clearpayExpressPickupEnabled - does the current cart and selected ship method in
     var clearpayExpressCheckoutEnabled = clearpayEnabled ? sitePreferences.isExpressCheckoutEnabled() : false;
     var isExpressCheckoutFinalize = require('*/cartridge/scripts/util/clearpaySession').isExpressCheckoutFinalizeFlow();
     var clearpayExpressCheckoutPdpEnabled = sitePreferences.isExpressCheckoutPdpEnabled();
-
+    var clearpayExpressCheckoutBuyNowEnabled = sitePreferences.isExpressCheckoutBuyNowEnabled();
+    var clearpayExpressCheckoutShippingStrategy = sitePreferences.getExpressCheckoutShippingStrategy() == 'integrated';
     var ClearpayCOHelpers = require('*/cartridge/scripts/checkout/clearpayCheckoutHelpers');
     var clearpayExpressPickupEnabled = clearpayExpressCheckoutEnabled ? require('~/cartridge/scripts/checkout/clearpaySGCheckoutHelpers').shouldEnableExpressPickupMode() : false;
     var disableClearpayPaymentMethod = ! ClearpayCOHelpers.isBasketAmountWithinThreshold();
@@ -27,11 +28,20 @@ clearpayExpressPickupEnabled - does the current cart and selected ship method in
     var countrycode = BrandUtilities.getCountryCode();
     var expressCheckoutJS = BrandUtilities.getBrandSettings().javaScriptUrl + "?merchant_key=demo";
 </isscript>
-<isif condition="${clearpayExpressCheckoutEnabled && (pdict.pagetype != 'product_detail' || clearpayExpressCheckoutPdpEnabled)}">
+<isif condition="${pdict.pagetype == 'product_detail'}">
+    <isscript>
+        disableClearpayPaymentMethod =  disableClearpayPaymentMethod || ClearpayCOHelpers.checkRestrictedProducts(pdict.Product.ID);
+    </isscript>
+<iselse/>
+    <isscript>
+        disableClearpayPaymentMethod =  disableClearpayPaymentMethod || ClearpayCOHelpers.checkRestrictedCart();
+    </isscript>
+</isif>
+<isif condition="${clearpayExpressCheckoutEnabled && !disableClearpayPaymentMethod && (pdict.pagetype != 'product_detail' || clearpayExpressCheckoutPdpEnabled)}">
     <input id="clearpay-express-countrycode" type="hidden" value="${countrycode}" />
     <input id="clearpay-express-storepickup" type="hidden" value="${clearpayExpressPickupEnabled}" />
-    <input id="clearpay-express-buynow" type="hidden" value="${dw.system.Site.getCurrent().getCustomPreferenceValue('cpEnableExpressCheckoutBuyNow')}" />
-    <input id="clearpay-express-shipping-option-required" type="hidden" value="${dw.system.Site.getCurrent().getCustomPreferenceValue('cpExpressCheckoutShippingStrategy') == 'integrated'}" />
+    <input id="clearpay-express-buynow" type="hidden" value="${clearpayExpressCheckoutBuyNowEnabled}" />
+    <input id="clearpay-express-shipping-option-required" type="hidden" value="${clearpayExpressCheckoutShippingStrategy}" />
     <input id="clearpay-express-url-createtoken" type="hidden" value="${URLUtils.url('ClearpayExpress-CreateToken')}" />
     <input id="clearpay-express-url-getshippingmethods" type="hidden" value="${URLUtils.url('ClearpayExpress-GetShippingMethods')}" />
     <input id="clearpay-express-url-processorder" type="hidden" value="${URLUtils.url('ClearpayExpress-PostClearpayCheckoutFlow')}" />

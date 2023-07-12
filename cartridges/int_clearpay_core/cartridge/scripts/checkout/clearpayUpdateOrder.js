@@ -54,15 +54,12 @@ var clearpayUpdateOrder = {
 
             if (paymentMode === clearpayConstants.PAYMENT_MODE.DIRECT_CAPTURE) {
                 payTrans.custom.cpDirectPaymentStatus = paymentResult.status;
-                amount = empty(paymentResult.originalAmount) ? null : new Money(parseFloat(paymentResult.originalAmount.amount), paymentResult.originalAmount.currency);
             } else {
                 payTrans.custom.cpAuthoriseStatus = paymentResult.status;
-                amount = empty(paymentResult.openToCaptureAmount) ? null : new Money(parseFloat(paymentResult.openToCaptureAmount.amount), paymentResult.openToCaptureAmount.currency);
             }
 
-            if (paymentResult.status === clearpayConstants.PAYMENT_STATUS.ACTIVE && amount === null) {
-                amount = empty(paymentResult.amount) ? null : new Money(parseFloat(paymentResult.amount.amount), paymentResult.amount.currency);
-            }
+            amount = empty(paymentResult.originalAmount) ? null : new Money(parseFloat(paymentResult.originalAmount.amount), paymentResult.originalAmount.currency);
+
             payTrans.setAmount(amount);
         });
 

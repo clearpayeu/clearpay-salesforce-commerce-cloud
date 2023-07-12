@@ -74,10 +74,8 @@ function CartStatus() {
         return;
     }
 
-    var cartTotals = ClearpayShippingHelpers.calculateCartTaxShipTotals(cart);
-
     var clearpayExpressPickupEnabled = ClearpaySGCOHelpers.shouldEnableExpressPickupMode();
-    responseUtils.renderJSON({ cartTotalAmount: cartTotals.totalCost.value, cartTotalCurrency: cartTotals.totalCost.currencyCode, instorepickup: clearpayExpressPickupEnabled });
+    responseUtils.renderJSON({ instorepickup: clearpayExpressPickupEnabled });
 }
 
 /**

@@ -11,3 +11,6 @@ cartridges/int_clearpay_sfra_6/cartridge/static/default/js/clearpayCheckout.js
 cartridges/int_clearpay_sfra_6/cartridge/static/default/js/checkout.js
 cartridges/int_clearpay_sfra_6/cartridge/static/default/js/productTile.js
 dw.json
+.vscode/system-objecttype-extensions.d.ts
+.DS_Store
+*.zip

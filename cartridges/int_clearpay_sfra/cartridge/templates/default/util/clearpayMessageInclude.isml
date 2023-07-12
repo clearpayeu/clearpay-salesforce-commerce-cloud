@@ -1,10 +1,8 @@
-<isif condition="${pdict.cpApplicable == true}">
-    <isinclude template="util/modulesClearpay"/>
+<isinclude template="util/modulesClearpay"/>
 
-    <isclearpaymessage
-        classname="${pdict.classname}"
-        belowthreshold="${pdict.belowthreshold}"
-        brand="${pdict.cpBrand}"
-        totalprice="${pdict.totalPrice}"
-    />
-</isif>
+<isclearpaymessage
+    classname="${pdict.classname}"
+    brand="${pdict.cpBrand}"
+    totalprice="${pdict.totalPrice}"
+    eligible="${pdict.cpEligible}"
+/>

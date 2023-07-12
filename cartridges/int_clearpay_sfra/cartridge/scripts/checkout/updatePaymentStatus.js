@@ -4,6 +4,7 @@
 var Transaction = require('dw/system/Transaction');
 var Order = require('dw/order/Order');
 var Status = require('dw/system/Status');
+var PAYMENT_STATUS = require('*/cartridge/scripts/util/clearpayConstants').PAYMENT_STATUS;
 
 /* Script Modules */
 var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');
@@ -82,15 +83,15 @@ updatePaymentStatus.handlePaymentStatus = function (order) {
 
     Logger.debug('Clearpay final payment status :' + finalPaymentStatus);
 
-    if (finalPaymentStatus === 'APPROVED' || finalPaymentStatus === 'ACTIVE') {
+    if (finalPaymentStatus === PAYMENT_STATUS.APPROVED || finalPaymentStatus === PAYMENT_STATUS.ACTIVE) {
         return { authorized: true };
-    } else if (finalPaymentStatus === 'PENDING') {
+    } else if (finalPaymentStatus === PAYMENT_STATUS.PENDING) {
         return {
             error: true,
             ClearpayOrderErrorMessage: new Status(Status.ERROR, cpInitialStatus, 'clearpay.api.declined'),
             cpInitialStatus: !empty(order.getPaymentInstruments(paymentMethodName)[0].getPaymentTransaction().custom.cpInitialStatus) ? Order.getPaymentInstruments(paymentMethodName)[0].getPaymentTransaction().custom.cpInitialStatus : null
         };
-    } else if (finalPaymentStatus === 'DECLINED') {
+    } else if (finalPaymentStatus === PAYMENT_STATUS.DECLINED) {
         errorMessage = require('*/cartridge/scripts/util/clearpayErrors').getErrorResponses(responseCode, true);
         Transaction.begin();
         impactOrder.getPaymentInstruments(paymentMethodName)[0].getPaymentTransaction().custom.cpInitialStatus = cpInitialStatus;

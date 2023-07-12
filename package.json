@@ -1,6 +1,6 @@
 {
   "name": "Clearpay",
-  "version": "23.2.0",
+  "version": "23.3.0",
   "description": "Clearpay's official cartridge for SFRA and controllers-based SiteGenesis ",
   "main": "index.js",
   "engines": {
@@ -18,12 +18,13 @@
     "lint:js": "sgmf-scripts --lint js",
     "upload": "sgmf-scripts --upload --",
     "fix-js": "eslint-auto-fix --fix-on-startup",
-    "uploadCartridge": "sgmf-scripts --uploadCartridge bm_clearpay && sgmf-scripts --uploadCartridge int_clearpay_core && sgmf-scripts --uploadCartridge int_clearpay_sfra"
+    "uploadCartridge": "sgmf-scripts --uploadCartridge bm_clearpay && sgmf-scripts --uploadCartridge int_clearpay_core && sgmf-scripts --uploadCartridge int_clearpay_sfra",
+    "watch": "sgmf-scripts --watch"
   },
   "author": "Clearpay",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/clearpayeu/clearpay-salesforce-commerce-cloud"
+    "url": "git+https://github.com/clearpayeu/clearpay-salesforce-commerce-cloud.git"
   },
   "homepage": "https://github.com/clearpayeu/clearpay-salesforce-commerce-cloud",
   "devDependencies": {

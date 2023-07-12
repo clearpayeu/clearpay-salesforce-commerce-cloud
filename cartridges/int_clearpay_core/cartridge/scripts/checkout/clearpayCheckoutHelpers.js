@@ -159,7 +159,7 @@ var checkoutTools = {
 
         if (basket && basket.getAllProductLineItems().length > 0) {
             var orderTotal = basket.totalGrossPrice.available ? basket.totalGrossPrice : basket.getAdjustedMerchandizeTotalPrice(true).add(basket.giftCertificateTotalPrice);
-            withinTheshold = thresholdUtilities.checkThreshold(orderTotal).status;
+            withinTheshold = thresholdUtilities.checkThreshold(orderTotal).status && !this.checkRestrictedCart();
         }
 
         return withinTheshold;
@@ -171,7 +171,7 @@ var checkoutTools = {
         }
         var orderTotal = basket.totalGrossPrice.available ? basket.totalGrossPrice : basket.getAdjustedMerchandizeTotalPrice(true).add(basket.giftCertificateTotalPrice);
 
-        return thresholdUtilities.checkThreshold(orderTotal).status;
+        return thresholdUtilities.checkThreshold(orderTotal).status && !this.checkRestrictedCart();
     },
     // compute a checksum from the Clearpay Response
     // if anything changed
@@ -191,6 +191,47 @@ var checkoutTools = {
         }
         Logger.debug('Final Checksum' + cksum);
         return cksum;
+    },
+    checkRestrictedCart: function () {
+        var currentBasket = BasketMgr.getCurrentBasket();
+        if (currentBasket && currentBasket.getAllProductLineItems().length > 0) {
+            var productLineItems = currentBasket.getAllProductLineItems().iterator();
+            var ProductMgr = require('dw/catalog/ProductMgr');
+            while (productLineItems.hasNext()) {
+                var productLineItem = productLineItems.next();
+                var product = productLineItem.product;
+
+                if (!product) {
+                    var parentProductID = productLineItem.parent.productID;
+                    product = ProductMgr.getProduct(parentProductID);
+                }
+
+                if (product) {
+                    var reqProductID = product.ID;
+                    if (this.checkRestrictedProducts(reqProductID)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    },
+    checkRestrictedProducts: function (reqProductID) {
+        var cpSitePreferences = require('*/cartridge/scripts/util/clearpayUtilities').sitePreferencesUtilities;
+        var clearpayRestrictedProducts = cpSitePreferences.getRestrictedProducts();
+        var ProductMgr = require('dw/catalog/ProductMgr');
+        var product = ProductMgr.getProduct(reqProductID);
+
+        if (product && product.isVariant()) {
+            if (product.masterProduct.ID && clearpayRestrictedProducts.indexOf(product.masterProduct.ID) > '-1') {
+                return true;
+            }
+        }
+
+        if (reqProductID && clearpayRestrictedProducts.indexOf(reqProductID) > '-1') {
+            return true;
+        }
+        return false;
     }
 };
 

@@ -80,7 +80,7 @@ describe('Integrated Non-BuyNow', function () {
     let miniCartLink = await page.waitForSelector('.mini-cart-link');
     await miniCartLink.click();
 
-    let checkoutButton = await page.waitForSelector('#afterclearpaypay-express-button');
+    let checkoutButton = await page.waitForSelector('#clearpay-express-button');
 
     await checkoutButton.click();
 

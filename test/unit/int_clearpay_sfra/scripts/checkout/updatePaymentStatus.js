@@ -5,6 +5,7 @@ var proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 var sinon = require('sinon');
 const OrderMgr = require('../../../../mocks/dw/order/OrderMgr');
 var OrderMock = require('../../../../mocks/models/order');
+var clearpayConstants = require('../../../../../cartridges/int_clearpay_core/cartridge/scripts/util/clearpayConstants');
 var dwOrder = require('../../../../mocks/dw/order/Order');
 
 var order = new OrderMock();
@@ -112,6 +113,7 @@ describe('updatePaymentStatus', function () {
             '*/cartridge/scripts/util/clearpayLogUtils': customLogger,
             '*/cartridge/scripts/util/clearpayUtilities': clearpayUtilities,
             '*/cartridge/scripts/payment/expressCheckoutPaymentHelpers': ecPaymentHelpers,
+            '*/cartridge/scripts/util/clearpayConstants': clearpayConstants,
             '*/cartridge/scripts/checkout/clearpayHandlePaymentOrder': {
                 getPaymentStatus: function () {
                     return {

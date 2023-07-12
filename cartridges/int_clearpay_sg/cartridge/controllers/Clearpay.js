@@ -14,6 +14,7 @@ var BrandUtilities = require('*/cartridge/scripts/util/clearpayUtilities').brand
 var SitePreferences = require('*/cartridge/scripts/util/clearpayUtilities').sitePreferencesUtilities;
 var ctrlCartridgeName = SitePreferences.getControllerCartridgeName();
 var thresholdUtilities = require('*/cartridge/scripts/util/thresholdUtilities');
+var ClearpayCOHelpers = require('*/cartridge/scripts/checkout/clearpayCheckoutHelpers');
 
 var app = require(ctrlCartridgeName + '/cartridge/scripts/app');
 var guard = require(ctrlCartridgeName + '/cartridge/scripts/guard');
@@ -34,19 +35,21 @@ function renderMessage() {
         return;
     }
 
-    var isWithinThreshold = thresholdUtilities.checkThreshold(totalprice);
     var clearpayApplicable = BrandUtilities.isClearpayApplicable();
-
-    clearpayApplicable = isWithinThreshold.status && clearpayApplicable;
+    var isEligible = true;
 
     if (classname !== 'cart-clearpay-message') {
         applyCaching = true;
+        var reqProductID = params.productID.stringValue;
+        isEligible = !ClearpayCOHelpers.checkRestrictedProducts(reqProductID);
+    } else {
+        isEligible = !ClearpayCOHelpers.checkRestrictedCart();
     }
 
     if (clearpayApplicable) {
         app.getView({
             applyCaching: applyCaching,
-            belowThreshold: isWithinThreshold.belowThreshold,
+            eligible: isEligible,
             classname: classname,
             clearpaybrand: clearpayBrand,
             totalprice: totalprice.value

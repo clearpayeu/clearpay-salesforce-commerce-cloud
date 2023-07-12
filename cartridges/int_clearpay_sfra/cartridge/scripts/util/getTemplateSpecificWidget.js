@@ -4,6 +4,7 @@
 var Money = require('dw/value/Money');
 
 /* Script Modules */
+var ClearpayCOHelpers = require('*/cartridge/scripts/checkout/clearpayCheckoutHelpers');
 var cpBrandUtilities = require('*/cartridge/scripts/util/clearpayUtilities').brandUtilities;
 
 var getTemplateSpecificWidget = {};
@@ -45,16 +46,20 @@ getTemplateSpecificWidget.getWidgetData = function (productObject, className, cu
             totalPrice: totalPrice
         };
 
-        var isWithinThreshold = thresholdUtilities.checkThreshold(totalPrice);
+        var clearpayLimits = thresholdUtilities.checkThreshold(totalPrice);
 
-        if (isWithinThreshold.belowThreshold) {
-            priceContext.belowthreshold = isWithinThreshold.belowThreshold;
-        }
-
-        var isApplicable = cpBrandUtilities.isClearpayApplicable() && isWithinThreshold.status;
+        var isEligible = cpBrandUtilities.isClearpayApplicable();
         var cpBrand = cpBrandUtilities.getBrand();
 
-        priceContext.cpApplicable = isApplicable;
+        var isWithinThreshold = clearpayLimits.status;
+        var reqProductID = productObject.id;
+
+        if (reqProductID != null && ClearpayCOHelpers.checkRestrictedProducts(reqProductID)) {
+            isEligible = false;
+        }
+
+        priceContext.cpEligible = isEligible;
+        priceContext.cpApplicable = isEligible && isWithinThreshold;
         priceContext.cpBrand = cpBrand;
     }
 
@@ -88,16 +93,19 @@ getTemplateSpecificWidget.getWidgetDataForSet = function (productObject, classNa
                 quickview: false
             };
 
-            var isWithinThreshold = thresholdUtilities.checkThreshold(totalPrice);
-
-            if (isWithinThreshold.belowThreshold) {
-                clearpayWidgetData.belowthreshold = isWithinThreshold.belowThreshold;
-            }
-
-            var isApplicable = cpBrandUtilities.isClearpayApplicable() && isWithinThreshold.status;
+            var clearpayLimits = thresholdUtilities.checkThreshold(totalPrice);
+            var isEligible = cpBrandUtilities.isClearpayApplicable();
             var cpBrand = cpBrandUtilities.getBrand();
 
-            clearpayWidgetData.cpApplicable = isApplicable;
+            var isWithinThreshold = clearpayLimits.status;
+            var reqProductID = productObject.id;
+
+            if (reqProductID != null && ClearpayCOHelpers.checkRestrictedProducts(reqProductID)) {
+                isEligible = false;
+            }
+
+            priceContext.cpEligible = isEligible;
+            priceContext.cpApplicable = isEligible && isWithinThreshold;
             clearpayWidgetData.cpBrand = cpBrand;
 
             getTemplateSpecificWidget.pushWidgetDataToProduct(singleSetProduct, clearpayWidgetData);
@@ -120,37 +128,28 @@ getTemplateSpecificWidget.pushWidgetDataToProduct = function (singleSetProduct, 
  * @returns {string} - request JSON
  */
 getTemplateSpecificWidget.getCheckoutWidgetData = function (currentBasket, className, locale) {
+    var cartProductExcluded = ClearpayCOHelpers.checkRestrictedCart();
+    cpBrandUtilities.initBrand(locale);
     var priceContext = {};
 
     if (!currentBasket) {
         return priceContext;
     }
 
-    var totalPrice = 0.0;
+    var totalPrice = currentBasket.totalGrossPrice;
 
-    totalPrice = currentBasket.totalGrossPrice;
-
-    cpBrandUtilities.initBrand(locale);
     var thresholdUtilities = require('*/cartridge/scripts/util/thresholdUtilities');
 
     priceContext.classname = className;
     priceContext.totalPrice = totalPrice.value;
-
-    var isWithinThreshold = thresholdUtilities.checkThreshold(totalPrice);
-
-    if (isWithinThreshold.belowThreshold) {
-        priceContext.belowthreshold = isWithinThreshold.belowThreshold;
-        priceContext.minthresholdamount = isWithinThreshold.minThresholdAmount;
-    }
-
-    var isApplicable = cpBrandUtilities.isClearpayApplicable();
     var cpBrand = cpBrandUtilities.getBrand();
 
-    if (className === 'checkout-clearpay-message') {
-        isApplicable = isApplicable && !isWithinThreshold.belowThreshold;
-    }
+    var clearpayLimits = thresholdUtilities.checkThreshold(totalPrice);
+    var isEligible = cpBrandUtilities.isClearpayApplicable() && !cartProductExcluded;
+    var isWithinThreshold = clearpayLimits.status;
 
-    priceContext.cpApplicable = isApplicable;
+    priceContext.cpEligible = isEligible;
+    priceContext.cpApplicable = isEligible && isWithinThreshold;
     priceContext.cpBrand = cpBrand;
 
     return priceContext;

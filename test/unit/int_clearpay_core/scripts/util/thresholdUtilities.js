@@ -96,6 +96,10 @@ var session = {
             this.map.set(key, value);
         },
         key: ''
+    },
+    currency: {
+        getCurrencyCode: function() {
+        }
     }
 };
 

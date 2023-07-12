@@ -46,7 +46,7 @@ var sitePreferencesUtilities = {
         var expressSuppportedLocales = ['AU', 'US', 'GB', 'NZ', 'CA'];
         // eslint-disable-next-line no-use-before-define
         var currentLocale = brandUtilities.getCountryCode();
-        var isLocaleSupported = expressSuppportedLocales.includes(currentLocale);
+        var isLocaleSupported = expressSuppportedLocales.indexOf(currentLocale) >= 0;
         return Site.getCurrent().getCustomPreferenceValue('cpEnableExpressCheckout') && isLocaleSupported;
     },
 
@@ -69,6 +69,17 @@ var sitePreferencesUtilities = {
 
     isExpressCheckoutPdpEnabled: function () {
         return Site.getCurrent().getCustomPreferenceValue('cpEnableExpressCheckoutPdp');
+    },
+    getRestrictedProducts: function () {
+        var excludedProducts = Site.getCurrent().getCustomPreferenceValue('cpRestrictedProducts');
+        var clearpayRestrictedProducts = [];
+
+        if (excludedProducts != null) {
+            clearpayRestrictedProducts = excludedProducts.split(',').map(function (item) {
+                return item.trim();
+            });
+        }
+        return clearpayRestrictedProducts;
     }
 };
 
@@ -172,14 +183,6 @@ var checkoutUtilities = {
 
         var paymentTransaction = this.getPaymentTransaction(order);
         return paymentTransaction.custom.cpPaymentMode;
-    },
-
-    getPaymentMode: function (order) {
-        var paymentMode = this.getPaymentModeFromOrder(order);
-        if (empty(paymentMode)) {
-            paymentMode = sitePreferencesUtilities.getPaymentMode().value;
-        }
-        return paymentMode;
     },
 
     getPaymentResponseCode: function (callResult) {

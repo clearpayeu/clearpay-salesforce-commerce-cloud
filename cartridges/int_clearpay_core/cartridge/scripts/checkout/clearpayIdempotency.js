@@ -1,7 +1,7 @@
 'use strict';
 
 var Site = require('dw/system/Site');
-
+var PAYMENT_STATUS = require('*/cartridge/scripts/util/clearpayConstants').PAYMENT_STATUS;
 var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');
 var Logger = LogUtils.getLogger('clearpayIdempotency');
 
@@ -43,7 +43,7 @@ function delayPayment(Order, initialStatus, expressCheckoutModel) {
         sleep(Site.getCurrent().getCustomPreferenceValue('cpDelayRetry'));
         Logger.debug('After 5 secs time delay : ' + new Date());
         paymentStatus = require('*/cartridge/scripts/checkout/clearpayHandlePaymentOrder').getPaymentStatus(Order, initialStatus, expressCheckoutModel);
-        if (paymentStatus === 'APPROVED') {
+        if (paymentStatus === PAYMENT_STATUS.APPROVED) {
             break;
         }
         Logger.debug('Final Payment Status : ' + paymentStatus);

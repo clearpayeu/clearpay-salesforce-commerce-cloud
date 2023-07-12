@@ -51,16 +51,14 @@
 <div class="row">
     <div class="col-12">
         <isinclude template="util/modulesClearpay"/>
-        <input type="hidden" class="updated-widget" value="${URLUtils.https('ClearpayWidget-GetUpdatedWidget')}">
+        <input type="hidden" class="updated-widget" value="${URLUtils.https('ClearpayWidget-GetUpdatedWidget')}" />
         <div class="clearpay-widget">
-            <isif condition="${pdict.cpApplicable == true}">
-                <isclearpaymessage
-                    classname="${pdict.classname}"
-                    belowthreshold="${pdict.belowthreshold}"
-                    brand="${pdict.cpBrand}"
-                    totalprice="${pdict.totalPrice}"
-                />
-            </isif>
+            <isclearpaymessage
+                classname="${pdict.classname}"
+                brand="${pdict.cpBrand}"
+                totalprice="${pdict.totalPrice}"
+                eligible="${pdict.cpEligible}"
+            />
         </div>
     </div>    
 </div>

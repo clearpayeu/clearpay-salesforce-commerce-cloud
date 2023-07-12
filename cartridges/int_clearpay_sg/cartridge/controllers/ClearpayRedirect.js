@@ -22,6 +22,7 @@ var guard = require(ctrlCartridgeName + '/cartridge/scripts/guard');
 var Cart = app.getModel('Cart');
 var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');
 var Logger = LogUtils.getLogger('ClearpayRedirect');
+var PAYMENT_STATUS = require('*/cartridge/scripts/util/clearpayConstants').PAYMENT_STATUS;
 
 /**
  * Handles the payment status returned by the Clearpay. Based on the status Order will be submitted .
@@ -50,7 +51,7 @@ function HandleResponse() {
 
     paymentStatus = request.httpParameterMap.status.getStringValue();
 
-    if (paymentStatus === 'SUCCESS') {
+    if (paymentStatus === PAYMENT_STATUS.SUCCESS) {
         var orderTokenString = request.httpParameterMap.orderToken.getStringValue();
         productExists = require('*/cartridge/scripts/checkout/clearpayTokenConflict').checkTokenConflict(cart.object, orderTokenString);
         PreapprovalResult = require('*/cartridge/scripts/checkout/clearpayUpdatePreapprovalStatus').getPreApprovalResult(cart.object, {
@@ -76,7 +77,7 @@ function HandleResponse() {
                 redirectURL = URLUtils.https('COBilling-Start', 'clearpay', Resource.msg('apierror.flow.default', session.privacy.clearpayBrand, null));
             }
         }
-    } else if (paymentStatus === 'CANCELLED') {
+    } else if (paymentStatus === PAYMENT_STATUS.CANCELLED) {
         redirectURL = URLUtils.https('COBilling-Start', 'clearpay', Resource.msg('clearpay.api.cancelled', session.privacy.clearpayBrand, null));
     } else if (paymentInstrument.getPaymentTransaction().custom.cpToken !== request.httpParameterMap.orderToken.stringValue) {
         redirectURL = URLUtils.https('COBilling-Start', 'clearpay', Resource.msg('apierror.flow.default', session.privacy.clearpayBrand, null));
@@ -85,8 +86,6 @@ function HandleResponse() {
     }
 
     if (!empty(redirectURL)) {
-        Logger.debug('ClearpayRedirectUrl: ' + redirectURL);
-
         app.getView({
             ClearpayRedirectUrl: redirectURL
         }).render('checkout/redirect');

@@ -4,18 +4,18 @@ var processInclude = require('base/util');
 /**
  * Gets Widget HTML from ClearPay API
  * @param {string} updatedProductID - product ID
- * @param {number} updatedProductPrice - product price
+ * @param {number} updatedPrice - product price
  * @param {string} className - HTML class name
  * @param {jquery} $productContainer - DOM container for product
  */
-function getWidget(updatedProductID, updatedProductPrice, className, $productContainer) {
+function getWidget(updatedProductID, updatedPrice, className, $productContainer) {
     var getUpdatedWidgetUrl = $('.updated-widget').val();
-    var queryString = '?productID=' + updatedProductID + '&updatedProductPrice=' + updatedProductPrice + '&className=' + className;
+    var queryString = '?productID=' + updatedProductID + '&updatedPrice=' + updatedPrice + '&className=' + className;
     $.ajax({
         url: getUpdatedWidgetUrl + queryString,
         method: 'GET',
         success: function (data) {
-            if (data.cpApplicable && data.updatedWidget) {
+            if (data.updatedWidget) {
                 if (typeof $productContainer !== 'undefined') {
                     $productContainer.find('.clearpay-widget').html(data.updatedWidget);
                     $productContainer.find('.clearpay-widget').show();
@@ -23,16 +23,8 @@ function getWidget(updatedProductID, updatedProductPrice, className, $productCon
                     $('.clearpay-widget').html(data.updatedWidget);
                     $('.clearpay-widget').show();
                 }
-            } else if (typeof $productContainer !== 'undefined') {
-                $productContainer.find('.clearpay-widget').empty().show();
-            } else if (typeof $productContainer === 'undefined') {
-                $('.clearpay-widget').empty().show();
             }
-
-            $('#clearpay-express-pdp-button').addClass('clearpay-hide');
-            if (data.withinThreshold) {
-                $('#clearpay-express-pdp-button').removeClass('clearpay-hide');
-            }
+            $('#clearpay-express-pdp-button').toggleClass('clearpay-hide', !data.cpApplicable);
         }
     });
 }
@@ -60,10 +52,10 @@ function updateStorePickupState() {
             success: function (data) {
                 if (data.instorepickup) {
                     $('#clearpay-express-storepickup').val(data.instorepickup.toString());
-                    initClearpay({ pickupflag: data.instorepickup });
+                    initAfterpay({ pickupflag: data.instorepickup });
                 }
 
-                $('#clearpay-express-button').toggleClass('clearpay-hide', !data.withinThreshold);
+                $('#clearpay-express-button').toggleClass('clearpay-hide', !data.cpApplicable);
             }
         });
     }
@@ -96,13 +88,13 @@ $(document).ready(function () {
         window.location.href = $('#clearpayurl-continuefinalize').val();
     });
 
-    if (typeof initClearpay === 'function') {
+    if (typeof initAfterpay === 'function') {
         if ($('#clearpay-express-pdp-button').length > 0) {
-            initClearpay({ pickupflag: 'false', commenceDelay: 200, target: '#clearpay-express-pdp-button' });
+            initAfterpay({ pickupflag: 'false', commenceDelay: 200, target: '#clearpay-express-pdp-button' });
         }
 
         if ($('#clearpay-express-button').length > 0) {
-            initClearpay({ pickupflag: $('#clearpay-express-storepickup').val() === 'true' });
+            initAfterpay({ pickupflag: $('#clearpay-express-storepickup').val() === 'true' });
         }
     }
 
@@ -113,7 +105,7 @@ $(document).ready(function () {
             $('.clearpay-widget').removeClass('loading');
 
             if ($('.clearpay-widget').length && cartTotal !== newCartTotal) {
-                $('afterpay-placement').attr('data-amount', newCartTotal);
+                getWidget(null, null, 'cart-clearpay-message');
             }
 
             if ($('.clearpay-widget .pdp-clearpay-message').length) {
@@ -121,13 +113,13 @@ $(document).ready(function () {
             }
         }
 
-        // make sure we call initClearpay after the minicart loads so checkout click will work
+        // make sure we call initAfterpay after the minicart loads so checkout click will work
         if ($('.minicart #clearpay-express-button').length > 0) {
             var cnt = 0;
             var sid = setInterval(function () {
-                if (typeof initClearpay === 'function' && typeof AfterPay !== 'undefined') {
+                if (typeof initAfterpay === 'function' && typeof AfterPay !== 'undefined') {
                     clearInterval(sid);
-                    initClearpay({ pickupflag: $('#clearpay-express-storepickup').val() === 'true' });
+                    initAfterpay({ pickupflag: $('#clearpay-express-storepickup').val() === 'true' });
                 }
                 if (cnt === 10) {
                     clearInterval(sid);

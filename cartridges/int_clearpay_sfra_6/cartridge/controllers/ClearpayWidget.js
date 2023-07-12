@@ -2,6 +2,7 @@
 
 /* API Includes */
 var Money = require('dw/value/Money');
+var BasketMgr = require('dw/order/BasketMgr');
 
 /* Script Modules */
 var server = require('server');
@@ -31,22 +32,31 @@ server.get('GetUpdatedWidget', server.middleware.https, function (req, res, next
     var priceContext;
     var totalPrice;
 
-    var AfterpayCOHelpers = require('*/cartridge/scripts/checkout/afterpayCheckoutHelpers');
-    var isWithinThreshold = AfterpayCOHelpers.isPDPBasketAmountWithinThreshold();
+    var ClearpayCOHelpers = require('*/cartridge/scripts/checkout/clearpayCheckoutHelpers');
+    var reqProductID = req.querystring.productID;
+    var isWithinThreshold = ClearpayCOHelpers.isPDPBasketAmountWithinThreshold();
+
+    var currencyCode = req.session.currency.currencyCode;
+    var cpEligible = cpBrandUtilities.isClearpayApplicable();
 
     if (req.querystring.className === 'pdp-clearpay-message') {
-        var currencyCode = req.session.currency.currencyCode;
-        totalPrice = req.querystring.updatedProductPrice;
-
+        totalPrice = req.querystring.updatedPrice;
         if (!empty(totalPrice)) {
             totalPrice = new Money(totalPrice, currencyCode);
         }
+        reqProductID = req.querystring.productID;
+        cpEligible = !ClearpayCOHelpers.checkRestrictedProducts(reqProductID);
+    } else if (req.querystring.className === 'cart-clearpay-message') {
+        var currentBasket = BasketMgr.getCurrentBasket();
+        totalPrice = currentBasket.totalGrossPrice;
+        cpEligible = !ClearpayCOHelpers.checkRestrictedCart();
     }
 
     priceContext = {
         classname: req.querystring.className,
-        totalprice: totalPrice.value,
-        brand: cpBrandUtilities.getBrand()
+        totalprice: totalPrice.value ? totalPrice.value : totalPrice,
+        brand: cpBrandUtilities.getBrand(),
+        eligible: cpEligible
     };
 
     var updatedWidget = renderTemplateHelper.getRenderedHtml(
@@ -54,11 +64,10 @@ server.get('GetUpdatedWidget', server.middleware.https, function (req, res, next
         updatedTemplate
     );
 
-    isWithinThreshold = isWithinThreshold && thresholdUtilities.checkPriceThreshold(priceContext.totalprice).status;
+    var clearpayLimits = thresholdUtilities.checkThreshold(totalPrice);
 
     res.json({
-        cpApplicable: cpBrandUtilities.isClearpayApplicable(),
-        withinThreshold: isWithinThreshold,
+        cpApplicable: (isWithinThreshold && clearpayLimits.status) && cpEligible,
         error: false,
         updatedWidget: updatedWidget
     });

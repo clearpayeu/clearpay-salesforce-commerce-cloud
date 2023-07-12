@@ -126,9 +126,9 @@
                     <isif condition="${pdict.cpApplicable == true}">
                         <isclearpaymessage
                             classname="${pdict.classname}"
-                            belowthreshold="${pdict.belowthreshold}"
                             brand="${pdict.cpBrand}"
                             totalprice="${pdict.totalPrice}"
+                            eligible="${pdict.cpEligible}"
                         />
                     </isif>
                 </div>
