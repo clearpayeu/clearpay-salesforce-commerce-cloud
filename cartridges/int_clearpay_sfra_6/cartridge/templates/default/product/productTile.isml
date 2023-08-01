@@ -22,9 +22,9 @@
 
             <isclearpaymessage
                 classname="${pdict.classname}"
-                brand="${pdict.cpBrand}"
                 totalprice="${pdict.totalPrice}"
                 eligible="${pdict.cpEligible}"
+                mpid="${pdict.cpMpid}"
             />
         </isif>
 

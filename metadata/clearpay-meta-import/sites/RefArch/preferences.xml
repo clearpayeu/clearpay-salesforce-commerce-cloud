@@ -6,9 +6,7 @@
             <preference preference-id="cpBrandSettings">{
                 "GB": {
                     "brand": "clearpay",
-                    "service": "clearpay.service.GB.v2",
-                    "javaScriptUrl": "https://portal.sandbox.clearpay.co.uk/afterpay.js",
-                    "learnMoreUrl": "https://www.clearpay.co.uk/en-GB/terms-of-service"
+                    "service": "clearpay.service.GB.v2"
                 }
             }</preference>
             <preference preference-id="cpDisplayPdpInfo">true</preference>

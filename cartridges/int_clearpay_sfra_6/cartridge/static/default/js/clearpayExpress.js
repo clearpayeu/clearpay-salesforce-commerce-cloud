@@ -1,4 +1,4 @@
-function initAfterpay(settings) {
+function initClearpay(settings) {
     settings = settings || {};
     var commenceDelay = settings.commenceDelay || 0;
 
@@ -111,7 +111,7 @@ function sleep(ms) {
 
 // Reinitialize the Clearpay popup by first doing an ajax
 // call to the server to determine eligibility for Clearpay Express
-// and calling initAfterpay with the setting
+// and calling initClearpay with the setting
 function reinitializeClearpayPopup() {
     var getCartStatusUrl = $('#clearpay-express-url-cartstatus').val();
     $.ajax({
@@ -119,7 +119,7 @@ function reinitializeClearpayPopup() {
         url: getCartStatusUrl,
         success: function (res) {
             var instorepickup = res.instorepickup;
-            initAfterpay(instorepickup);
+            initClearpay(instorepickup);
         },
         error: function () {
             alert('Clearpay payment failed.');

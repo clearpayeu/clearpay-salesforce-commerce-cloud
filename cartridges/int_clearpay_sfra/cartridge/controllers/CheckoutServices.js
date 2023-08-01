@@ -22,6 +22,7 @@ server.prepend(
         var paymentForm = server.forms.getForm('billing');
         var paymentMethodID = paymentForm.paymentMethod.value;
         var ClearpaySession = require('*/cartridge/scripts/util/clearpaySession');
+
         ClearpaySession.clearSession();
         if (paymentMethodID !== 'CLEARPAY') {
             // For express checkout, it's possible there was a Clearpay payment method in the basket,

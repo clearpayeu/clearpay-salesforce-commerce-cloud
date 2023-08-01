@@ -59,12 +59,11 @@ function Handle(args) {
             ClearpayRedirectUrl: redirectURL
         }).render('checkout/redirect');
     }
-    var scriptURL = brandUtilities.getBrandSettings().javaScriptUrl;
+
     var countryCode = brandUtilities.getCountryCode();
 
     app.getView({
         cpBrand: brandUtilities.getBrand(),
-        cpJavascriptURL: scriptURL,
         cpToken: clearPayToken,
         countryCode: countryCode
     }).render('checkout/clearpayredirect');

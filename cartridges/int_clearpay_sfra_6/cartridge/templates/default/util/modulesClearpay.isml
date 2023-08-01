@@ -6,10 +6,10 @@
 
 <ismodule template="util/clearpayMessage"
     name="clearpaymessage"
-    attribute="classname" 
-    attribute="brand"
+    attribute="classname"
     attribute="totalprice"
     attribute="eligible"
+    attribute="mpid"
 />
 
 <ismodule template="product/components/addToCartButtonExtension"

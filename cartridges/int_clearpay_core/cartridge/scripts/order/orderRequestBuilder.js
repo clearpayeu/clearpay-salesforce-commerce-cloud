@@ -198,6 +198,7 @@ OrderRequestBuilder.prototype.buildShipping = function (basket) {
         this._buildAddress('shipping', shippingAddress);
     } else {
         var storeMap = {};
+        var store;
         var lineItemsIter = basket.allProductLineItems.iterator();
         while (lineItemsIter.hasNext()) {
             var lineItem = lineItemsIter.next();
@@ -207,7 +208,6 @@ OrderRequestBuilder.prototype.buildShipping = function (basket) {
         }
 
         if (Object.keys(storeMap).length == 1) {
-            storePickup = true;
             Object.keys(storeMap).forEach(function (key) {
                 store = storeMap[key];
             });

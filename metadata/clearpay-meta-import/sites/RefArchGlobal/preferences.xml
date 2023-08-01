@@ -6,27 +6,7 @@
             <preference preference-id="cpBrandSettings">{
                 "GB": {
                     "brand": "clearpay",
-                    "service": "clearpay.service.GB.v2",
-                    "javaScriptUrl": "https://portal.sandbox.clearpay.co.uk/afterpay.js",
-                    "learnMoreUrl": "https://www.clearpay.co.uk/en-GB/terms-of-service"
-                },
-                "ES": {
-                    "brand": "clearpay",
-                    "service": "clearpay.service.ES.v2",
-                    "javaScriptUrl": "https://merchant-tools.sandbox.clearpay.com/clearpay.js",
-                    "learnMoreUrl": "https://www.clearpay.com/es/terms/"
-                },
-                "FR": {
-                    "brand": "clearpay",
-                    "service": "clearpay.service.FR.v2",
-                    "javaScriptUrl": "https://merchant-tools.sandbox.clearpay.com/clearpay.js",
-                    "learnMoreUrl": "https://www.clearpay.com/fr/terms/"
-                },
-                "IT": {
-                    "brand": "clearpay",
-                    "service": "clearpay.service.IT.v2",
-                    "javaScriptUrl": "https://merchant-tools.sandbox.clearpay.com/clearpay.js",
-                    "learnMoreUrl": "https://www.clearpay.com/it/terms/"
+                    "service": "clearpay.service.GB.v2"
                 }
             }</preference>
             <preference preference-id="cpDisplayPdpInfo">true</preference>

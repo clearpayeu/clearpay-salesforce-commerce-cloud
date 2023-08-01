@@ -59,7 +59,9 @@ var clearpayUpdateOrder = {
             }
 
             amount = empty(paymentResult.originalAmount) ? null : new Money(parseFloat(paymentResult.originalAmount.amount), paymentResult.originalAmount.currency);
-
+            if (paymentResult.status === clearpayConstants.PAYMENT_STATUS.ACTIVE && amount === null) {
+                amount = empty(paymentResult.amount) ? null : new Money(parseFloat(paymentResult.amount.amount), paymentResult.amount.currency);
+            }
             payTrans.setAmount(amount);
         });
 

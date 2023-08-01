@@ -22,6 +22,7 @@ server.prepend(
         var paymentForm = server.forms.getForm('billing');
         var paymentMethodID = paymentForm.paymentMethod.value;
         var ClearpaySession = require('*/cartridge/scripts/util/clearpaySession');
+
         ClearpaySession.clearSession();
         if (paymentMethodID !== 'CLEARPAY') {
             // For express checkout, it's possible there was a Clearpay payment method in the basket,
@@ -156,12 +157,14 @@ server.prepend(
 
         var processorResult = null;
         if (HookMgr.hasHook('app.payment.processor.' + processor.ID.toLowerCase())) {
-            processorResult = HookMgr.callHook('app.payment.processor.' + processor.ID.toLowerCase(),
+            processorResult = HookMgr.callHook(
+                'app.payment.processor.' + processor.ID.toLowerCase(),
                 'Handle',
                 currentBasket,
                 billingData.paymentInformation,
                 paymentMethodID,
-                req);
+                req
+            );
         } else {
             processorResult = HookMgr.callHook('app.payment.processor.default', 'Handle');
         }

@@ -7,6 +7,7 @@ var Money = require('dw/value/Money');
 var ClearpayCOHelpers = require('*/cartridge/scripts/checkout/clearpayCheckoutHelpers');
 var cpBrandUtilities = require('*/cartridge/scripts/util/clearpayUtilities').brandUtilities;
 
+var priceContext = {};
 var getTemplateSpecificWidget = {};
 
 /**
@@ -18,7 +19,6 @@ var getTemplateSpecificWidget = {};
  * @returns {string} - request JSON
  */
 getTemplateSpecificWidget.getWidgetData = function (productObject, className, currencyCode, locale) {
-    var priceContext;
     var totalPrice = null;
 
     cpBrandUtilities.initBrand(locale);
@@ -49,8 +49,6 @@ getTemplateSpecificWidget.getWidgetData = function (productObject, className, cu
         var clearpayLimits = thresholdUtilities.checkThreshold(totalPrice);
 
         var isEligible = cpBrandUtilities.isClearpayApplicable();
-        var cpBrand = cpBrandUtilities.getBrand();
-
         var isWithinThreshold = clearpayLimits.status;
         var reqProductID = productObject.id;
 
@@ -59,8 +57,8 @@ getTemplateSpecificWidget.getWidgetData = function (productObject, className, cu
         }
 
         priceContext.cpEligible = isEligible;
+        priceContext.cpMpid = clearpayLimits.mpid;
         priceContext.cpApplicable = isEligible && isWithinThreshold;
-        priceContext.cpBrand = cpBrand;
     }
 
     return priceContext;
@@ -69,9 +67,7 @@ getTemplateSpecificWidget.getWidgetData = function (productObject, className, cu
 getTemplateSpecificWidget.getWidgetDataForSet = function (productObject, className, currencyCode) {
     var thresholdUtilities = require('*/cartridge/scripts/util/thresholdUtilities');
     var totalPrice = null;
-
     if (productObject.productType === 'set') {
-        var clearpayWidgetData = {};
         for (var i = 0; i < productObject.individualProducts.length; i++) {
             var singleSetProduct = productObject.individualProducts[i];
             if (singleSetProduct.price.sales) {
@@ -88,25 +84,24 @@ getTemplateSpecificWidget.getWidgetDataForSet = function (productObject, classNa
                 totalPrice = new Money(totalPrice, currencyCode);
             }
 
-            clearpayWidgetData = {
+            var clearpayWidgetData = {
                 classname: className,
                 quickview: false
             };
 
             var clearpayLimits = thresholdUtilities.checkThreshold(totalPrice);
-            var isEligible = cpBrandUtilities.isClearpayApplicable();
-            var cpBrand = cpBrandUtilities.getBrand();
 
-            var isWithinThreshold = clearpayLimits.status;
-            var reqProductID = productObject.id;
+            var isEligible = cpBrandUtilities.isClearpayApplicable();
+            var reqProductID = singleSetProduct.id;
 
             if (reqProductID != null && ClearpayCOHelpers.checkRestrictedProducts(reqProductID)) {
                 isEligible = false;
             }
+            var isWithinThreshold = clearpayLimits.status;
 
-            priceContext.cpEligible = isEligible;
-            priceContext.cpApplicable = isEligible && isWithinThreshold;
-            clearpayWidgetData.cpBrand = cpBrand;
+            clearpayWidgetData.cpEligible = isEligible;
+            clearpayWidgetData.cpMpid = clearpayLimits.mpid;
+            clearpayWidgetData.cpApplicable = isEligible && isWithinThreshold;
 
             getTemplateSpecificWidget.pushWidgetDataToProduct(singleSetProduct, clearpayWidgetData);
         }
@@ -130,7 +125,6 @@ getTemplateSpecificWidget.pushWidgetDataToProduct = function (singleSetProduct, 
 getTemplateSpecificWidget.getCheckoutWidgetData = function (currentBasket, className, locale) {
     var cartProductExcluded = ClearpayCOHelpers.checkRestrictedCart();
     cpBrandUtilities.initBrand(locale);
-    var priceContext = {};
 
     if (!currentBasket) {
         return priceContext;
@@ -142,7 +136,6 @@ getTemplateSpecificWidget.getCheckoutWidgetData = function (currentBasket, class
 
     priceContext.classname = className;
     priceContext.totalPrice = totalPrice.value;
-    var cpBrand = cpBrandUtilities.getBrand();
 
     var clearpayLimits = thresholdUtilities.checkThreshold(totalPrice);
     var isEligible = cpBrandUtilities.isClearpayApplicable() && !cartProductExcluded;
@@ -150,7 +143,7 @@ getTemplateSpecificWidget.getCheckoutWidgetData = function (currentBasket, class
 
     priceContext.cpEligible = isEligible;
     priceContext.cpApplicable = isEligible && isWithinThreshold;
-    priceContext.cpBrand = cpBrand;
+    priceContext.cpMpid = clearpayLimits.mpid;
 
     return priceContext;
 };

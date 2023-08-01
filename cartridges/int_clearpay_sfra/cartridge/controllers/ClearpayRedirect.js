@@ -25,13 +25,11 @@ server.get('PrepareRedirect', server.middleware.https, function (req, res, next)
     var invalidEmailError = Resource.msg('clearpay.email.invalid.response', 'clearpay', null);
 
     var cpBrand = cpBrandUtilities.getBrand();
-    var scriptURL = cpBrandUtilities.getBrandSettings().javaScriptUrl;
     var countryCodeValue = cpBrandUtilities.getCountryCode();
 
     if ((clearPayToken !== 'undefined') && countryCodeValue) {
         res.render('checkout/clearpayRedirect', {
             cpBrand: cpBrand,
-            cpJavascriptURL: scriptURL,
             cpToken: clearPayToken,
             countryCode: countryCodeValue
         });

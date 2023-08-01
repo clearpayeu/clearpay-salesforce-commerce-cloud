@@ -1,4 +1,5 @@
 <iscontent type="text/html" charset="UTF-8" compact="true"/>
+<isinclude template="util/clearpayLibraryInclude" />
 <isif condition="${clearpayExpressCheckoutEnabled && (pdict.pagetype != 'product_detail' || clearpayExpressCheckoutPdpEnabled)}">
     <input id="clearpay-express-countrycode" type="hidden" value="${countrycode}" />
     <input id="clearpay-express-storepickup" type="hidden" value="${clearpayExpressPickupEnabled}" />
@@ -11,8 +12,5 @@
     <input id="clearpay-express-url-cartstatus" type="hidden" value="${URLUtils.url('ClearpayExpress-CartStatus')}" />
     <input id="clearpay-express-url-shippingrequired" type="hidden" value="${URLUtils.url('ClearpayExpress-GetShippingRequired')}" />
     <input id="clearpayurl-continuefinalize" type="hidden" value="${URLUtils.url('ClearpayExpress-ContinueFinalize')}" />
-    <isif condition="${expressCheckoutJS}">
-        <script src="${expressCheckoutJS}"></script>
-    </isif>
     <script src="${URLUtils.staticURL('/js/clearpayExpress.js')}"></script>
 </isif>

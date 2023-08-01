@@ -12,7 +12,6 @@ clearpayAmount - total amount for the Clearpay payment instrument in the cart. I
 </iscomment>
 <isscript>
 var sitePreferences = require("*/cartridge/scripts/util/clearpayUtilities.js").sitePreferencesUtilities;
-var clearpayEnable = sitePreferences.isClearpayEnabled();
 // session state specifically used for Clearpay Express
 var ClearpaySession = require('*/cartridge/scripts/util/clearpaySession');
 // This does a recalculation using the current basket
@@ -25,9 +24,9 @@ if (clearpayAmount.value == 0) {
 }
 var clearpayToken = ClearpaySession.getToken();
 var isExpressCheckoutFinalize = ClearpaySession.isExpressCheckoutFinalizeFlow();
-var clearpayExpressCheckoutEnabled = clearpayEnable && sitePreferences.isExpressCheckoutEnabled();
+var clearpayEnabled = sitePreferences.isClearpayEnabled();
+var clearpayExpressCheckoutEnabled = clearpayEnabled && sitePreferences.isExpressCheckoutEnabled();
 var BrandUtilities = require("*/cartridge/scripts/util/clearpayUtilities.js").brandUtilities;
-var expressCheckoutJS = BrandUtilities.getBrandSettings().javaScriptUrl;
 var countrycode = BrandUtilities.getCountryCode();
 var buttonPlaceOrderClass = 'clearpay-placeorder-button';
 </isscript>
@@ -54,7 +53,4 @@ var buttonPlaceOrderClass = 'clearpay-placeorder-button';
     <input id="clearpay-widget-currency" type="hidden" value="${clearpayAmount.currencyCode}" />
     <input id="clearpay-token" type="hidden" value="" />
 </isif>
-<script src="${URLUtils.staticURL('/js/clearpayWidget.js')}" type="text/javascript"></script>
-<isif condition="${expressCheckoutJS}">
-        <script src="${expressCheckoutJS}"></script>
-</isif>
+<script src="${URLUtils.staticURL('/js/clearpayWidget.js')}"></script>

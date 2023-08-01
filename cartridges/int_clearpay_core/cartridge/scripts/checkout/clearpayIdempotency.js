@@ -43,7 +43,7 @@ function delayPayment(Order, initialStatus, expressCheckoutModel) {
         sleep(Site.getCurrent().getCustomPreferenceValue('cpDelayRetry'));
         Logger.debug('After 5 secs time delay : ' + new Date());
         paymentStatus = require('*/cartridge/scripts/checkout/clearpayHandlePaymentOrder').getPaymentStatus(Order, initialStatus, expressCheckoutModel);
-        if (paymentStatus === PAYMENT_STATUS.APPROVED) {
+        if (paymentStatus == PAYMENT_STATUS.APPROVED) {
             break;
         }
         Logger.debug('Final Payment Status : ' + paymentStatus);

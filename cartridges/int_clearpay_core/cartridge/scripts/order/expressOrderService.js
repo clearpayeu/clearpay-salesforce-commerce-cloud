@@ -22,7 +22,6 @@ var expressOrderService = {
         var result = service.call(requestUrl, requestBody);
         Logger.debug('RequestBody: ' + JSON.stringify(requestBody));
         var response = clearpayUtils.handleServiceResponses(requestUrl, 'CREATE_ORDER', result, { requestMethod: 'GET' });
-        Logger.debug('Response: ' + JSON.stringify(response));
         return response;
     },
 

@@ -354,7 +354,6 @@ server.get('CartStatus', server.middleware.https, function (req, res, next) {
     }
 
     res.json({
-        cartTotalAmount: cartTotals.totalCost.value,
         cpApplicable: ClearpayCOHelpers.isBasketAmountWithinThreshold(),
         instorepickup: ClearpayRefArchCOHelpers.shouldEnableExpressPickupMode(currentBasket)
     });

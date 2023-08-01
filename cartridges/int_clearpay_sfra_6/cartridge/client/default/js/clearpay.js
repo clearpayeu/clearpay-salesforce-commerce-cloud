@@ -52,7 +52,7 @@ function updateStorePickupState() {
             success: function (data) {
                 if (data.instorepickup) {
                     $('#clearpay-express-storepickup').val(data.instorepickup.toString());
-                    initAfterpay({ pickupflag: data.instorepickup });
+                    initClearpay({ pickupflag: data.instorepickup });
                 }
 
                 $('#clearpay-express-button').toggleClass('clearpay-hide', !data.cpApplicable);
@@ -88,13 +88,13 @@ $(document).ready(function () {
         window.location.href = $('#clearpayurl-continuefinalize').val();
     });
 
-    if (typeof initAfterpay === 'function') {
+    if (typeof initClearpay === 'function') {
         if ($('#clearpay-express-pdp-button').length > 0) {
-            initAfterpay({ pickupflag: 'false', commenceDelay: 200, target: '#clearpay-express-pdp-button' });
+            initClearpay({ pickupflag: 'false', commenceDelay: 200, target: '#clearpay-express-pdp-button' });
         }
 
         if ($('#clearpay-express-button').length > 0) {
-            initAfterpay({ pickupflag: $('#clearpay-express-storepickup').val() === 'true' });
+            initClearpay({ pickupflag: $('#clearpay-express-storepickup').val() === 'true' });
         }
     }
 
@@ -107,19 +107,15 @@ $(document).ready(function () {
             if ($('.clearpay-widget').length && cartTotal !== newCartTotal) {
                 getWidget(null, null, 'cart-clearpay-message');
             }
-
-            if ($('.clearpay-widget .pdp-clearpay-message').length) {
-                updatePpdWidget();
-            }
         }
 
-        // make sure we call initAfterpay after the minicart loads so checkout click will work
+        // make sure we call initClearpay after the minicart loads so checkout click will work
         if ($('.minicart #clearpay-express-button').length > 0) {
             var cnt = 0;
             var sid = setInterval(function () {
-                if (typeof initAfterpay === 'function' && typeof AfterPay !== 'undefined') {
+                if (typeof initClearpay === 'function' && typeof AfterPay !== 'undefined') {
                     clearInterval(sid);
-                    initAfterpay({ pickupflag: $('#clearpay-express-storepickup').val() === 'true' });
+                    initClearpay({ pickupflag: $('#clearpay-express-storepickup').val() === 'true' });
                 }
                 if (cnt === 10) {
                     clearInterval(sid);

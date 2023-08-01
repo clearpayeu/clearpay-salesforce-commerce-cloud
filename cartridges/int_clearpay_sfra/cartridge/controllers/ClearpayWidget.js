@@ -11,15 +11,9 @@ var cpBrandUtilities = cpUtilities.brandUtilities;
 var thresholdUtilities = require('*/cartridge/scripts/util/thresholdUtilities');
 
 server.get('IncludeClearpayLibrary', server.middleware.https, server.middleware.include, function (req, res, next) {
-    var scope = {
-        isClearpayEnabled: cpUtilities.sitePreferencesUtilities.isClearpayEnabled()
-    };
-
-    if (scope.isClearpayEnabled) {
-        scope.thresholdAmounts = thresholdUtilities.getThresholdAmounts(cpBrandUtilities.getBrand());
+    if (cpUtilities.sitePreferencesUtilities.isClearpayEnabled()) {
+        res.render('util/clearpayLibraryInclude');
     }
-
-    res.render('util/clearpayLibraryInclude', scope);
     next();
 });
 
@@ -31,7 +25,6 @@ server.get('GetUpdatedWidget', server.middleware.https, function (req, res, next
     var updatedTemplate = 'util/clearpayMessage';
     var priceContext;
     var totalPrice;
-
     var ClearpayCOHelpers = require('*/cartridge/scripts/checkout/clearpayCheckoutHelpers');
     var reqProductID = req.querystring.productID;
     var isWithinThreshold = ClearpayCOHelpers.isPDPBasketAmountWithinThreshold();
@@ -51,20 +44,19 @@ server.get('GetUpdatedWidget', server.middleware.https, function (req, res, next
         totalPrice = currentBasket.totalGrossPrice;
         cpEligible = !ClearpayCOHelpers.checkRestrictedCart();
     }
+    var clearpayLimits = thresholdUtilities.checkThreshold(totalPrice);
 
     priceContext = {
         classname: req.querystring.className,
         totalprice: totalPrice.value ? totalPrice.value : totalPrice,
-        brand: cpBrandUtilities.getBrand(),
-        eligible: cpEligible
+        eligible: cpEligible,
+        mpid: clearpayLimits.mpid
     };
 
     var updatedWidget = renderTemplateHelper.getRenderedHtml(
         priceContext,
         updatedTemplate
     );
-
-    var clearpayLimits = thresholdUtilities.checkThreshold(totalPrice);
 
     res.json({
         cpApplicable: (isWithinThreshold && clearpayLimits.status) && cpEligible,
@@ -74,5 +66,25 @@ server.get('GetUpdatedWidget', server.middleware.https, function (req, res, next
 
     next();
 });
+
+server.get('IncludeClearpayMessage',
+    server.middleware.include,
+    function (req, res, next) {
+        var ProductFactory = require('*/cartridge/scripts/factories/product');
+
+        res.setViewData({
+            product: ProductFactory.get(req.querystring)
+        });
+
+        var priceContext = require('*/cartridge/scripts/util/getTemplateSpecificWidget').getWidgetData(
+            ProductFactory.get(req.querystring),
+            'pdp-clearpay-message',
+            req.session.currency.currencyCode,
+            req.locale.id
+        );
+
+        res.render('util/clearpayMessageInclude', priceContext);
+        next();
+    });
 
 module.exports = server.exports();

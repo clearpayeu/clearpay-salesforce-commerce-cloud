@@ -14,7 +14,6 @@ clearpayExpressPickupEnabled - does the current cart and selected ship method in
 <isscript>
     var BrandUtilities = require("*/cartridge/scripts/util/clearpayUtilities.js").brandUtilities;
     var countrycode = BrandUtilities.getCountryCode();
-    var expressCheckoutJS = BrandUtilities.getBrandSettings().javaScriptUrl;
     var sitePreferences = require("*/cartridge/scripts/util/clearpayUtilities.js").sitePreferencesUtilities;
     var clearpayEnabled = sitePreferences.isClearpayEnabled();
     var clearpayExpressCheckoutEnabled = clearpayEnabled ? sitePreferences.isExpressCheckoutEnabled() : false;

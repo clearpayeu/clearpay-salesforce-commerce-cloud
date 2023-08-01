@@ -33,11 +33,11 @@
                 <div class="clearpay-widget">
                     <isinclude template="util/modulesClearpay"/>
 
-                    <isif condition="${cpDisplayPlpInfo}">
+                    <isif condition="${cpDisplayPlpInfo == true}">
                         <isclearpaymessage
                             classname="${pdict.classname}"
-                            brand="${pdict.cpBrand}"
                             eligible="${pdict.cpEligible}"
+                            mpid="${pdict.cpMpid}"
                         />
                     </isif>
                 </div>

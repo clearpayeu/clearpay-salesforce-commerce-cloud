@@ -14,6 +14,7 @@ server.append(
     function (req, res, next) {
         var BasketMgr = require('dw/order/BasketMgr');
         var currentBasket = BasketMgr.getCurrentBasket();
+
         var priceContext = require('*/cartridge/scripts/util/getTemplateSpecificWidget').getCheckoutWidgetData(
             currentBasket,
             'cart-clearpay-message',

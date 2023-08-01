@@ -5,9 +5,6 @@ var clearpayUtils = require('*/cartridge/scripts/util/clearpayUtils');
 var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');
 var Logger = LogUtils.getLogger('clearpayHttpService');
 var ClearpayUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
-var URLUtils = require('dw/web/URLUtils');
-var Site = require('dw/system/Site');
-var Resource = require('dw/web/Resource');
 
 /**
  * generic method  to process  all service type requests and responses
@@ -37,7 +34,12 @@ function getServiceID() {
  * @returns {Object} - object
  * */
 function getClearpayHttpService() {
+    var URLUtils = require('dw/web/URLUtils');
+    var Site = require('dw/system/Site');
+    var Resource = require('dw/web/Resource');
     var serviceID = getServiceID();
+    var prefix = request.getLocale();
+    var mpid = session.privacy[prefix + 'mpid'] || null;
 
     var clearpayHttpService = LocalServiceRegistry.createService(serviceID, {
         createRequest: function (service, endPointUrl, requestBody) {
@@ -47,7 +49,7 @@ function getClearpayHttpService() {
             service.setRequestMethod(requestBody.requestMethod);
             service.addHeader('Content-Type', 'application/json');
 
-            var clearpayCartridge = 'ClearpayCartridge/23.3.0';
+            var clearpayCartridge = 'ClearpayCartridge/23.4.0';
             var merchantID = service.configuration.credential.user;
             var siteURL = URLUtils.httpsHome().toString();
             var storeFront = Site.getCurrent().getID();
@@ -65,7 +67,8 @@ function getClearpayHttpService() {
                 storeFront + '/' + storefrontVersion,
                 'CompatibilityMode/' + compatibilityMode,
                 'Merchant/' + merchantID,
-                'CashAppEnabled/0'
+                'CashAppEnabled/0',
+                'MPID/' + mpid
             ].join('; ');
 
             var userAgent = [
@@ -86,8 +89,6 @@ function getClearpayHttpService() {
         parseResponse: function (service, httpClient) {
             if (httpClient.statusCode === 200 || httpClient.statusCode === 201 || httpClient.statusCode === 202) {
                 var parseResponse = httpClient.text;
-                var filterResponse = parseResponse;
-                Logger.debug('Parsed Response : ' + clearpayUtils.filterLogData(filterResponse));
                 return parseResponse;
             }
             Logger.error('Error on Clearpay request processing : ' + httpClient.statusCode);

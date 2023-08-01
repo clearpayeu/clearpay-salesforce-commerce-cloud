@@ -1,16 +1,31 @@
 'use strict';
 
 var server = require('server');
-
+var cache = require('*/cartridge/scripts/middleware/cache');
+var cpBrandUtilities = require('*/cartridge/scripts/util/clearpayUtilities').brandUtilities;
+var thresholdUtilities = require('*/cartridge/scripts/util/thresholdUtilities');
 var Page = module.superModule;
 server.extend(Page);
 
 server.append(
     'SetLocale',
     function (req, res, next) {
-        var cpBrandUtilities = require('*/cartridge/scripts/util/clearpayUtilities').brandUtilities;
+        cpBrandUtilities.initBrand(request.locale);
+        var brand = cpBrandUtilities.getBrand();
+        thresholdUtilities.getThresholdAmounts(brand);
 
-        cpBrandUtilities.initBrand(req.querystring.code);
+        return next();
+    }
+);
+
+server.append(
+    'Include',
+    server.middleware.include,
+    cache.applyDefaultCache,
+    function (req, res, next) {
+        cpBrandUtilities.initBrand(request.locale);
+        var brand = cpBrandUtilities.getBrand();
+        thresholdUtilities.getThresholdAmounts(brand);
 
         return next();
     }

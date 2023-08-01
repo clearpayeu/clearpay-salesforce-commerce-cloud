@@ -26,7 +26,6 @@ function renderMessage() {
     var params = request.httpParameterMap;
     var totalprice = parseFloat(params.totalprice.stringValue);
     var classname = params.classname.stringValue;
-    var clearpayBrand = params.clearpayBrand.stringValue;
     var applyCaching;
 
     if (totalprice && !(totalprice.isNaN)) {
@@ -46,12 +45,14 @@ function renderMessage() {
         isEligible = !ClearpayCOHelpers.checkRestrictedCart();
     }
 
+    var clearpayLimits = thresholdUtilities.checkThreshold(totalprice);
+
     if (clearpayApplicable) {
         app.getView({
             applyCaching: applyCaching,
             eligible: isEligible,
             classname: classname,
-            clearpaybrand: clearpayBrand,
+            mpid: clearpayLimits.mpid,
             totalprice: totalprice.value
         }).render('product/components/clearpaymessage');
     }
@@ -61,15 +62,9 @@ function renderMessage() {
  * @description Remove include of Clearpay js library needed to render badges and installments
  */
 function includeClearpayLibrary() {
-    var scope = {
-        isClearpayEnabled: SitePreferences.isClearpayEnabled()
-    };
-
-    if (scope.isClearpayEnabled) {
-        scope.thresholdAmounts = thresholdUtilities.getThresholdAmounts(BrandUtilities.getBrand());
+    if (SitePreferences.isClearpayEnabled()) {
+        app.getView().render('util/clearpayLibraryInclude');
     }
-
-    app.getView(scope).render('util/clearpayLibraryInclude');
 }
 
 /* Web exposed methods */

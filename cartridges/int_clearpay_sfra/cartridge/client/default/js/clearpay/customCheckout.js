@@ -145,9 +145,6 @@ var exports = {
     },
     updateCheckoutView: function () {
         $('body').on('checkout:updateCheckoutView', function () {
-            // Refresh checkout Clearpay Widget
-            // clearpayWidget.getWidget(null, null, 'checkout-clearpay-message');
-            // Refresh Clearpay Express Checkout Widget
             clearpayExpressWidget.updateExpressWidget();
         });
     }

@@ -2,7 +2,7 @@
     <isloop items="${pdict.order.billing.payment.selectedPaymentInstruments}" var="payment">
         <isif condition="${payment.paymentMethod === 'CREDIT_CARD'}">
             <isinclude template="checkout/billing/paymentOptions/creditCardSummary" />
-        <iselse>
+        <iselseif condition="${payment.paymentMethod ==='CLEARPAY'}">
         	<isinclude template="checkout/billing/paymentOptions/clearpaySummary" />
         </isif>
     </isloop>

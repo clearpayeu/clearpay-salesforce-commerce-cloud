@@ -85,8 +85,8 @@
                     var clearpayPDPEnable = sitePreferences.isDisplayPdpInfo();
                 </isscript>
                 <isif condition="${clearpayPDPEnable == true}">
-                    <div class="clearpay-widget bundle">
-                        <isinclude url="${URLUtils.url('Product-IncludeClearpayMessage', 'pid', product.id)}" />
+                    <div class="clearpay-widget">
+                        <isinclude url="${URLUtils.url('ClearpayWidget-IncludeClearpayMessage', 'pid', product.id)}" />
                     </div>
                 </isif>
                 <!-- Cart and [Optionally] Apple Pay -->

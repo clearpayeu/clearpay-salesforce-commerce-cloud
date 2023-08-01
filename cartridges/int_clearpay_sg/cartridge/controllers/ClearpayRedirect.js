@@ -15,6 +15,7 @@ var sitePreferences = require('*/cartridge/scripts/util/clearpayUtilities.js').s
 var ctrlCartridgeName = sitePreferences.getControllerCartridgeName();
 var COPlaceOrder = require('*/cartridge/controllers/COPlaceOrder');
 var COSummary = require('*/cartridge/controllers/COSummary');
+var PAYMENT_STATUS = require('*/cartridge/scripts/util/clearpayConstants').PAYMENT_STATUS;
 
 /* Script Modules */
 var app = require(ctrlCartridgeName + '/cartridge/scripts/app');
@@ -22,7 +23,6 @@ var guard = require(ctrlCartridgeName + '/cartridge/scripts/guard');
 var Cart = app.getModel('Cart');
 var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');
 var Logger = LogUtils.getLogger('ClearpayRedirect');
-var PAYMENT_STATUS = require('*/cartridge/scripts/util/clearpayConstants').PAYMENT_STATUS;
 
 /**
  * Handles the payment status returned by the Clearpay. Based on the status Order will be submitted .

@@ -130,7 +130,7 @@
                             </isscript>
                             <isif condition="${clearpayPDPEnable}">
                                 <div class="clearpay-widget">
-                                    <isinclude url="${URLUtils.url('Product-IncludeClearpayMessage', 'pid', product.id)}" />
+                                    <isinclude url="${URLUtils.url('ClearpayWidget-IncludeClearpayMessage', 'pid', product.id)}" />
                                 </div>
                             </isif>
 

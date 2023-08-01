@@ -122,15 +122,12 @@
                 <input type="hidden" class="updated-widget" value="${URLUtils.https('ClearpayWidget-GetUpdatedWidget')}">
                 <div class="clearpay-widget">
                     <isinclude template="util/modulesClearpay"/>
-
-                    <isif condition="${pdict.cpApplicable == true}">
                         <isclearpaymessage
                             classname="${pdict.classname}"
-                            brand="${pdict.cpBrand}"
                             totalprice="${pdict.totalPrice}"
                             eligible="${pdict.cpEligible}"
+                            mpid="${pdict.cpMpid}"
                         />
-                    </isif>
                 </div>
 
                 <!-- Cart and [Optionally] Apple Pay -->

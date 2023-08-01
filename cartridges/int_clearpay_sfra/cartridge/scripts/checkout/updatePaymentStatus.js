@@ -23,8 +23,8 @@ updatePaymentStatus.handlePaymentStatus = function (order) {
     var OrderMgr = require('dw/order/OrderMgr');
     var Resource = require('dw/web/Resource');
     var ClearpaySession = require('*/cartridge/scripts/util/clearpaySession');
-    var ECPaymentHelpers = require('*/cartridge/scripts/payment/expressCheckoutPaymentHelpers');
     var cpCheckoutUtilities = require('*/cartridge/scripts/util/clearpayUtilities').checkoutUtilities;
+    var ECPaymentHelpers = require('*/cartridge/scripts/payment/expressCheckoutPaymentHelpers');
     var response;
     var finalPaymentStatus;
     var errorMessage;
