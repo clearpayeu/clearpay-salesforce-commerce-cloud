@@ -48,6 +48,6 @@ clearpayExpressPickupEnabled - does the current cart and selected ship method in
     <input id="clearpayurl-continuefinalize" type="hidden" value="${URLUtils.url('ClearpayExpress-ContinueFinalize')}" />
     <script src="${URLUtils.staticURL('/lib/jquery/jquery.min.js')}"></script>
     <script src="${URLUtils.staticURL('/lib/jquery/ui/jquery-ui.min.js')}"></script>
-    <isinclude template="util/clearpayLibraryInclude" />
+    <isinclude url="${URLUtils.url('Clearpay-IncludeClearpayLibrary')}" />
     <script src="${URLUtils.staticURL('/js/clearpayExpress.js')}"></script>
 </isif>

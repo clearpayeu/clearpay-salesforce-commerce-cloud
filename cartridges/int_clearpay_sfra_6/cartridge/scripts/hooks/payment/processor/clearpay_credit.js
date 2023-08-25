@@ -13,8 +13,8 @@ var collections = require('*/cartridge/scripts/util/collections');
 */
 function Handle(basket) {
     var currentBasket = basket;
-    var checkoutUtilities = require('*/cartridge/scripts/util/clearpayUtilities').checkoutUtilities;
-    var paymentMethodName = checkoutUtilities.getPaymentMethodName();
+    var cpCheckoutUtilities = require('*/cartridge/scripts/util/clearpayUtilities').checkoutUtilities;
+    var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
 
     if (!paymentMethodName) {
         return {

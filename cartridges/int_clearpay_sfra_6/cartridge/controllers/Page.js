@@ -11,9 +11,7 @@ server.append(
     'SetLocale',
     function (req, res, next) {
         cpBrandUtilities.initBrand(request.locale);
-        var brand = cpBrandUtilities.getBrand();
-        thresholdUtilities.getThresholdAmounts(brand);
-
+        thresholdUtilities.getThresholdAmounts();
         return next();
     }
 );
@@ -24,9 +22,7 @@ server.append(
     cache.applyDefaultCache,
     function (req, res, next) {
         cpBrandUtilities.initBrand(request.locale);
-        var brand = cpBrandUtilities.getBrand();
-        thresholdUtilities.getThresholdAmounts(brand);
-
+        thresholdUtilities.getThresholdAmounts();
         return next();
     }
 );

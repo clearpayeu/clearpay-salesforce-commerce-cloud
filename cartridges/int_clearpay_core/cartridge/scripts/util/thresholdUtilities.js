@@ -4,7 +4,6 @@ var configurationService = require('*/cartridge/scripts/logic/services/clearpayC
 var LogUtils = require('*/cartridge/scripts/util/clearpayLogUtils');
 var Logger = LogUtils.getLogger('thresholdUtilities');
 var brandUtilities = require('*/cartridge/scripts/util/clearpayUtilities').brandUtilities;
-var clearpayBrand = brandUtilities.getBrand();
 var result = {
     status: false
 };
@@ -54,7 +53,7 @@ var thresholdUtilities = {
 
         return configuration;
     },
-    getThresholdAmounts: function (brand) {
+    getThresholdAmounts: function () {
         var thresholdResult = {};
 
         var prefix = request.getLocale();
@@ -77,12 +76,12 @@ var thresholdUtilities = {
             }
 
             thresholdResult = this.parseConfigurationResponse(thresholdResponse);
-            this.saveThresholds(brand, thresholdResult);
+            this.saveThresholds(thresholdResult);
         }
 
         return thresholdResult;
     },
-    saveThresholds: function (brand, thresholds) {
+    saveThresholds: function (thresholds) {
         var prefix = request.getLocale();
         if (thresholds.minAmount) {
             session.privacy[prefix + 'MinAmount'] = thresholds.minAmount;
@@ -97,13 +96,13 @@ var thresholdUtilities = {
         session.privacy[prefix + 'mpid'] = thresholds.mpid || '';
     },
     checkThreshold: function (price) {
-        if (clearpayBrand && (price && price.value)) {
+        if (price && price.value) {
             result = this.getThresholdResult(price.value);
         }
         return result;
     },
     checkPriceThreshold: function (price) {
-        if (clearpayBrand && price) {
+        if (price) {
             result = this.getThresholdResult(price);
         }
         return result;
@@ -112,7 +111,7 @@ var thresholdUtilities = {
         result.status = false;
 
         if (price) {
-            var threshold = this.getThresholdAmounts(clearpayBrand);
+            var threshold = this.getThresholdAmounts();
             var isApplicable = brandUtilities.isClearpayApplicable();
             if (isApplicable) {
                 result.minThresholdAmount = threshold.minAmount;

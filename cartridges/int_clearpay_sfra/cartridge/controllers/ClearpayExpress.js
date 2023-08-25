@@ -18,7 +18,6 @@ var Order = require('dw/order/Order');
 var Money = require('dw/value/Money');
 var Transaction = require('dw/system/Transaction');
 var cpUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
-var cpBrandUtilities = cpUtilities.brandUtilities;
 var thresholdUtilities = require('*/cartridge/scripts/util/thresholdUtilities');
 var sitePreferences = cpUtilities.sitePreferencesUtilities;
 var clearpayEnabled = sitePreferences.isClearpayEnabled();
@@ -223,8 +222,7 @@ server.get('ContinueFinalize', server.middleware.https, function (req, res, next
     ClearpayRefArchCOHelpers.calculateAndSetPaymentAmount(currentBasket);
     var payAmt = ClearpayCOHelpers.getCurrentClearpayPaymentAmount(currentBasket);
     if (!ClearpayCOHelpers.isPriceWithinThreshold(payAmt)) {
-        var brand = cpBrandUtilities.getBrand();
-        var threshold = thresholdUtilities.getThresholdAmounts(brand);
+        var threshold = thresholdUtilities.getThresholdAmounts();
         redirectToErrorDisplay(res, Resource.msgf('minimum.threshold.message', 'clearpay', null, new Money(threshold.minAmount, currentBasket.currencyCode), new Money(sitePreferences.maxAmount, currentBasket.currencyCode)));
         return next();
     }
@@ -330,7 +328,7 @@ server.get('CancelOrder', server.middleware.https, function (req, res, next) {
     if (req.querystring.clearpayerror) {
         res.redirect(URLUtils.url('Cart-Show', 'clearpayerror', req.querystring.clearpayerror));
     } else {
-        res.redirect(URLUtils.url('Cart-Show'));
+        res.redirect(URLUtils.url('Cart-Show', 'clearpayerror', Resource.msg('apierror.flow.default', 'clearpay', null)));
     }
     return next();
 });

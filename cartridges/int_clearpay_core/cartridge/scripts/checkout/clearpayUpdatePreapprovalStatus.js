@@ -25,8 +25,8 @@ function parsePreapprovalResult(parameter) {
  * @param {Object} lineItemCtnr - line Item Container
  */
 function updatePreapprovalStatus(preapprovalModel, lineItemCtnr) {
-    var checkoutUtilities = require('*/cartridge/scripts/util/clearpayUtilities').checkoutUtilities;
-    var paymentMethodName = checkoutUtilities.getPaymentMethodName();
+    var cpCheckoutUtilities = require('*/cartridge/scripts/util/clearpayUtilities').checkoutUtilities;
+    var paymentMethodName = cpCheckoutUtilities.getPaymentMethodName();
     var paymentInstrument = lineItemCtnr.getPaymentInstruments(paymentMethodName)[0];
     var paymentTransaction = paymentInstrument ? paymentInstrument.getPaymentTransaction() : null;
     if (paymentTransaction) {

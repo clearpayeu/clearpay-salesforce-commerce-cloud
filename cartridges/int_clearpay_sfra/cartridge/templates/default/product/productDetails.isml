@@ -123,12 +123,12 @@
                             </div>
 
                             <iscomment>Clearpay</iscomment>
-                            <input type="hidden" class="updated-widget" value="${URLUtils.https('ClearpayWidget-GetUpdatedWidget')}">
                             <isscript>
                                 var sitePreferences = require("*/cartridge/scripts/util/clearpayUtilities.js").sitePreferencesUtilities;
-                                var clearpayPDPEnable = sitePreferences.isDisplayPdpInfo();
+                                var clearpayPDPEnable = sitePreferences.isDisplayPdpInfo() && sitePreferences.isClearpayEnabled();
                             </isscript>
                             <isif condition="${clearpayPDPEnable}">
+                                <input type="hidden" class="updated-widget" value="${URLUtils.https('ClearpayWidget-GetUpdatedWidget')}"/>
                                 <div class="clearpay-widget">
                                     <isinclude url="${URLUtils.url('ClearpayWidget-IncludeClearpayMessage', 'pid', product.id)}" />
                                 </div>

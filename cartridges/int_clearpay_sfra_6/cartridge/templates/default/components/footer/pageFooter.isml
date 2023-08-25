@@ -11,7 +11,7 @@
                 <isset name="cpBrand" value="${pdict.CurrentSession.privacy.clearpayBrand}" scope="page"/>
                 <isif condition="${pdict.CurrentSession.privacy.clearpayApplicable && cpBrand}">
                     <div>
-                        <h2 class="title d-none d-sm-block">${Resource.msg('footer.paymetns', 'clearpay', null)}</h2>
+                        <h2 class="title d-none d-sm-block">${Resource.msg('footer.payments', 'clearpay', null)}</h2>
                     </div>
                     <img class="clearpay-image"
                         src="${URLUtils.httpStatic('/images/logo-' + cpBrand + '-black.png')}"

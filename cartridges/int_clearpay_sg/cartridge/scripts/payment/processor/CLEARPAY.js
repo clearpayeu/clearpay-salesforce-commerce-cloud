@@ -63,8 +63,7 @@ function Handle(args) {
     var countryCode = brandUtilities.getCountryCode();
 
     app.getView({
-        cpBrand: brandUtilities.getBrand(),
-        cpToken: clearPayToken,
+        cpToken: clearPayToken.cpToken,
         countryCode: countryCode
     }).render('checkout/clearpayredirect');
 

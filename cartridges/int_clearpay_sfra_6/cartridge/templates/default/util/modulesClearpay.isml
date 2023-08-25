@@ -6,7 +6,7 @@
 
 <ismodule template="util/clearpayMessage"
     name="clearpaymessage"
-    attribute="classname"
+    attribute="classname" 
     attribute="totalprice"
     attribute="eligible"
     attribute="mpid"

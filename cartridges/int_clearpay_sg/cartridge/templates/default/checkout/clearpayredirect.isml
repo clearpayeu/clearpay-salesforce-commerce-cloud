@@ -1,6 +1,6 @@
 <iscontent type="text/html" charset="UTF-8" compact="true"/>
 <isdecorate template="checkout/pt_checkout"/>
-    <isinclude template="util/clearpayLibraryInclude" />
+    <isinclude url="${URLUtils.url('Clearpay-IncludeClearpayLibrary')}" />
     <script src="${URLUtils.staticURL('/lib/jquery/jquery.min.js')}"></script>
     <script>
         var brand = '${pdict.cpBrand}';
@@ -8,13 +8,8 @@
 
         window.onload = function () {
             $(".loader-image").fadeOut("slow");
-            if (brand === 'clearpay' && countryCode !== 'GB') {
-                Clearpay.initialize({countryCode: countryCode});
-                Clearpay.redirect({token: '${pdict.cpToken.cpToken}'});
-            } else {
-                AfterPay.initialize({countryCode: countryCode});
-                AfterPay.redirect({token: '${pdict.cpToken.cpToken}'});
-            }
+            AfterPay.initialize({countryCode: countryCode});
+            AfterPay.redirect({token: '${pdict.cpToken}'});
         }
     </script>
     <div class="loader-image"></div>

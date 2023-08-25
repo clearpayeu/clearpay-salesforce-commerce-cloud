@@ -15,7 +15,7 @@
         </isif>
         <isscript>
             var sitePreferences = require("*/cartridge/scripts/util/clearpayUtilities.js").sitePreferencesUtilities;
-            var clearpayPLPEnable = sitePreferences.isDisplayPlpInfo();
+            var clearpayPLPEnable = sitePreferences.isDisplayPlpInfo() && sitePreferences.isClearpayEnabled();
         </isscript>
         <isif condition="${clearpayPLPEnable}">
             <isinclude template="util/modulesClearpay"/>

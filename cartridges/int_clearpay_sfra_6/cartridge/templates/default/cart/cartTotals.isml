@@ -48,20 +48,25 @@
 </div>
 
 <!--- Clearpay Widget --->
-<div class="row">
-    <div class="col-12">
-        <isinclude template="util/modulesClearpay"/>
-        <input type="hidden" class="updated-widget" value="${URLUtils.https('ClearpayWidget-GetUpdatedWidget')}" />
-        <div class="clearpay-widget">
-            <isclearpaymessage
-                classname="${pdict.classname}"
-                totalprice="${pdict.totalPrice}"
-                eligible="${pdict.cpEligible}"
-                mpid="${pdict.cpMpid}"
-            />
-        </div>
-    </div>    
-</div>
-
+<isscript>
+    var sitePreferences = require("*/cartridge/scripts/util/clearpayUtilities.js").sitePreferencesUtilities;
+    var clearpayCartEnable = sitePreferences.isDisplayCartInfo() && sitePreferences.isClearpayEnabled();
+</isscript>
+<isif condition="${clearpayCartEnable == true}">
+    <div class="row">
+        <div class="col-12">
+            <isinclude template="util/modulesClearpay"/>
+            <input type="hidden" class="updated-widget" value="${URLUtils.https('ClearpayWidget-GetUpdatedWidget')}" />
+            <div class="clearpay-widget">
+                <isclearpaymessage
+                    classname="${pdict.classname}"
+                    totalprice="${pdict.totalPrice}"
+                    eligible="${pdict.cpEligible}"
+                    mpid="${pdict.cpMpid}"
+                />
+            </div>
+        </div>    
+    </div>
+</isif>
 
 

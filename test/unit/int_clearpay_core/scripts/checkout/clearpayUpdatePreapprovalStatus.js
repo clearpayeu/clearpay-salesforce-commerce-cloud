@@ -57,7 +57,7 @@ var lineItemCtnrStub = {
                 transactionID: '11148651345',
                 amount: {value: 100},
                 custom: {
-                    apInitialStatus: "approved"
+                    cpInitialStatus: "approved"
                 }
             }
         }

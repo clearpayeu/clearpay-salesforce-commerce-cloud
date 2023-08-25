@@ -1,19 +1,13 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <link rel="stylesheet" href="${URLUtils.staticURL('/css/global.css')}" />
-<isinclude template="util/clearpayLibraryInclude" />
+<isinclude url="${URLUtils.url('ClearpayWidget-IncludeClearpayLibrary')}" />
 <script>
-    var brand = '${pdict.cpBrand}';
     var countryCode = '${pdict.countryCode}';
 
     window.onload = function () {
         $(".loader-image").fadeOut("slow");
-        if (brand === 'clearpay' && countryCode !== 'GB') {
-            Clearpay.initialize({countryCode: countryCode});
-            Clearpay.redirect({token: '${pdict.cpToken}'});
-        } else {
-            AfterPay.initialize({countryCode: countryCode});
-            AfterPay.redirect({token: '${pdict.cpToken}'});
-        }
+        AfterPay.initialize({countryCode: countryCode});
+        AfterPay.redirect({token: '${pdict.cpToken}'});
     }
 
 </script>

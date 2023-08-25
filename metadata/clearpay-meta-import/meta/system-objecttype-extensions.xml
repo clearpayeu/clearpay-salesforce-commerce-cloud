@@ -182,7 +182,15 @@
             </attribute-definition>
             <attribute-definition attribute-id="cpDisplayPdpInfo">
                 <display-name xml:lang="x-default">Clearpay Display Product Details Page Information</display-name>
-                <description xml:lang="x-default">Determines if the Clearpay product information is display on the product details page</description>
+                <description xml:lang="x-default">Determines if the Clearpay information is display on the product details page</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="cpDisplayCartInfo">
+                <display-name xml:lang="x-default">Clearpay Display Cart Page Information</display-name>
+                <description xml:lang="x-default">Determines if the Clearpay information is display on the cart page</description>
                 <type>boolean</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -190,7 +198,7 @@
             </attribute-definition>
             <attribute-definition attribute-id="cpDisplayPlpInfo">
                 <display-name xml:lang="x-default">Clearpay Display Product List Page Information</display-name>
-                <description xml:lang="x-default">Determines if the Clearpay product information is display on the product tile</description>
+                <description xml:lang="x-default">Determines if the Clearpay information is display on the product tile</description>
                 <type>boolean</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -270,14 +278,23 @@
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
             </attribute-definition>
+            <attribute-definition attribute-id="cpJavaScript">
+                <display-name xml:lang="x-default">Clearpay JavaScript URL</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
         </custom-attribute-definitions>
         <group-definitions>
             <attribute-group group-id="Integration_Clearpay">
                 <display-name xml:lang="x-default">Integration Clearpay</display-name>
                 <attribute attribute-id="enableClearpay"/>
                 <attribute attribute-id="cpBrandSettings"/>
+                <attribute attribute-id="cpJavaScript"/>
                 <attribute attribute-id="cpDisplayPdpInfo"/>
                 <attribute attribute-id="cpDisplayPlpInfo"/>
+                <attribute attribute-id="cpDisplayCartInfo"/>
                 <attribute attribute-id="cpPaymentMode"/>
                 <attribute attribute-id="cpControllerCartridgeName"/>
                 <attribute attribute-id="cpCoreCartridge"/>

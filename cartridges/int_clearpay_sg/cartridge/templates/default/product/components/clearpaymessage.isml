@@ -16,7 +16,9 @@
             <div id="clearpay-widget-container"></div>
         </div>
         <script>
-            createClearpayWidget();
+        document.addEventListener("DOMContentLoaded", function() {
+            createAfterpayWidget();
+        });
         </script>         
     <iselse/>
         <isif condition="${pdict.classname == 'cart-clearpay-message'}">

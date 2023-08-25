@@ -13,7 +13,6 @@ function updateExpressWidget() {
     grandTotalSum = Number(grandTotalSum.replace(/[^0-9\.-]+/g, '')).toString();
     $('#clearpay-widget-amount').val(grandTotalSum);
     $('#clearpay-widget-currency').val(currency);
-
     if ('clearpayWidget' in window) {
         clearpayWidget.update({
             amount: { amount: grandTotalSum, currency: currency }

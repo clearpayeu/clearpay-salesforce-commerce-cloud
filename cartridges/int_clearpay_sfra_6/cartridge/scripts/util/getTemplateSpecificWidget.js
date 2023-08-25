@@ -142,8 +142,8 @@ getTemplateSpecificWidget.getCheckoutWidgetData = function (currentBasket, class
     var isWithinThreshold = clearpayLimits.status;
 
     priceContext.cpEligible = isEligible;
-    priceContext.cpApplicable = isEligible && isWithinThreshold;
     priceContext.cpMpid = clearpayLimits.mpid;
+    priceContext.cpApplicable = isEligible && isWithinThreshold;
 
     return priceContext;
 };

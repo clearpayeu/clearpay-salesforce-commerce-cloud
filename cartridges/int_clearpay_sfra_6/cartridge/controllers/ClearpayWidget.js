@@ -7,12 +7,17 @@ var BasketMgr = require('dw/order/BasketMgr');
 /* Script Modules */
 var server = require('server');
 var cpUtilities = require('*/cartridge/scripts/util/clearpayUtilities');
-var cpBrandUtilities = cpUtilities.brandUtilities;
 var thresholdUtilities = require('*/cartridge/scripts/util/thresholdUtilities');
 
 server.get('IncludeClearpayLibrary', server.middleware.https, server.middleware.include, function (req, res, next) {
-    if (cpUtilities.sitePreferencesUtilities.isClearpayEnabled()) {
-        res.render('util/clearpayLibraryInclude');
+    var cpSitePreferencesUtilities = cpUtilities.sitePreferencesUtilities;
+    if (cpSitePreferencesUtilities.isClearpayEnabled()) {
+        var scope = {
+            cpJavascriptURL: cpSitePreferencesUtilities.getJavascriptURL() || null
+        };
+        if (scope.cpJavascriptURL) {
+            res.render('util/clearpayLibraryInclude', scope);
+        }
     }
     next();
 });
@@ -28,6 +33,7 @@ server.get('GetUpdatedWidget', server.middleware.https, function (req, res, next
     var ClearpayCOHelpers = require('*/cartridge/scripts/checkout/clearpayCheckoutHelpers');
     var reqProductID = req.querystring.productID;
     var isWithinThreshold = ClearpayCOHelpers.isPDPBasketAmountWithinThreshold();
+    var cpBrandUtilities = cpUtilities.brandUtilities;
 
     var currencyCode = req.session.currency.currencyCode;
     var cpEligible = cpBrandUtilities.isClearpayApplicable();

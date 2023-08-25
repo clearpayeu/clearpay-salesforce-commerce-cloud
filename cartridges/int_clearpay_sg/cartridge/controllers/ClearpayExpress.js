@@ -24,7 +24,7 @@ var responseUtils = require('*/cartridge/scripts/util/Response');
 var cpBrandUtilities = ClearpayUtilities.brandUtilities;
 var thresholdUtilities = require('*/cartridge/scripts/util/thresholdUtilities');
 var brand = cpBrandUtilities.getBrand();
-var threshold = thresholdUtilities.getThresholdAmounts(brand);
+var threshold = thresholdUtilities.getThresholdAmounts();
 var ClearpayCOHelpers = require('*/cartridge/scripts/checkout/clearpayCheckoutHelpers');
 var ClearpaySGCOHelpers = require('*/cartridge/scripts/checkout/clearpaySGCheckoutHelpers');
 

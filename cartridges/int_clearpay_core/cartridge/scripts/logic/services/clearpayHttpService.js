@@ -49,7 +49,7 @@ function getClearpayHttpService() {
             service.setRequestMethod(requestBody.requestMethod);
             service.addHeader('Content-Type', 'application/json');
 
-            var clearpayCartridge = 'ClearpayCartridge/23.4.0';
+            var clearpayCartridge = 'ClearpayCartridge/23.4.1';
             var merchantID = service.configuration.credential.user;
             var siteURL = URLUtils.httpsHome().toString();
             var storeFront = Site.getCurrent().getID();
@@ -67,8 +67,8 @@ function getClearpayHttpService() {
                 storeFront + '/' + storefrontVersion,
                 'CompatibilityMode/' + compatibilityMode,
                 'Merchant/' + merchantID,
-                'CashAppEnabled/0',
-                'MPID/' + mpid
+                'MPID/' + mpid,
+                'CashAppEnabled/0'
             ].join('; ');
 
             var userAgent = [

@@ -14,12 +14,23 @@ var sitePreferencesUtilities = {
         return URLUtils.https('ClearpayRedirect-HandleResponse').toString();
     },
 
+    isCountrySupported: function () {
+        var suppportedLocales = ['GB'];
+        // eslint-disable-next-line no-use-before-define
+        var currentLocale = brandUtilities.getCountryCode();
+        return suppportedLocales.indexOf(currentLocale) >= 0;
+    },
+
     getPaymentMode: function () {
         return Site.current.preferences.custom.cpPaymentMode;
     },
 
     isDisplayPdpInfo: function () {
         return Site.getCurrent().getCustomPreferenceValue('cpDisplayPdpInfo');
+    },
+
+    isDisplayCartInfo: function () {
+        return Site.getCurrent().getCustomPreferenceValue('cpDisplayCartInfo');
     },
 
     isDisplayPlpInfo: function () {
@@ -35,7 +46,7 @@ var sitePreferencesUtilities = {
     },
 
     isClearpayEnabled: function () {
-        return Site.getCurrent().getCustomPreferenceValue('enableClearpay') || false;
+        return (Site.getCurrent().getCustomPreferenceValue('enableClearpay') && this.isCountrySupported()) || false;
     },
 
     getBrandSettings: function () {
@@ -43,11 +54,7 @@ var sitePreferencesUtilities = {
     },
 
     isExpressCheckoutEnabled: function () {
-        var expressSuppportedLocales = ['AU', 'US', 'GB', 'NZ', 'CA'];
-        // eslint-disable-next-line no-use-before-define
-        var currentLocale = brandUtilities.getCountryCode();
-        var isLocaleSupported = expressSuppportedLocales.indexOf(currentLocale) >= 0;
-        return Site.getCurrent().getCustomPreferenceValue('cpEnableExpressCheckout') && isLocaleSupported;
+        return Site.getCurrent().getCustomPreferenceValue('cpEnableExpressCheckout') && this.isCountrySupported();
     },
 
     getExpressCheckoutShippingStrategy: function () {
@@ -80,6 +87,9 @@ var sitePreferencesUtilities = {
             });
         }
         return clearpayRestrictedProducts;
+    },
+    getJavascriptURL: function () {
+        return Site.getCurrent().getCustomPreferenceValue('cpJavaScript');
     }
 };
 

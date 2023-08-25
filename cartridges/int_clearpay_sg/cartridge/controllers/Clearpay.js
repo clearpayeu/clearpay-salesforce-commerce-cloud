@@ -63,7 +63,12 @@ function renderMessage() {
  */
 function includeClearpayLibrary() {
     if (SitePreferences.isClearpayEnabled()) {
-        app.getView().render('util/clearpayLibraryInclude');
+        var cpJavascriptURL = SitePreferences.getJavascriptURL();
+        if (!empty(cpJavascriptURL)) {
+            app.getView({
+                cpJavascriptURL: cpJavascriptURL
+            }).render('util/clearpayLibraryInclude');
+        }
     }
 }
 

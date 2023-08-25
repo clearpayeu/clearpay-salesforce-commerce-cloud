@@ -22,8 +22,8 @@ Order = {
                         transactionID: '11148651345',
                         amount: {value: 100},
                         custom: {
-                            apInitialStatus: "approved",
-                            apToken: "012abcdef232"
+                            cpInitialStatus: "approved",
+                            cpToken: "012abcdef232"
                         }
                     }
                 }
@@ -64,7 +64,7 @@ var clearpayUtilities = {
     }
 };
 
-var apSession = {
+var cpSession = {
     isValid: function () {
         return true;
     },
@@ -79,11 +79,11 @@ var apSession = {
 var ecPaymentHelpers = {
     createExpressCheckoutModelFromOrderAndSession: function () {
         var expressCheckoutModelObject = {
-            apExpressCheckout: false,
-            apExpressCheckoutChecksum: '',
-            apTempShippingAddressChanged: false,
-            apTempBasketItemsChanged: false,
-            apTempCheckoutAmountChanged: null
+            cpExpressCheckout: false,
+            cpExpressCheckoutChecksum: '',
+            cpTempShippingAddressChanged: false,
+            cpTempBasketItemsChanged: false,
+            cpTempCheckoutAmountChanged: null
         };
         return expressCheckoutModelObject;
     }
@@ -104,7 +104,7 @@ describe('updatePaymentStatus', function () {
             'dw/order/Order': Order,
             'dw/order/OrderMgr': OrderMgr,
             'dw/system/Status': statusMock,
-            '*/cartridge/scripts/util/clearpaySession': apSession,
+            '*/cartridge/scripts/util/clearpaySession': cpSession,
             'dw/web/Resource': {
                 msg: function () {
                     return 'someString';
@@ -160,8 +160,8 @@ describe('updatePaymentStatus', function () {
                                 transactionID: '11148651345',
                                 amount: {value: 100},
                                 custom: {
-                                    apInitialStatus: "approved",
-                                    apToken: "012abcdef232"
+                                    cpInitialStatus: "approved",
+                                    cpToken: "012abcdef232"
                                 }
                             }
                         }

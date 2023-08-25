@@ -145,8 +145,8 @@ describe('#clearpayupdateOrderService()', function () {
                             transactionID: '11148651345',
                             amount: {value: 100},
                             custom: {
-                                apInitialStatus: "approved",
-                                aptoken: "012abcdef232"
+                                cpInitialStatus: "approved",
+                                cptoken: "012abcdef232"
                             }
                         }]
                     }
