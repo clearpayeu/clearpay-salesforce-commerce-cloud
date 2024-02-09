@@ -17,9 +17,9 @@ server.get('IncludeClearpayLibrary', server.middleware.https, server.middleware.
         };
         if (scope.cpJavascriptURL) {
             res.render('util/clearpayLibraryInclude', scope);
+            next();
         }
     }
-    next();
 });
 
 /**
@@ -31,7 +31,7 @@ server.get('GetUpdatedWidget', server.middleware.https, function (req, res, next
     var priceContext;
     var totalPrice;
     var ClearpayCOHelpers = require('*/cartridge/scripts/checkout/clearpayCheckoutHelpers');
-    var reqProductID = req.querystring.productID;
+    var reqProductID = '';
     var isWithinThreshold = ClearpayCOHelpers.isPDPBasketAmountWithinThreshold();
     var cpBrandUtilities = cpUtilities.brandUtilities;
 
@@ -47,8 +47,10 @@ server.get('GetUpdatedWidget', server.middleware.https, function (req, res, next
         cpEligible = !ClearpayCOHelpers.checkRestrictedProducts(reqProductID);
     } else if (req.querystring.className === 'cart-clearpay-message') {
         var currentBasket = BasketMgr.getCurrentBasket();
+        var cartData = ClearpayCOHelpers.getCartData();
         totalPrice = currentBasket.totalGrossPrice;
-        cpEligible = !ClearpayCOHelpers.checkRestrictedCart();
+        cpEligible = cartData.cpCartEligible;
+        reqProductID = cartData.cproductIDs;
     }
     var clearpayLimits = thresholdUtilities.checkThreshold(totalPrice);
 
@@ -66,6 +68,33 @@ server.get('GetUpdatedWidget', server.middleware.https, function (req, res, next
 
     res.json({
         cpApplicable: (isWithinThreshold && clearpayLimits.status) && cpEligible,
+        error: false,
+        updatedWidget: updatedWidget
+    });
+
+    next();
+});
+
+server.get('updateCheckoutWidget', server.middleware.https, function (req, res, next) {
+    var renderTemplateHelper = require('*/cartridge/scripts/renderTemplateHelper');
+    var updatedTemplate = 'util/clearpayMessage';
+    var priceContext;
+    var currentBasket = BasketMgr.getCurrentBasket();
+    var totalPrice = currentBasket.totalGrossPrice;
+    var clearpayLimits = thresholdUtilities.checkThreshold(totalPrice);
+
+    priceContext = {
+        totalprice: totalPrice.value ? totalPrice.value : totalPrice,
+        mpid: clearpayLimits.mpid,
+        classname: 'checkout-clearpay-message'
+    };
+
+    var updatedWidget = renderTemplateHelper.getRenderedHtml(
+        priceContext,
+        updatedTemplate
+    );
+
+    res.json({
         error: false,
         updatedWidget: updatedWidget
     });

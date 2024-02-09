@@ -131,14 +131,13 @@ describe('thresholdUtilities', function () {
         '*/cartridge/scripts/util/clearpayLogUtils': customLogger
     });
 
-    it('detect that provided price is below an actual threshold', function () {
+    it('detect that provided price is within an actual threshold', function () {
         var clearPayIsRangeAvailable = session.privacy.set('clearPayIsRangeAvailable', true);
         var clearPayMinAmount = session.privacy.set('clearPayMinAmount', 100);
         var clearPayMaxAmount = session.privacy.set('clearPayMaxAmount', 1000);
         var result = thresholdUtilities.checkThreshold({
             value: 1
         });
-        console.log(result);
-        assert.equal(result && result.minThresholdAmount, 5);
+        assert.equal(result.status, false);
     });
 });

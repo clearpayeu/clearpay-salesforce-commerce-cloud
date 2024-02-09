@@ -10,6 +10,7 @@
     attribute="classname"
     attribute="totalprice"
     attribute="mpid"
+    attribute="cpproductids"
 />
 
 <ismodule template="product/components/clearpaywidget"

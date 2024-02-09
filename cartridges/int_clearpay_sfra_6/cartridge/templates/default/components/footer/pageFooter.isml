@@ -14,7 +14,7 @@
                         <h2 class="title d-none d-sm-block">${Resource.msg('footer.payments', 'clearpay', null)}</h2>
                     </div>
                     <img class="clearpay-image"
-                        src="${URLUtils.httpStatic('/images/logo-' + cpBrand + '-black.png')}"
+                        height="32"
                         alt="${cpBrand}"
                     />
                 </isif>

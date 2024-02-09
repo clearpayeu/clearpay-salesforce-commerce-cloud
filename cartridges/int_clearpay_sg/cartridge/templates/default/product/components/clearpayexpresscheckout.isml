@@ -32,7 +32,7 @@ clearpayExpressPickupEnabled - does the current cart and selected ship method in
     </isscript>
 <iselse/>
     <isscript>
-        disableClearpayPaymentMethod =  disableClearpayPaymentMethod || ClearpayCOHelpers.checkRestrictedCart();
+        disableClearpayPaymentMethod =  disableClearpayPaymentMethod|| !ClearpayCOHelpers.getCartData().cpCartEligible;
     </isscript>
 </isif>
 <isif condition="${clearpayExpressCheckoutEnabled && !disableClearpayPaymentMethod && (pdict.pagetype != 'product_detail' || clearpayExpressCheckoutPdpEnabled)}">

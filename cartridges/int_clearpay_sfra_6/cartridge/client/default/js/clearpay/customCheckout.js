@@ -53,10 +53,20 @@ function handleStateChange() {
         } else {
             $('.ap-checkout-pay-notab-noecf').removeClass('clearpay-hide');
         }
+        $(document).ajaxComplete(function () {
+            if (ecFinalize) {
+                if (typeof createClearpayWidget === 'function' && typeof AfterPay != 'undefined' && !('clearpayWidget' in window)) {
+                    createClearpayWidget();
+                }
+            }
+        });
     } else if (stage === 'placeOrder') {
         var isClearpayPayment = $('#clearpay-payment-shown').length;
 
         hideAllStates();
+        if (typeof createClearpayWidget === 'function' && typeof AfterPay != 'undefined' && !('clearpayWidget' in window)) {
+            createClearpayWidget();
+        }
         if (isClearpayPayment) {
             $('.ap-checkout-po-ecf').removeClass('clearpay-hide');
         } else {
@@ -120,10 +130,6 @@ var exports = {
                     handleStateChange();
                 });
                 tabelemObserver.observe(tabelem, { attributes: true });
-            }
-
-            if (typeof createClearpayWidget === 'function') {
-                createClearpayWidget();
             }
 
             // Handle place-order button click

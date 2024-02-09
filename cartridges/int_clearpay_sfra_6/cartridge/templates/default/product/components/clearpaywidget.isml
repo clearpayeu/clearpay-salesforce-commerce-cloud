@@ -43,14 +43,12 @@ var buttonPlaceOrderClass = 'clearpay-placeorder-button';
     <input id="clearpay-express-url-shippingrequired" type="hidden" value="${URLUtils.url('ClearpayExpress-GetShippingRequired')}" />
     <input id="clearpay-express-url-widgeterror" type="hidden" value="${URLUtils.url('ClearpayExpress-WidgetError')}" />
 <iselse/>
-    <iscomment>For non-express-checkout Clearpay tab, show new widget. Note that in this case,
-    CLEARPAY has not been added to the basket yet, so amount should be 0. However, the amounts
-    will be updated via client-side Javascript for this case
-    </iscomment>
+    <iscomment>For non-express-checkout Clearpay tab, show new widget. </iscomment>
     <input id="clearpay-express-checkout-finalize" type="hidden" value="false" />
     <input id="clearpay-widget-amount" type="hidden" value="${clearpayAmount.value}" />
     <input id="clearpay-widget-locale" type="hidden" value="${request.getLocale()}" />
     <input id="clearpay-widget-currency" type="hidden" value="${clearpayAmount.currencyCode}" />
     <input id="clearpay-token" type="hidden" value="" />
 </isif>
+<isset name="ecFinalize" value="${isExpressCheckoutFinalize}" scope="page" />
 <script src="${URLUtils.staticURL('/js/clearpayWidget.js')}"></script>

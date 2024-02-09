@@ -18,7 +18,7 @@ clearpayExpressPickupEnabled - does the current cart and selected ship method in
     var clearpayEnabled = sitePreferences.isClearpayEnabled();
     var clearpayExpressCheckoutEnabled = clearpayEnabled ? sitePreferences.isExpressCheckoutEnabled() : false;
     var isExpressCheckoutFinalize = require('*/cartridge/scripts/util/clearpaySession').isExpressCheckoutFinalizeFlow();
-    var clearpayExpressCheckoutPdpEnabled = sitePreferences.isExpressCheckoutPdpEnabled();
+    var clearpayExpressCheckoutCartEnabled = sitePreferences.isExpressCheckoutCartEnabled();
     var ClearpayCOHelpers = require('*/cartridge/scripts/checkout/clearpayCheckoutHelpers');
     var clearpayExpressPickupEnabled = require('~/cartridge/scripts/checkout/clearpayRefArchCheckoutHelpers').shouldEnableExpressPickupMode();
     var clearpayExpressCheckoutBuyNowEnabled = sitePreferences.isExpressCheckoutBuyNowEnabled();
@@ -40,7 +40,7 @@ clearpayExpressPickupEnabled - does the current cart and selected ship method in
             <a href="${URLUtils.url('ClearpayExpress-ContinueFinalize')}" class="${checkoutButtonClass} btn btn-block checkout-btn ${pdict.valid.error ? 'disabled' : ''}">
             &nbsp;
             </a>
-        <iselse/>
+        <iselseif condition="${clearpayExpressCheckoutCartEnabled}" />
             <a id="clearpay-express-button" class="${checkoutButtonClass} btn btn-block checkout-btn ${pdict.valid.error ? 'disabled' : ''}" role="button">
             &nbsp;
             </a>

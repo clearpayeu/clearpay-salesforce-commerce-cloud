@@ -234,14 +234,6 @@ $laptop : 960px;
     background-color: #000 !important;
 }
 
-.clearpay-placeorder-button {
-    width: 246px;
-    height: 37px;
-    background-image: url('https://static.afterpay.com/button/place-order-with-clearpay/white-on-black.svg');
-    background-size: cover;
-    background-color: #000 !important;
-}
-
 .clearpay-paynow-button {
     width: 246px !important;
     height: 37px;
@@ -289,11 +281,21 @@ $laptop : 960px;
     margin-bottom: 25px;
 }
 
-.payment-method .clearpay-placeorder-button {
-    text-align: center;
-    align-items: flex-start;
-}
-
 .clearpay-widget-hideuntilready {
     visibility: hidden;
+}
+
+.clearpay-placeorder-button {
+    text-align: center;
+    align-items: flex-start;
+    width: 246px !important;
+    height: 37px;
+    background-image: url('https://static.afterpay.com/button/place-order-with-clearpay/white-on-black.svg');
+    background-size: cover;
+    background-color: #000 !important;
+    border: none;
+}
+
+img.clearpay-checkout-logo {
+    content: url('https://static.afterpay.com/integration/checkout/logo-clearpay-colour-131x25.png');
 }

@@ -18,6 +18,7 @@
             <preference preference-id="cpEnableExpressCheckoutBuyNow">true</preference>
             <preference preference-id="cpStorePickupDescription">Available for next-day pickup</preference>
             <preference preference-id="cpEnableExpressCheckoutPdp">false</preference>
+            <preference preference-id="cpEnableExpressCheckoutCart">true</preference>
         </all-instances>
         <development>
             <preference preference-id="cpJavaScript">https://js-sandbox.squarecdn.com/square-marketplace.js</preference>

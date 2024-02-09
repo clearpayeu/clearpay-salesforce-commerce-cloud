@@ -34,19 +34,21 @@
   
 </isscript>
 <isif condition="${clearpayExpressCheckoutEnabled && isExpressCheckoutFinalize}">
-  <input id="clearpay-widget-amount" type="hidden" value="${clearpayAmount.value}" />
-  <input id="clearpay-widget-currency" type="hidden" value="${clearpayAmount.currencyCode}" />
-  <input id="clearpay-widget-locale" type="hidden" value="${request.getLocale()}" />
-  <input id="clearpay-token" type="hidden" value="${clearpayToken}" />
-  <input id="clearpay-express-url-cartstatus" type="hidden" value="${URLUtils.url('ClearpayExpress-CartStatus')}" />
-  <input id="clearpay-express-url-widgeterror" type="hidden" value="${URLUtils.url('ClearpayExpress-WidgetError')}" />
-  <input id="clearpay-express-url-placeorder" type="hidden" value="${URLUtils.url('ClearpayExpress-FinalizeOrder')}" />
-  <input id="clearpay-express-url-cancelorder" type="hidden" value="${URLUtils.url('ClearpayExpress-CancelOrder')}" />
+    <input id="clearpay-express-checkout-finalize" type="hidden" value="true" />
+    <input id="clearpay-widget-amount" type="hidden" value="${clearpayAmount.value}" />
+    <input id="clearpay-widget-locale" type="hidden" value="${request.getLocale()}" />
+    <input id="clearpay-widget-currency" type="hidden" value="${clearpayAmount.currencyCode}" />
+    <input id="clearpay-token" type="hidden" value="${clearpayToken}" />
+    <input id="clearpay-express-url-cancelorder" type="hidden" value="${URLUtils.url('ClearpayExpress-CancelOrder')}" />
+    <input id="clearpay-express-url-finalize" type="hidden" value="${URLUtils.url('ClearpayExpress-FinalizeOrder')}" />
+    <input id="clearpay-express-url-cartstatus" type="hidden" value="${URLUtils.url('ClearpayExpress-CartStatus')}" />
+    <input id="clearpay-express-url-shippingrequired" type="hidden" value="${URLUtils.url('ClearpayExpress-GetShippingRequired')}" />
+    <input id="clearpay-express-url-widgeterror" type="hidden" value="${URLUtils.url('ClearpayExpress-WidgetError')}" />
 <iselse/>
     <input id="clearpay-express-checkout-finalize" type="hidden" value="false" />
-    <input id="clearpay-widget-amount" type="hidden" value="${clearpayOrdertotal}" />
-    <input id="clearpay-widget-currency" type="hidden" value="${session.currency.getCurrencyCode()}" />
+    <input id="clearpay-widget-amount" type="hidden" value="${clearpayAmount.value}" />
     <input id="clearpay-widget-locale" type="hidden" value="${request.getLocale()}" />
+    <input id="clearpay-widget-currency" type="hidden" value="${clearpayAmount.currencyCode}" />
     <input id="clearpay-token" type="hidden" value="" />
 </isif>
 <script src="${URLUtils.staticURL('/js/clearpayWidget.js')}"></script>

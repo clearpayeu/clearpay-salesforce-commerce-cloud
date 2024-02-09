@@ -27,6 +27,7 @@ function renderMessage() {
     var totalprice = parseFloat(params.totalprice.stringValue);
     var classname = params.classname.stringValue;
     var applyCaching;
+    var reqProductID = '';
 
     if (totalprice && !(totalprice.isNaN)) {
         totalprice = new Money(totalprice, session.currency);
@@ -37,12 +38,14 @@ function renderMessage() {
     var clearpayApplicable = BrandUtilities.isClearpayApplicable();
     var isEligible = true;
 
-    if (classname !== 'cart-clearpay-message') {
-        applyCaching = true;
-        var reqProductID = params.productID.stringValue;
-        isEligible = !ClearpayCOHelpers.checkRestrictedProducts(reqProductID);
+    if (classname === 'cart-clearpay-message' || classname === 'checkout-clearpay-message') {
+        var cartData = ClearpayCOHelpers.getCartData();
+        isEligible = cartData.cpCartEligible;
+        reqProductID = cartData.cpProductIDs;
     } else {
-        isEligible = !ClearpayCOHelpers.checkRestrictedCart();
+        applyCaching = true;
+        reqProductID = params.productID.stringValue;
+        isEligible = !ClearpayCOHelpers.checkRestrictedProducts(reqProductID);
     }
 
     var clearpayLimits = thresholdUtilities.checkThreshold(totalprice);
@@ -53,7 +56,8 @@ function renderMessage() {
             eligible: isEligible,
             classname: classname,
             mpid: clearpayLimits.mpid,
-            totalprice: totalprice.value
+            totalprice: totalprice.value,
+            cpproductids: reqProductID
         }).render('product/components/clearpaymessage');
     }
 }

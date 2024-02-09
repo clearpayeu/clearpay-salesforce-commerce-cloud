@@ -2,7 +2,7 @@
  * Creates checkout widget for Clearpay
  */
 function createClearpayWidget() {
-    if (typeof AfterPay != 'undefined') {
+    if (typeof AfterPay != 'undefined' && $('#clearpay-widget-amount').length != 0) {
         window.clearpayWidget = new AfterPay.Widgets.PaymentSchedule({
             token: $('#clearpay-token').val(),
             amount: { amount: $('#clearpay-widget-amount').val(), currency: $('#clearpay-widget-currency').val() },

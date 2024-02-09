@@ -158,7 +158,7 @@
                 <externally-managed-flag>false</externally-managed-flag>
             </attribute-definition>
             <attribute-definition attribute-id="cpControllerCartridgeName">
-                <display-name xml:lang="x-default">Default Controller Cartridge Name</display-name>
+                <display-name xml:lang="x-default">Default Controller Cartridge Name(SiteGenesis Only)</display-name>
                 <description xml:lang="x-default">Name of default storefront controller cartridge</description>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
@@ -167,7 +167,7 @@
                 <default-value>app_storefront_controllers</default-value>
             </attribute-definition>
             <attribute-definition attribute-id="cpCoreCartridge">
-                <display-name xml:lang="x-default">Default Core Cartridge</display-name>
+                <display-name xml:lang="x-default">Default Core Cartridge(SiteGenesis Only)</display-name>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -285,6 +285,14 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
+            <attribute-definition attribute-id="cpEnableExpressCheckoutCart">
+                <display-name xml:lang="x-default">Enable Express Checkout option on cart</display-name>
+                <description xml:lang="x-default">Enable Express Checkout option on cart and minicart(SFRA) page.</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
         </custom-attribute-definitions>
         <group-definitions>
             <attribute-group group-id="Integration_Clearpay">
@@ -305,6 +313,7 @@
                 <attribute attribute-id="cpEnableExpressCheckoutBuyNow"/>
                 <attribute attribute-id="cpStorePickupDescription"/>
                 <attribute attribute-id="cpEnableExpressCheckoutPdp"/>
+                <attribute attribute-id="cpEnableExpressCheckoutCart"/>
                 <attribute attribute-id="cpRestrictedProducts"/>
             </attribute-group>
         </group-definitions>

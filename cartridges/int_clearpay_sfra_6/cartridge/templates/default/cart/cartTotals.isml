@@ -63,6 +63,7 @@
                     totalprice="${pdict.totalPrice}"
                     eligible="${pdict.cpEligible}"
                     mpid="${pdict.cpMpid}"
+                    cpproductids="${pdict.cpProductIDs}"
                 />
             </div>
         </div>    
