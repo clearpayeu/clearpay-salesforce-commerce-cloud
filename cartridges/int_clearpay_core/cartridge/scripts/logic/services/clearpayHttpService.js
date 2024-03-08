@@ -49,7 +49,7 @@ function getClearpayHttpService() {
             service.setRequestMethod(requestBody.requestMethod);
             service.addHeader('Content-Type', 'application/json');
 
-            var clearpayCartridge = 'ClearpayCartridge/24.1.1';
+            var clearpayCartridge = 'ClearpayCartridge/24.1.2';
             var merchantID = service.configuration.credential.user;
             var siteURL = URLUtils.httpsHome().toString();
             var storeFront = Site.getCurrent().getID();
