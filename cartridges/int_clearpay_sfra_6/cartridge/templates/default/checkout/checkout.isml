@@ -133,8 +133,11 @@
                             </button>
                             <iscomment>Start of Clearpay</iscomment>
                             </div>
+                            <isset name="merchantLocale" value="${request.getLocale().replace('_', '-')}" scope="page" />
                             <input id="clearpay-placeorder-button" class="clearpay-widget-hideuntilready ${buttonPlaceOrderClass} btn btn-block ap-checkout-pay-tab-ecf ap-checkout-po-ecf"
-                                    type="button">&nbsp;
+                                type="button" style="background-image: url('https://static.afterpay.com/${merchantLocale}/integration/button/place-order-with-clearpay/white-on-black.svg');"
+                            >
+                                &nbsp;
                             </input>
                             <iscomment>End of Clearpay</iscomment>
                         </div>

@@ -30,6 +30,7 @@ clearpayExpressPickupEnabled - does the current cart and selected ship method in
     if (disableClearpayPaymentMethod) {
         checkoutButtonClass += " clearpay-hide";
     }
+    buttonUrl = "https://static.afterpay.com/" + request.getLocale().replace('_', '-') + "/integration/button/checkout-with-clearpay/white-on-black.svg";
 </isscript>
 <iscomment>Start of Clearpay</iscomment>
 <isif condition="${clearpayExpressCheckoutEnabled}">
@@ -37,11 +38,11 @@ clearpayExpressPickupEnabled - does the current cart and selected ship method in
     <isinclude template="product/components/clearpayexpresscheckout" />
     <div class="mb-sm-3">
         <isif condition="${isExpressCheckoutFinalize}">
-            <a href="${URLUtils.url('ClearpayExpress-ContinueFinalize')}" class="${checkoutButtonClass} btn btn-block checkout-btn ${pdict.valid.error ? 'disabled' : ''}">
+            <a href="${URLUtils.url('ClearpayExpress-ContinueFinalize')}" class="${checkoutButtonClass} btn btn-block checkout-btn ${pdict.valid.error ? 'disabled' : ''}" style="background-image: url('${buttonUrl}');">
             &nbsp;
             </a>
         <iselseif condition="${clearpayExpressCheckoutCartEnabled}" />
-            <a id="clearpay-express-button" class="${checkoutButtonClass} btn btn-block checkout-btn ${pdict.valid.error ? 'disabled' : ''}" role="button">
+            <a id="clearpay-express-button" class="${checkoutButtonClass} btn btn-block checkout-btn ${pdict.valid.error ? 'disabled' : ''}" role="button" style="background-image: url('${buttonUrl}');">
             &nbsp;
             </a>
         </isif>

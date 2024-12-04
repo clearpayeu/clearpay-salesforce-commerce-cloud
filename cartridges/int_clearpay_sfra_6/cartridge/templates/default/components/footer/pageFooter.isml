@@ -9,13 +9,15 @@
             </div>
             <div class="footer-item col-sm-2 collapsible-xs">
                 <isset name="cpBrand" value="${pdict.CurrentSession.privacy.clearpayBrand}" scope="page"/>
+                <isset name="merchantLocale" value="${request.getLocale().replace('_', '-')}" scope="page" />
                 <isif condition="${pdict.CurrentSession.privacy.clearpayApplicable && cpBrand}">
                     <div>
                         <h2 class="title d-none d-sm-block">${Resource.msg('footer.payments', 'clearpay', null)}</h2>
                     </div>
-                    <img class="clearpay-image"
+                    <img class="cp-footer-image"
                         height="32"
                         alt="${cpBrand}"
+                        src="https://static.afterpay.com/${merchantLocale}/integration/logo/lockup/color-black-32.svg"
                     />
                 </isif>
             </div>
